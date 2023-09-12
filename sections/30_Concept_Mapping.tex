@@ -114,6 +114,64 @@ The object-object approach to defining spatial configurations of objects is also
 \textbf{Object-object} concept maps encode objects in sparse $NxN$ matrices, where $N$ is the number of objects at a location. 
 Using algorithm \ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east (depicted in Figure \ref{fig:CM-OO-Setup}). 
 
+
+\subsection{Concept Map Creation} \label{appendix:conceptcreation}
+\begin{algorithm}[H]
+    \caption{Creating a Concept Map}\label{alg:geoToGrid}
+    \begin{algorithmic}
+        \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
+        \State{- - - - -}
+        \Procedure{createConceptMap}{$T$}
+            \State{LonList, LatList $\leftarrow$ []} \Comment{Lists}
+            %\State{LatList = []} \Comment{A list}
+            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
+            %\State{Sort rows from North to South}
+            \For{$R$ in $T$} \Comment{Where $T$ sorted North to South}     
+                \State{Add R.$ID$ to $LatList$} \Comment{$R.ID$ is the obj unique ID}
+            \EndFor
+            %\State{Sort rows from West to East}         
+            \For{$R$ in $T$}  \Comment{Where $T$ sorted West to East}  
+                \State{Add R.$ID$ to $LonList$}
+            \EndFor          
+            \For{$ID$ in $Lonlist$}          
+                \State{get index of $ID$ in $LonList$ as $i$}
+                \State{get index of $ID$ in $LatList$ as $j$}               
+                \State{$M$[$i$][$j$] $\leftarrow$ $ID.Name$} \Comment{Name of object with $ID$}
+            \EndFor        
+            \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as NW corner}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+
+%\subsection{Object-Object Search Term Ordering}
+\begin{algorithm}[H]
+    \caption{Ordering the Search Terms}\label{alg:orderSearchTerms}
+    \begin{algorithmic}
+        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s}}
+        \State{- - - - -}
+        \Procedure{Order Search Terms}{$M$}
+            \If{$M$ has single Item}
+                \State{Return $M$}
+            \EndIf
+            \State{$Traversed$ $\leftarrow$ []}
+            %\State{$R$, $C$ = Number of rows and columns}
+            %\State{$Rd$ = ($R$+$C$)-1}
+            \For{$r$ in range ($R$+$C$)-1} \Comment{$R$, $C$ = Number of rows and columns}
+                \For{$i$ in range $r$+1}
+                    %\State{$j$ = $r$-$i$}
+                    \If{$i$ < $R$ and $r$-$i$ < $C$ and $M$[$i$][$r$-$i$] != 0}
+                        %\If{$M$[$i$][$j$] != 0}
+                            \State{Add $M$[$i$][$r$-$i$] to $Traversed$}
+                        %\EndIf
+                    \EndIf 
+                \EndFor
+            \EndFor
+            \State{\textbf{return} $Traversed$}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
 %To encode a location, we begin by setting the centroid of the location provided by OSM during Data Acquisition to be the root of a quartering of the search space into NorthWest, NorthEast, SouthWest and SouthEast quadrants. 
 %Each object's coordinates are compared to the location centroid and it is assigned to the appropriate quadrant. 
 %Where a point lies on the border we adopt the convention that it belongs to the southern and western quadrants. 

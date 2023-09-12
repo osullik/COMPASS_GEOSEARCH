@@ -1,2 +1,30 @@
 \section{Object-Location Search}
 \label{section:loc_search}
+
+
+\begin{algorithm}[H]
+    \caption{Generating Location Centric Structure}\label{alg:locationCentricGeneration}
+    \begin{algorithmic}
+        \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
+        \State{\textit{\textbf{X} a (x,y) tuple of the centroid for the location}}
+        \State{- - - - -}
+        \Procedure{MakeLocationCentricStructure}{$T$,$X$}
+            \State{$Q$\{$NW$:[], $NE$:[], $SW$:[], $SE$:[]\}}\Comment{Dictionary}
+            \For{$R$ in $T$}\Comment{R is a row describing a single object}
+                \If{$R.y$ < $X.y$}
+                    \If{$R.x$ <= $X.x$}
+                        \State{Add $R.Name$ to $Q.SW$}
+                    \Else
+                        \State{Add $R.Name$ to $Q.SE$}
+                    \EndIf
+                \Else
+                    \If{$R.x$ <= $X.x$} 
+                        \State{Add $R.Name$ to $Q.NW$}
+                    \Else
+                        \State{Add $R.Name$ to $Q.NE$}
+                    \EndIf
+                \EndIf 
+            \EndFor
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
