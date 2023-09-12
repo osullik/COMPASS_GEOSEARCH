@@ -12,7 +12,7 @@ This forms the reciprocal problem to the online game \textit{Geoguessr}~\footnot
 The success of \textit{GeoGuessr} shows that enough objects, even common ones, have the power to substantially prune a large search space down to just a few, or even one candidate region.
 \emph{GESTALT}'s approach to geospatial search closely follows the \textit{Winthrop Method}~\cite{Keatley2021} which was developed in Northern Ireland in the 1970s to detect clandestine weapons caches.
 The core principle behind this method is that humans form mental models of terrain based on objects in the environment, and then use those to navigate.
-Other research has show that When revisiting locations, the objects can even serve as keys to other memories of that location~\cite{Miller2013}.
+Other research has shown that When revisiting locations, the objects can even serve as keys to other memories of that location~\cite{Miller2013}.
 
 
 \subsection{Pictorial Querying}
@@ -22,7 +22,7 @@ Their approach focuses on matching locations from a user-defined pictorial input
 In the 27 years since Soffer and Samet first specified the Pictorial Query Language, considerable advances in digital storage and access to geospatial data have addressed some of the initial scale limitations that the conversion of maps to digital pictorial representations presents. 
 For example, the role of a system like MAGELLAN~\cite{Samet1998} in \emph{GESTALT} is replaced by sourcing the locations from OSM, and the requirement for a separate system to efficiently index and query map tiles like MARCO~\cite{Samet1996} is now handled by OSM in its entirety. 
 Additional work in pictorial querying notes the problem of searching when there are multiple instances of the objects, which is NP-Complete when formulated as a subgraph matching problem~\cite{Folkers2000}. 
-\textit{GESTALT} addresses the complexity issues by successively pruning the search space, beginning with the last-mile search region, pruning out any locations that fail to contain the query terms, and then commencing the spatial search, which involves recursively pruning the search space even further, until a a candidate location is determine to match or not match the configuration specified in the pictorial query.
+\textit{GESTALT} addresses the complexity issues by successively pruning the search space, beginning with the last-mile search region, pruning out any locations that fail to contain the query terms, and then commencing the spatial search, which involves recursively pruning the search space even further, until a candidate location is determine to match or not match the configuration specified in the pictorial query.
 
 
 

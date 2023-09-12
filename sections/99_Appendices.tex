@@ -5,20 +5,20 @@
 \subsection{Membership Search Algorithms}
 
 \begin{algorithm}[H]
-    \caption{Rank}\label{alg:rank}
+    \caption{Ranked Membership Search}\label{alg:rank}
     \begin{algorithmic}
         \State{\textit{\textbf{QT} a list of query terms to search for}}
         \State{\textit{\textbf{II} an inverted index with objects as keys and locations as values}}
         \State{- - - - -}
         \Procedure{Rank}{$S$,$QT$,$II$}\Comment{$S$ results from $Q$ query terms in $II$}
-            \State{$LR$ = Empty Ordered Dictionary}\Comment{\textbf{L}ocation \textbf{R}ank}
+            \State{$LR$ $\leftarrow$ Empty Ordered Dictionary}\Comment{\textbf{L}ocation \textbf{R}ank}
             \For{Each $L$ in $S$}\Comment{\textbf{L}ocation}
-                \State{$p$ = 1}%\Comment{Probability location correct}
+                \State{$p$ $\leftarrow$ 1}%\Comment{Probability location correct}
                 \For{$O$ in $QT$}
                     %\State{$OP$ = Prob of Obj@Locin $II$}\Comment{$OP$ = \textbf{O}bject \textbf{P}robability}
-                    \State{$p$ = $p$x$OP$}\Comment{$OP$ = \textbf{O}bject \textbf{P}robability}
+                    \State{$p$ $\leftarrow$ $p$x$OP$}\Comment{$OP$ = \textbf{O}bject \textbf{P}robability}
                 \EndFor
-                \State{$LR$[$L$] = $p$}
+                \State{$LR$[$L$] $\leftarrow$ $p$}
             \EndFor
             \State{\textbf{return} $LR$ ordered most to least likely}
         \EndProcedure
@@ -34,9 +34,9 @@
         \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
         \State{- - - - -}
         \Procedure{createConceptMap}{$T$}
-            \State{LonList, LatList = []} \Comment{Lists}
+            \State{LonList, LatList $\leftarrow$ []} \Comment{Lists}
             %\State{LatList = []} \Comment{A list}
-            \State{$M$ = [[][]]} \Comment{A matrix of 0s}
+            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
             %\State{Sort rows from North to South}
             \For{$R$ in $T$} \Comment{Where $T$ sorted North to South}     
                 \State{Add R.$ID$ to $LatList$} \Comment{$R.ID$ is the obj unique ID}
@@ -48,7 +48,7 @@
             \For{$ID$ in $Lonlist$}          
                 \State{get index of $ID$ in $LonList$ as $i$}
                 \State{get index of $ID$ in $LatList$ as $j$}               
-                \State{$M$[$i$][$j$] = $ID.Name$} \Comment{Name of object with $ID$}
+                \State{$M$[$i$][$j$] $\leftarrow$ $ID.Name$} \Comment{Name of object with $ID$}
             \EndFor        
             \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as NW corner}
         \EndProcedure
@@ -66,7 +66,7 @@
             \If{$M$ has single Item}
                 \State{Return $M$}
             \EndIf
-            \State{$Traversed$ = []}
+            \State{$Traversed$ $\leftarrow$ []}
             %\State{$R$, $C$ = Number of rows and columns}
             %\State{$Rd$ = ($R$+$C$)-1}
             \For{$r$ in range ($R$+$C$)-1} \Comment{$R$, $C$ = Number of rows and columns}
