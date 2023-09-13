@@ -78,14 +78,18 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
         \Procedure{objectObjectSearch}{$Q$,$C$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
             \State{$Q.x\leftarrow$ centroid of points in $Q$} 
             \State{$N\leftarrow$ North Center point of $C$} 
-            \For{Each point $P$ in $Q$}
-                \State{$\theta$ $\leftarrow$ $\angle$ $N$$Q.x$$P$ }\Comment{Measured clockwise}
-                \State{$Q' \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
-                \State{$M$ $\leftarrow$ createConceptMap($Q'$)}
-                \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
-                \If{recursiveGridSearch($M$,$L$) == True}
-                    \State{\textbf{return} True}               
-                \EndIf
+            \State{$W\leftarrow$ West Center point of $C$} 
+            \State{$NW\leftarrow$ NorthWest Center point of $C$} 
+            \For{Each $R$ in [$N, W, NW$]} \Comment{\textbf{R}eference diretion}
+                \For{Each point $P$ in $Q$}
+                    \State{$\theta$ $\leftarrow$ $\angle$ $R$$Q.x$$P$ }\Comment{Measured clockwise}
+                    \State{$Q' \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
+                    \State{$M$ $\leftarrow$ createConceptMap($Q'$)}
+                    \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
+                    \If{recursiveGridSearch($M$,$L$) == True}
+                        \State{\textbf{return} True}               
+                    \EndIf
+                \EndFor
             \EndFor
             \State{\textbf{return} False}
         \EndProcedure
