@@ -1,19 +1,8 @@
-\section{Object-Object Search}
+\section{METHOD: Object-Object Search}
 \label{section:obj_search}
 
 
 \subsection{Spatial Search}
-
-The most powerful form of search \emph{GESTALT} enables is spatial search, where users can query for locations based on the spatial configuration of objects in relation to each other or to the location itself.
-However, as discussed in section \ref{section:concept}, this problem quickly becomes intractable as the number of objects increases.
-To combat this effect and still enable users to specify spatial queries, we employ a successive pruning approach, where the search space is scoped down in stages until the resulting search is of reasonable scale to execute directly.
-
-\subsubsection{Pruning the Search Space}
-The first round of pruning occurs when the user selects the \emph{region} that they wish to search (a pre-condition to performing last-mile search). 
-The second layer of pruning happens when the exact membership search method is applied to the query objects.
-The set-membership test prunes out any locations that do not contain the objects of interest, thereby avoiding unnecessary computation associated with determining the spatial configuration of objects that are irrelevant to the query (i.e. that belong to locations that are not candidates).
-The third layer of pruning occurs during the search of the concept maps. 
-The recursive grid search (Algorithm \ref{alg:geoToGrid}) successively segments the search grid into smaller and smaller sections, eliminating impossible results at each step to reduce the total search space to a tractable size.
 
 \subsubsection{Specifying the Query Pictorially}
 %A picture is worth a thousand words, and maps are an inherently visual medium. \emph{GESTALT} recognizes the expressive limitations of words alone for geospatial querying and invites a user to query its database with quick sketch maps. 
@@ -40,6 +29,11 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 %The broad idea is that while finding all possible instances and configurations of a geospatial pattern rapidly approaches NP-Completeness, we can determine if there is any possible match quite easily by using the query term to prune sections of the concept map that are irrelevant. 
 %For example, any objects in the location that are north of the most northerly query term that exists in the object cannot possibly satisfy the query, and so we prune those rows. 
 %The same occurs for the western direction, and then recursively north and west until the query is eithers satisfied or rejected. The search occurs for each candidate location and requires less than a single matrix traversal to determine if anywhere in that location the query pattern occurs. 
+
+
+\subsection{Complexity Analysis}
+\nrscomment{@Nicole add here}
+
 
 \begin{algorithm}
     \caption{Recursive Grid Search}\label{alg:gridSearch}

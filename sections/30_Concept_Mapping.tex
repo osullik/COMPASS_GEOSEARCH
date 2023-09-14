@@ -1,9 +1,8 @@
 \section{Concept Mapping}
 \label{section:concept}
 
-The core of \emph{GESTALT}'s geospatial search capability resides in the \emph{Concept Mapping} component.
 Concept mapping extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
-By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial last-mile search that (to our knowledge) does not presently exist in any GIS tools.
+By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
 We implement two forms of concept mapping: object-location concept mapping and object-object concept mapping.
 In both cases, concept mapping involves the encoding phase (offline) and the search phase (online). 
 We discuss the details of the encoding phase in this section and leave the search details to section \ref{section:search}.
@@ -44,7 +43,7 @@ The query returns the candidate locations ranked by the number of query terms th
 
 \subsection{Object-Object relations}
 
-The other type of spatial relationships \emph{GESTALT} supports searching are object-object relations, which are typically more complex than object-location relations.
+The other type of spatial relationships we support searching are object-object relations, which are typically more complex than object-location relations.
 Object-object relations refer to a configuration of objects that relate to one another spatially.
 For example, a tree, a pond, and a sign might form a triangle, with each object having a directional constraint with respect to every other object in the query (i.e., tree northwest of a pond, pond southeast of sign, and sign southwest of tree).
 As the number of objects in the object-object configuration increases, the number of pairwise directional relationships needed to specify the query snowballs.
@@ -79,6 +78,9 @@ The object-object approach to defining spatial configurations of objects is also
     \caption{\textbf{Generate and Query an Object-Object Concept Map.}}\label{figure:ConceptMap} 
 \end{figure*}
 
+\subsection{Cardinality Invariant Object-Object relations}
+\nrscomment{describe here}
+\nrscomment{diagram here}
 
 
 \subsection{Encoding the Spatial Relationships of objects and locations}
