@@ -72,17 +72,17 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 \begin{algorithm}
     \caption{Cardinality-Invariant Object-Object Search}\label{alg:cardInvSearch}
     \begin{algorithmic}
-        \State{\textit{\textbf{Q} A pictorial query specified as (x,y) coords in a canvas C}}
-        \State{\textit{\textbf{C} Canvas containing query points}}
+        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
         \State{- - - - -}
-        \Procedure{objectObjectSearch}{$Q$,$C$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$Q.x\leftarrow$ centroid of points in $Q$} 
-            \State{$N\leftarrow$ North Center point of $C$} 
-            \State{$W\leftarrow$ West Center point of $C$} 
-            \State{$NW\leftarrow$ NorthWest Center point of $C$} 
-            \For{Each $R$ in [$N, W, NW$]} \Comment{\textbf{R}eference diretion}
+        \Procedure{objectObjectSearch}{$Q$,$B$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+            \State{$B \leftarrow$ Bounding box of points in $Q$}
+            \State{$C\leftarrow$ centroid of points in $Q$} 
+            \State{$N\leftarrow$ North Center point of $B$} 
+            \State{$W\leftarrow$ West Center point of $B$} 
+            \State{$NW\leftarrow$ Northwest Center point of $B$} 
+            \For{Each $R$ in [$N, W, NW$]} \Comment{\textbf{R}eference direction}
                 \For{Each point $P$ in $Q$}
-                    \State{$\theta$ $\leftarrow$ $\angle$ $R$$Q.x$$P$ }\Comment{Measured clockwise}
+                    \State{$\theta$ $\leftarrow$ $\angle$ $R$$C$$P$ }\Comment{Measured clockwise}
                     \State{$Q' \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
                     \State{$M$ $\leftarrow$ createConceptMap($Q'$)}
                     \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
