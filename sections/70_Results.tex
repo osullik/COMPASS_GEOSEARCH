@@ -1,11 +1,24 @@
 \section{Analysis and Results}
 \label{section:results}
 
-\subsection{Complexity Analysis}
-\nrscomment{@Nicole add here}
+\subsection{Algorithm Analysis}
+
+Our \textbf{locationObjectSearch} implementation \nrscomment{@Nicole add here}
+
+Our \textbf{objectObjectSearch} implementation traverses a matrix of size $\# Objs \times \# Objs$ from North and West, slicing the matrix smaller and smaller as it traverses. Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + O^2)$ for $Q$ query points and $O$ objects per location. Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.
+
+Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} $3Q$ times, resulting in a time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
 
 
+\subsection{Experimental Results}
+\nrscomment{add here}
+We demonstrate the performance of ........... by comparing execution times of ......... 
 
+\subsubsection{Discussion.} 
+The significance is ...................
+
+\subsubsection{Hardware specifications.} 
+All experimental results were obtained using .................
 
 \small{
 \begin{table*}[h!]

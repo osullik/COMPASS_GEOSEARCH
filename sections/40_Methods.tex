@@ -14,7 +14,7 @@ Searching the object-location structure involves a simple iteration through the 
 
 \nrscomment{Return ranked set of locations as output}
 
-\begin{algorithm}[H]
+\begin{algorithm}[ht]
     \caption{Location-Object Search}\label{alg:locSearch}
     \begin{algorithmic}
         \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
@@ -61,13 +61,13 @@ Searching the object-location structure involves a simple iteration through the 
 Using algorithm \ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east (depicted in Figure \ref{fig:CM-OO-Setup}). \nrscomment{clean up this subsection/ describe more}
 
 Searching the object-object concept maps involves using the recursive grid search (Algorithm \ref{alg:gridSearch}) to identify which locations have objects matching the configuration specified in the pictorial query, and returning the relevant set of results. 
-The pictorial query is first converted into a concept map matrix using the process outlined in Appendix \ref{appendix:conceptcreation} and the search terms in the matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on until all search terms are in the queue.
+The pictorial query is first converted into a concept map matrix using the process outlined in \nrscomment{...} and the search terms in the matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on until all search terms are in the queue.
 Then, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration.
 This process is depicted visually in Figure \ref{figure:ConceptMap}.
 
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[t!]
     \caption{Concept Mapping}\label{alg:geoToGrid}
     \begin{algorithmic}
         \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
@@ -120,14 +120,22 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[ht]
     \caption{Object-Object Search}\label{alg:gridSearch}
     \begin{algorithmic}
+        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
+        \State{- - - - -}
+        \Procedure{objectObjectSearch}{$Q$} 
+            \State{$M$ $\leftarrow$ createConceptMap($Q$)}
+            \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
+            \State{\textbf{return recursiveConceptMapSearch}($M$,$L$)}
+        \EndProcedure
+        \State{}    
         \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s; [0,0] is NW most point}}
         \State{\textit{\textbf{L} A NW to SE ordered list of objects to search for}}
         \State{\textit{\textbf{Dir} The alternating cardinal direction we prune from, 'N' (default) or 'W'}}
         \State{- - - - -}
-        \Procedure{recursiveObjectObjectSearch}{$M$,$L$,$Dir$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+        \Procedure{recursiveConceptMapSearch}{$M$,$L$,$Dir$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
             \If{$L$ has only 1 item}\Comment{Base Case}
                 \If{pop($L$) in $M$}
                     \State{\textbf{return} $True$}              
@@ -141,7 +149,7 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
             \EndIf
             \State{$M^\prime \leftarrow$ Prune all objects $Dir$ of $P$}
             \State{$Dir \leftarrow$ \textbf{changeDirection}($Dir$)}
-            \State{\textbf{return recursiveObjectObjectSearch}($M^\prime$,$L$,$Dir$)}
+            \State{\textbf{return recursiveConceptMapSearch}($M^\prime$,$L$,$Dir$)}
         \EndProcedure
         \State{}
         \Procedure{changeDirection}{$Dir$}
@@ -157,12 +165,12 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 
 
 
-\begin{algorithm}[H]
+\begin{algorithm}[ht]
     \caption{Cardinality-Invariant Object-Object Search}\label{alg:cardInvSearch}
     \begin{algorithmic}
         \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
         \State{- - - - -}
-        \Procedure{objectObjectSearch}{$Q$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+        \Procedure{cardinalityInvariantObjectObjectSearch}{$Q$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
             \State{$B \leftarrow$ Bounding box of points in $Q$}
             \State{$C\leftarrow$ centroid of points in $Q$} 
             \State{$N\leftarrow$ North Center point of $B$} 
@@ -171,10 +179,10 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
             \For{Each $Dir$ in [$N, W, NW$]} \Comment{Reference \textbf{Dir}ection}
                 \For{Each point $P$ in $Q$}
                     \State{$\theta$ $\leftarrow$ $\angle$ $R$$C$$P$ }\Comment{Measured clockwise}
-                    \State{$Q' \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
-                    \State{$M$ $\leftarrow$ createConceptMap($Q'$)}
+                    \State{$Q^\prime \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
+                    \State{$M$ $\leftarrow$ createConceptMap($Q^\prime$)}
                     \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
-                    \If{recursiveObjectObjectSearch($M$,$L$) == True}
+                    \If{recursiveObjectObjectSearch($M$, $L$) == True}
                         \State{\textbf{return} True}               
                     \EndIf
                 \EndFor
