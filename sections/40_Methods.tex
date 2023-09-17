@@ -4,37 +4,43 @@
 \begin{algorithm}[H]
     \caption{Location-Object Search}\label{alg:locSearch}
     \begin{algorithmic}
-        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
-        \State{\textit{\textbf{C} Midpoint of query canvas, representing position of Loc sought}}
+        \State{\textit{\textbf{Q} A query of Objects with names and coordinates}}
+        \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
+        \State{\textit{\textbf{Q.Loc} Midpoint of query canvas, representing position of Location sought}}
+        \State{\textit{\textbf{D.Loc} Location to which Objects in D are assigned}}
         \State{- - - - -}
-        \Procedure{objectLocationSearch}{$Q$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$Dict \leftarrow$ makeLocationCentricStructure($T$,$X$)}  \nrscomment{how to get T and X}
+        \Procedure{objectLocationSearch}{$Q$, $D$, $Q.Loc$, $D.Loc$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+            \State{$D.Dict \leftarrow$ makeLocationCentricStructure($D$,$D.Loc$)}
+            \State{$Q.Dict \leftarrow$ makeLocationCentricStructure($Q$,$Q.Loc$)}
             \State{$matches \leftarrow$ 0}
-            \For{Each point $P$ in $Q$}
-                \If{$Dict$ contains $P$ matching in same quadrant as $Q$}
-                    \State{$matches \leftarrow matches$ + 1}               
-                \EndIf
+            \For{Each $quadrant$ in [$NW$, $NE$, $SW$, $SE$]}
+                \For{Each point $P$ in $Q.Dict[quadrant]$}
+                    \If{$D.Dict[quadrant]$ contains $P$}
+                        \State{$matches \leftarrow matches$ + 1} 
+                        \State{Pop $P$ from $D.Dict[quadrant]$} %\Comment So multiples of same objects in query are counted
+                    \EndIf
+                \EndFor
             \EndFor
-            \State{\textbf{return} $matches$}
+            \State{\textbf{return} $matches$} \Comment Used to rank against other candidate locs
         \EndProcedure
         \State{}
-        \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
-        \State{\textit{\textbf{Loc} a (x,y) tuple of the the location}}
+        \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
+        \State{\textit{\textbf{D.Loc} Location to which Objects in D are assigned}}
         \State{- - - - -}
-        \Procedure{MakeLocationCentricStructure}{$T$, $Loc$}
-            \State{$Dict \leftarrow $\{$NW$:[], $NE$:[], $SW$:[], $SE$:[]\}}
-            \For{$R$ in $T$}\Comment{R is a row describing a single object}
-                \If{$R.y$ < $Loc.y$ and $R.x$ < $Loc.x$}
+        \Procedure{MakeLocationCentricStructure}{$D$, $D.Loc$}
+            \State{$Dict \leftarrow $\{ $NW$: [ ], $NE$:[ ], $SW$: [ ], $SE$: [ ] \}}
+            \For{$Obj$ in $D$}%\Comment{R is a row describing a single object}
+                \If{$Obj.y$ < $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
                     %\If{}
-                        \State{Add $R.Name$ to $Dict.SW$}
-                \ElsIf{$R.y$ < $Loc.y$ and $R.x$ >= $Loc.x$}
-                        \State{Add $R.Name$ to $Dict.SE$}
+                        \State{Add $Obj.Name$ to $Dict.SW$}
+                \ElsIf{$Obj.y$ < $D.Loc.y$ and $Obj.x$ >= $D.Loc.x$}
+                        \State{Add $Obj.Name$ to $Dict.SE$}
                     %\EndIf
-                \ElsIf{$R.y$ >= $Loc.y$ and $R.x$ < $Loc.x$}
+                \ElsIf{$Obj.y$ >= $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
                     %\If{$R.x$ <= $Loc.x$} 
-                        \State{Add $R.Name$ to $Dict.NW$}
+                        \State{Add $Obj.Name$ to $Dict.NW$}
                 \Else
-                        \State{Add $R.Name$ to $Dict.NE$}
+                        \State{Add $Obj.Name$ to $Dict.NE$}
                     %\EndIf
                 \EndIf 
             \EndFor
