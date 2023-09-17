@@ -1,30 +1,17 @@
 \section{Methods}
 \label{section:methods}
 
-\subsection{Object-Location Search}
-\textbf{Object-location} relations are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates. The division of space aims to emulate how people relate the world to their position in it geospatially. 
-\nrscomment{describe more here}
-Searching the object-location structure involves a simple iteration through the candidate locations, searching each one's NW/NE/SW/SE quadrants for the relevant query objects, and ranking the locations based on how many objects were found in the correct quadrant.
-
-
-
-\nrscomment{this needs to be written based on how it's implemented.}
-
-\nrscomment{Generalize makeLocationCentricStructure to use it for query and data, then do set intersections to get num matches?}
-
-\nrscomment{Return ranked set of locations as output}
-
-\begin{algorithm}[ht]
+\begin{algorithm}[H]
     \caption{Location-Object Search}\label{alg:locSearch}
     \begin{algorithmic}
         \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
-        \State{\textit{\textbf{$C$} Midpoint of query canvas, representing position of Loc sought}}
+        \State{\textit{\textbf{C} Midpoint of query canvas, representing position of Loc sought}}
         \State{- - - - -}
         \Procedure{objectLocationSearch}{$Q$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$D \leftarrow$ makeLocationCentricStructure($T$,$X$)}  \nrscomment{how to get T and X}
+            \State{$Dict \leftarrow$ makeLocationCentricStructure($T$,$X$)}  \nrscomment{how to get T and X}
             \State{$matches \leftarrow$ 0}
             \For{Each point $P$ in $Q$}
-                \If{$D$ contains $P$ matching in same quadrant as $Q$}
+                \If{$Dict$ contains $P$ matching in same quadrant as $Q$}
                     \State{$matches \leftarrow matches$ + 1}               
                 \EndIf
             \EndFor
@@ -34,24 +21,96 @@ Searching the object-location structure involves a simple iteration through the 
         \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
         \State{\textit{\textbf{Loc} a (x,y) tuple of the the location}}
         \State{- - - - -}
-        \Procedure{MakeLocationCentricStructure}{$T$,$Loc$}
-            \State{$D \leftarrow $\{$NW$:[], $NE$:[], $SW$:[], $SE$:[]\}}\Comment{Dictionary}
+        \Procedure{MakeLocationCentricStructure}{$T$, $Loc$}
+            \State{$Dict \leftarrow $\{$NW$:[], $NE$:[], $SW$:[], $SE$:[]\}}
             \For{$R$ in $T$}\Comment{R is a row describing a single object}
-                \If{$R.y$ < $Loc.y$}
-                    \If{$R.x$ <= $Loc.x$}
-                        \State{Add $R.Name$ to $D.SW$}
-                    \Else
-                        \State{Add $R.Name$ to $D.SE$}
-                    \EndIf
+                \If{$R.y$ < $Loc.y$ and $R.x$ < $Loc.x$}
+                    %\If{}
+                        \State{Add $R.Name$ to $Dict.SW$}
+                \ElsIf{$R.y$ < $Loc.y$ and $R.x$ >= $Loc.x$}
+                        \State{Add $R.Name$ to $Dict.SE$}
+                    %\EndIf
+                \ElsIf{$R.y$ >= $Loc.y$ and $R.x$ < $Loc.x$}
+                    %\If{$R.x$ <= $Loc.x$} 
+                        \State{Add $R.Name$ to $Dict.NW$}
                 \Else
-                    \If{$R.x$ <= $Loc.x$} 
-                        \State{Add $R.Name$ to $D.NW$}
-                    \Else
-                        \State{Add $R.Name$ to $D.NE$}
-                    \EndIf
+                        \State{Add $R.Name$ to $Dict.NE$}
+                    %\EndIf
                 \EndIf 
             \EndFor
-            \State{\textbf{return} $D$}
+            \State{\textbf{return} $Dict$}
+        \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+\nrscomment{this needs to be written based on how it's implemented.}
+
+\nrscomment{Generalize makeLocationCentricStructure to use it for query and data, then do set intersections to get num matches?}
+
+\nrscomment{Return ranked set of locations as output}
+
+
+\subsection{Object-Location Search}
+\textbf{Object-location} relations are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates. The division of space aims to emulate how people relate the world to their position in it geospatially. 
+\nrscomment{describe more here}
+Searching the object-location structure involves a simple iteration through the candidate locations, searching each one's NW/NE/SW/SE quadrants for the relevant query objects, and ranking the locations based on how many objects were found in the correct quadrant.
+
+
+
+
+
+\begin{figure}[h]
+    \centering
+        \includesvg[width=0.5\textwidth]{figures/compass_traversal.svg}
+    \caption{\textbf{Result of function orderSearchTerms on a sample query concept map.}}\label{figure:compass_traversal-LO} 
+\end{figure}
+
+\begin{algorithm}[h]
+    \caption{Concept Mapping}\label{alg:geoToGrid}
+    \begin{algorithmic}
+        \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
+        \State{- - - - -}
+        \Procedure{createConceptMap}{$D$}
+            \State{xList, yList $\leftarrow$ []} 
+            %\State{LatList = []} \Comment{A list}
+            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
+            %\State{Sort rows from North to South}
+            \For{$Obj$ in $D$} \Comment{Where $D$ sorted (desc) on y coord}     
+                \State{Add $Obj$ to $yList$} %\Comment{$R.ID$ is the obj unique ID}
+            \EndFor
+            %\State{Sort rows from West to East}         
+            \For{$Obj$ in $D$}  \Comment{Where $D$ sorted (desc) on x coord}  
+                \State{Add $Obj$ to $xList$}
+            \EndFor          
+            \For{$Obj$ in $xlist$}          
+                \State{$i \leftarrow$ index of $Obj$ in $xList$}
+                \State{$j \leftarrow$ index of $Obj$ in $yList$}               
+                \State{$M$[$i$][$j$] $\leftarrow$ $Obj.Name$} %\Comment{Name of object with $ID$}
+            \EndFor        
+            \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as top left corner}
+        \EndProcedure
+
+        \State{}
+        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s}}
+        \State{- - - - -}
+        \Procedure{Order Search Terms}{$M$}
+            \If{$M$ has single Item}
+                \State{Return [$M$]}
+            \EndIf
+            \State{$Traversed$ $\leftarrow$ []}
+            \State{$R$, $C$ = Number of rows and columns in $M$}
+            %\State{$Rd$ = ($R$+$C$)-1}
+            \For{$i$ in range ($R$ + $C$) - 1} %\Comment{$R$, $C$ = Number of rows and columns}
+                \For{$r$ in range $i$ + 1}
+                    \State{$c$ = $i$ - $r$}
+                    \If{$r$ < $R$ and $c$ < $C$ and $M$[$r$][$c$] != 0}
+                        %\If{$M$[$i$][$j$] != 0}
+                            \State{Add $M$[$r$][$c$] to $Traversed$}
+                        %\EndIf
+                    \EndIf 
+                \EndFor
+            \EndFor
+            \State{\textbf{return} $Traversed$}
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
@@ -67,89 +126,40 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 
 
 
-\begin{algorithm}[t!]
-    \caption{Concept Mapping}\label{alg:geoToGrid}
-    \begin{algorithmic}
-        \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
-        \State{- - - - -}
-        \Procedure{createConceptMap}{$T$}
-            \State{LonList, LatList $\leftarrow$ []} 
-            %\State{LatList = []} \Comment{A list}
-            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
-            %\State{Sort rows from North to South}
-            \For{$R$ in $T$} \Comment{Where $T$ sorted North to South}     
-                \State{Add R.$ID$ to $LatList$} \Comment{$R.ID$ is the obj unique ID}
-            \EndFor
-            %\State{Sort rows from West to East}         
-            \For{$R$ in $T$}  \Comment{Where $T$ sorted West to East}  
-                \State{Add R.$ID$ to $LonList$}
-            \EndFor          
-            \For{$ID$ in $Lonlist$}          
-                \State{$i \leftarrow$ index of $ID$ in $LonList$}
-                \State{$j \leftarrow$ index of $ID$ in $LatList$}               
-                \State{$M$[$i$][$j$] $\leftarrow$ $ID.Name$} \Comment{Name of object with $ID$}
-            \EndFor        
-            \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as NW corner}
-        \EndProcedure
 
-        \State{}
-        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s}}
-        \State{- - - - -}
-        \Procedure{Order Search Terms}{$M$}
-            \If{$M$ has single Item}
-                \State{Return $M$}
-            \EndIf
-            \State{$Traversed$ $\leftarrow$ []}
-            %\State{$R$, $C$ = Number of rows and columns}
-            %\State{$Rd$ = ($R$+$C$)-1}
-            \For{$r$ in range ($R$+$C$)-1} \Comment{$R$, $C$ = Number of rows and columns}
-                \For{$i$ in range $r$+1}
-                    %\State{$j$ = $r$-$i$}
-                    \If{$i$ < $R$ and $r$-$i$ < $C$ and $M$[$i$][$r$-$i$] != 0}
-                        %\If{$M$[$i$][$j$] != 0}
-                            \State{Add $M$[$i$][$r$-$i$] to $Traversed$}
-                        %\EndIf
-                    \EndIf 
-                \EndFor
-            \EndFor
-            \State{\textbf{return} $Traversed$}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
-
-
-
-
-\begin{algorithm}[ht]
+\begin{algorithm}[h!]
     \caption{Object-Object Search}\label{alg:gridSearch}
     \begin{algorithmic}
-        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
+        \State{\textit{\textbf{Q} A query of Objects with names and coordinates}}
+        \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
         \State{- - - - -}
-        \Procedure{objectObjectSearch}{$Q$} 
-            \State{$M$ $\leftarrow$ createConceptMap($Q$)}
-            \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
-            \State{\textbf{return recursiveConceptMapSearch}($M$,$L$)}
+        \Procedure{objectObjectSearch}{$Q$, $D$} 
+            \State{$D.M$ $\leftarrow$ createConceptMap($D$)}
+            \State{$Q.M$ $\leftarrow$ createConceptMap($Q$)}
+            \State{$Q.L$ $\leftarrow$ orderSearchTerms($M$)}
+            \State{\textbf{return recursiveConceptMapSearch}($D.M$,$Q.L$)}
         \EndProcedure
+        
         \State{}    
-        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s; [0,0] is NW most point}}
-        \State{\textit{\textbf{L} A NW to SE ordered list of objects to search for}}
-        \State{\textit{\textbf{Dir} The alternating cardinal direction we prune from, 'N' (default) or 'W'}}
+        \State{\textit{\textbf{D.M} A ConceptMap Matrix with objects or 0s; [0,0] is NW most point}}
+        \State{\textit{\textbf{Q.L} A NW to SE ordered list of query objects}}
+        \State{\textit{\textbf{Dir} The alternating cardinal direction to prune from, 'N' (default) or 'W'}}
         \State{- - - - -}
-        \Procedure{recursiveConceptMapSearch}{$M$,$L$,$Dir$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \If{$L$ has only 1 item}\Comment{Base Case}
-                \If{pop($L$) in $M$}
+        \Procedure{recursiveConceptMapSearch}{$D.M$,$Q.L$,$Dir$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+            \If{$Q.L$ has only 1 item}\Comment{Base Case}
+                \If{pop($Q.L$) in $D.M$}
                     \State{\textbf{return} $True$}              
                 \Else
                     \State{\textbf{return} $False$}
                 \EndIf            
             \EndIf
-            \State{$P\leftarrow$ pop($L$)}                
-            \If{$P$ not in $M$}
+            \State{$P\leftarrow$ pop($Q.L$)}                
+            \If{$P$ not in $D.M$}
                 \State{\textbf{return} $False$}               
             \EndIf
-            \State{$M^\prime \leftarrow$ Prune all objects $Dir$ of $P$}
+            \State{$D.M^\prime \leftarrow$ Prune all objects $Dir$ of $P$}
             \State{$Dir \leftarrow$ \textbf{changeDirection}($Dir$)}
-            \State{\textbf{return recursiveConceptMapSearch}($M^\prime$,$L$,$Dir$)}
+            \State{\textbf{return recursiveConceptMapSearch}($D.M^\prime$,$Q.L$,$Dir$)}
         \EndProcedure
         \State{}
         \Procedure{changeDirection}{$Dir$}
@@ -165,24 +175,26 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
 
 
 
-\begin{algorithm}[ht]
+\begin{algorithm}[h]
     \caption{Cardinality-Invariant Object-Object Search}\label{alg:cardInvSearch}
     \begin{algorithmic}
-        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
+        \State{\textit{\textbf{Q} A query of Objects with names and coordinates}}
+        \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
         \State{- - - - -}
-        \Procedure{cardinalityInvariantObjectObjectSearch}{$Q$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
+        \Procedure{cardinalityInvariantObjectObjectSearch}{$Q$, $D$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
             \State{$B \leftarrow$ Bounding box of points in $Q$}
             \State{$C\leftarrow$ centroid of points in $Q$} 
             \State{$N\leftarrow$ North Center point of $B$} 
             \State{$W\leftarrow$ West Center point of $B$} 
             \State{$NW\leftarrow$ Northwest Center point of $B$} 
+            \State{$D.M$ $\leftarrow$ createConceptMap($D$)}
             \For{Each $Dir$ in [$N, W, NW$]} \Comment{Reference \textbf{Dir}ection}
                 \For{Each point $P$ in $Q$}
                     \State{$\theta$ $\leftarrow$ $\angle$ $R$$C$$P$ }\Comment{Measured clockwise}
                     \State{$Q^\prime \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
                     \State{$M$ $\leftarrow$ createConceptMap($Q^\prime$)}
-                    \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
-                    \If{recursiveObjectObjectSearch($M$, $L$) == True}
+                    \State{$Q^\prime.L$ $\leftarrow$ orderSearchTerms($M$)}
+                    \If{recursiveObjectObjectSearch($D.M$, $Q^\prime.L$) == True}
                         \State{\textbf{return} True}               
                     \EndIf
                 \EndFor
@@ -191,3 +203,4 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
         \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+
