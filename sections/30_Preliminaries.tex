@@ -1,20 +1,20 @@
-\section{Concept Mapping}
-\label{section:concept}
+\section{Preliminaries}
+\label{section:prelim}
 
-Concept mapping extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
+\emph{COMPASS} extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
 By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
-We implement two forms of concept mapping: object-location concept mapping and object-object concept mapping.
-In both cases, concept mapping involves the encoding phase (offline) and the search phase (online). 
+\emph{COMPASS} supports two forms of spatial relations: object-location relations and object-object relations.
+Both cases involve an offline encoding phase that enables an online search phase. \nrscomment{clean up wording}
 We discuss the details of the encoding phase in this section and leave the search details to section \ref{section:search}.
 
 
 \subsection{Object-Location relations}
-Object-location relations encode whether an object is North, South, East, or West of a location. 
-This type of information supports simple queries, such as when a user knows that a location has a lake on its western side. 
+Object-location relations encode cardinal directionality between objects and locations (i.e. whether an object is North, South, East, or West of a location). 
+This type of information enables simple queries, such as when a user knows that a location has a lake on its western side. 
 Each object-location relationship is defined independently of other objects associated with that location, and multiple constraints can be combined to form a more specific query, such as a lake west of the location and a pond south of the location.
 Figure \ref{figure:ConceptMap-LO} shows how we encode a location (\ref{fig:CM-LO-Example}) as a geospatial index based on relative position to the location coordinates (\ref{fig:CM-LO-Setup}), and then how queries are processed (\ref{fig:CM-LO-Query}).
 
-The query returns the candidate locations ranked by the number of query terms that match the appropriate quadrant with respect to the location.  
+The query returns the candidate locations ranked by the number of query terms that match the appropriate quadrant with respect to the location. \nrscomment{clean up this subsection}
 
 \begin{figure*}[h]
     \centering
@@ -36,7 +36,7 @@ The query returns the candidate locations ranked by the number of query terms th
         \label{fig:CM-LO-Query}
     \hfill
     \end{subfigure}
-    \caption{\textbf{Generate and Query an Object-Location Concept Map.}}\label{figure:ConceptMap-LO} 
+    \caption{\textbf{Generate and Query an Object-Location Structure.}}\label{figure:ConceptMap-LO} 
 \end{figure*}
 
 
@@ -46,11 +46,11 @@ The query returns the candidate locations ranked by the number of query terms th
 The other type of spatial relationships we support searching are object-object relations, which are typically more complex than object-location relations.
 Object-object relations refer to a configuration of objects that relate to one another spatially.
 For example, a tree, a pond, and a sign might form a triangle, with each object having a directional constraint with respect to every other object in the query (i.e., tree northwest of a pond, pond southeast of sign, and sign southwest of tree).
-As the number of objects in the object-object configuration increases, the number of pairwise directional relationships needed to specify the query snowballs.
+As the number of objects in the object-object configuration increases, the number of pairwise directional relationships needed to specify the query snowballs. 
 Object-object relations lend themselves particularly well to pictorial query specification~\cite{Soffer1997}.
 This method of specifying the spatial positioning of objects aligns nicely with how humans think about and describe landmarks in the world- by drawing a map. 
 Figure \ref{figure:ConceptMap} shows how we encode a location (\ref{fig:CM-Example}) as a matrix of relative object positions (\ref{fig:CM-OO-Setup}) and then how queries are processed (\ref{fig:CM-OO-Query}).
-The object-object approach to defining spatial configurations of objects is also more flexible than the object-location approach, which requires the user to know where each object lies in relation to the location and the general cardinal bearings.
+The object-object approach to defining spatial configurations of objects is also more flexible than the object-location approach, which requires the user to know where each object lies in relation to the location and the general cardinal bearings. \nrscomment{clean up this subsection}
 
 %In these circumstances, we can instead search for the relative position of objects to each other and ignore their absolute position within the location.
 
@@ -83,69 +83,13 @@ The object-object approach to defining spatial configurations of objects is also
 \nrscomment{diagram here}
 
 
-\subsection{Encoding the Spatial Relationships of objects and locations}
-
-\textbf{Object-location} concept maps are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates. The division of space aims to emulate how people relate the world to their position in it geospatially. 
-\textbf{Object-object} concept maps encode objects in sparse $NxN$ matrices, where $N$ is the number of objects at a location. 
-Using algorithm \ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east (depicted in Figure \ref{fig:CM-OO-Setup}). 
 
 
-\subsection{Concept Map Creation} \label{appendix:conceptcreation}
-\begin{algorithm}[H]
-    \caption{Creating a Concept Map}\label{alg:geoToGrid}
-    \begin{algorithmic}
-        \State{\textit{\textbf{T} a Location Table with ID, Name, Lat \& Long of its objects}}
-        \State{- - - - -}
-        \Procedure{createConceptMap}{$T$}
-            \State{LonList, LatList $\leftarrow$ []} \Comment{Lists}
-            %\State{LatList = []} \Comment{A list}
-            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
-            %\State{Sort rows from North to South}
-            \For{$R$ in $T$} \Comment{Where $T$ sorted North to South}     
-                \State{Add R.$ID$ to $LatList$} \Comment{$R.ID$ is the obj unique ID}
-            \EndFor
-            %\State{Sort rows from West to East}         
-            \For{$R$ in $T$}  \Comment{Where $T$ sorted West to East}  
-                \State{Add R.$ID$ to $LonList$}
-            \EndFor          
-            \For{$ID$ in $Lonlist$}          
-                \State{get index of $ID$ in $LonList$ as $i$}
-                \State{get index of $ID$ in $LatList$ as $j$}               
-                \State{$M$[$i$][$j$] $\leftarrow$ $ID.Name$} \Comment{Name of object with $ID$}
-            \EndFor        
-            \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as NW corner}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
 
 
-%\subsection{Object-Object Search Term Ordering}
-\begin{algorithm}[H]
-    \caption{Ordering the Search Terms}\label{alg:orderSearchTerms}
-    \begin{algorithmic}
-        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s}}
-        \State{- - - - -}
-        \Procedure{Order Search Terms}{$M$}
-            \If{$M$ has single Item}
-                \State{Return $M$}
-            \EndIf
-            \State{$Traversed$ $\leftarrow$ []}
-            %\State{$R$, $C$ = Number of rows and columns}
-            %\State{$Rd$ = ($R$+$C$)-1}
-            \For{$r$ in range ($R$+$C$)-1} \Comment{$R$, $C$ = Number of rows and columns}
-                \For{$i$ in range $r$+1}
-                    %\State{$j$ = $r$-$i$}
-                    \If{$i$ < $R$ and $r$-$i$ < $C$ and $M$[$i$][$r$-$i$] != 0}
-                        %\If{$M$[$i$][$j$] != 0}
-                            \State{Add $M$[$i$][$r$-$i$] to $Traversed$}
-                        %\EndIf
-                    \EndIf 
-                \EndFor
-            \EndFor
-            \State{\textbf{return} $Traversed$}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
+
+
+
 
 %To encode a location, we begin by setting the centroid of the location provided by OSM during Data Acquisition to be the root of a quartering of the search space into NorthWest, NorthEast, SouthWest and SouthEast quadrants. 
 %Each object's coordinates are compared to the location centroid and it is assigned to the appropriate quadrant. 

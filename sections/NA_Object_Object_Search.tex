@@ -21,74 +21,18 @@ Searching the object-location concept maps involves a simple iteration through t
 %Using that query input, the searcher iterates through each location and inspects its NW/NE/SW/SE subdivisions of space, comparing them to the query. 
 %Where the same object occurs in the same quadrant in the query and a candidate location, one point is added to the location's score. 
 %When all locations have been checked, the candidate locations (i.e. locations with $> 1$ match) are returned, ranked from most to fewest matches. 
-Searching the object-object concept maps involves using the recursive grid search (Algorithm \ref{alg:gridSearch}) to identify which locations have objects matching the configuration specified in the pictorial query, and returning the relevant set of results. 
-The pictorial query is first converted into a concept map matrix using the process outlined in Appendix \ref{appendix:conceptcreation} and the search terms in the matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on until all search terms are in the queue.
-Then, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration.
-This process is depicted visually in Figure \ref{figure:ConceptMap}.
+
+
+
+
 %NSCH add back in if room allows:
 %The broad idea is that while finding all possible instances and configurations of a geospatial pattern rapidly approaches NP-Completeness, we can determine if there is any possible match quite easily by using the query term to prune sections of the concept map that are irrelevant. 
 %For example, any objects in the location that are north of the most northerly query term that exists in the object cannot possibly satisfy the query, and so we prune those rows. 
 %The same occurs for the western direction, and then recursively north and west until the query is eithers satisfied or rejected. The search occurs for each candidate location and requires less than a single matrix traversal to determine if anywhere in that location the query pattern occurs. 
 
 
-\subsection{Complexity Analysis}
-\nrscomment{@Nicole add here}
 
 
-\begin{algorithm}
-    \caption{Recursive Grid Search}\label{alg:gridSearch}
-    \begin{algorithmic}
-        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s; [0,0] is NW most point}}
-        \State{\textit{\textbf{L} A NW to SE ordered list of objects to search for}}
-        \State{\textit{\textbf{D} The alternating direction we prune from, 'north' (default) or 'west'}}
-        \State{- - - - -}
-        \Procedure{recursiveGridSearch}{$M$,$L$,$D$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \If{$L$ has only 1 item}\Comment{Base Case}
-                \If{pop($L$) in $M$}
-                    \State{\textbf{return} $True$}              
-                \Else
-                    \State{\textbf{return} $False$}
-                \EndIf            
-            \EndIf
-            \State{$PruningPoint\leftarrow$ pop($L$)}                
-            \If{$PruningPoint$ not in $M$}
-                \State{\textbf{return} $False$}               
-            \EndIf
-            \State{$M^\prime \leftarrow$ Prune all objects $D$ of $PruningPoint$}
-            \State{\textbf{return recursiveGridSearch}($M^\prime$,$L$,$D.\textbf{changeDirection}()$)}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
-
-
-
-
-\begin{algorithm}
-    \caption{Cardinality-Invariant Object-Object Search}\label{alg:cardInvSearch}
-    \begin{algorithmic}
-        \State{\textit{\textbf{Q} A pictorial query consisting of (x,y) coordinates}}
-        \State{- - - - -}
-        \Procedure{objectObjectSearch}{$Q$,$B$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$B \leftarrow$ Bounding box of points in $Q$}
-            \State{$C\leftarrow$ centroid of points in $Q$} 
-            \State{$N\leftarrow$ North Center point of $B$} 
-            \State{$W\leftarrow$ West Center point of $B$} 
-            \State{$NW\leftarrow$ Northwest Center point of $B$} 
-            \For{Each $R$ in [$N, W, NW$]} \Comment{\textbf{R}eference direction}
-                \For{Each point $P$ in $Q$}
-                    \State{$\theta$ $\leftarrow$ $\angle$ $R$$C$$P$ }\Comment{Measured clockwise}
-                    \State{$Q' \leftarrow$ Rotate($Q$, $\theta$)}\Comment{Rotate counterclockwise}
-                    \State{$M$ $\leftarrow$ createConceptMap($Q'$)}
-                    \State{$L$ $\leftarrow$ orderSearchTerms($M$)}
-                    \If{recursiveGridSearch($M$,$L$) == True}
-                        \State{\textbf{return} True}               
-                    \EndIf
-                \EndFor
-            \EndFor
-            \State{\textbf{return} False}
-        \EndProcedure
-    \end{algorithmic}
-\end{algorithm}
 
 %\begin{algorithm}
 %    \caption{Recursive Grid Search}\label{alg:gridSearch}
