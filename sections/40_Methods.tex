@@ -23,7 +23,7 @@
             \EndFor
             \State{\textbf{return} $matches$} \Comment Used to rank against other candidate locs
         \EndProcedure
-        \State{}
+        \State{--------------------------------------------------------------------------------------------------------}
         \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
         \State{\textit{\textbf{D.Loc} Location to which Objects in D are assigned}}
         \State{- - - - -}
@@ -65,11 +65,7 @@ Searching the object-location structure involves a simple iteration through the 
 
 
 
-\begin{figure}[h]
-    \centering
-        \includesvg[width=0.5\textwidth]{figures/compass_traversal.svg}
-    \caption{\textbf{Result of function orderSearchTerms on a sample query concept map.}}\label{figure:compass_traversal-LO} 
-\end{figure}
+
 
 \begin{algorithm}[h]
     \caption{Concept Mapping}\label{alg:geoToGrid}
@@ -93,29 +89,32 @@ Searching the object-location structure involves a simple iteration through the 
                 \State{$j \leftarrow$ index of $Obj$ in $yList$}               
                 \State{$M$[$i$][$j$] $\leftarrow$ $Obj.Name$} %\Comment{Name of object with $ID$}
             \EndFor        
-            \State{\textbf{return} $M$} \Comment{Having $[0,0]$ as top left corner}
+            \State{\textbf{return} $xList$, $yList$}
         \EndProcedure
 
-        \State{}
-        \State{\textit{\textbf{M} A ConceptMap Matrix with objects or 0s}}
+        \State{--------------------------------------------------------------------------------------------------------}
+        \State{\textit{\textbf{xList} A list of terms sorted by x-coordinate}}\Comment{Same number of terms as $yList$}
+        \State{\textit{\textbf{yList} A list of terms sorted by y-coordinate}}\Comment{Same number of terms as $xList$}
         \State{- - - - -}
-        \Procedure{Order Search Terms}{$M$}
-            \If{$M$ has single Item}
-                \State{Return [$M$]}
-            \EndIf
+        \Procedure{Order Search Terms}{$xList$, $yList$}
             \State{$Traversed$ $\leftarrow$ []}
-            \State{$R$, $C$ = Number of rows and columns in $M$}
-            %\State{$Rd$ = ($R$+$C$)-1}
-            \For{$i$ in range ($R$ + $C$) - 1} %\Comment{$R$, $C$ = Number of rows and columns}
-                \For{$r$ in range $i$ + 1}
-                    \State{$c$ = $i$ - $r$}
-                    \If{$r$ < $R$ and $c$ < $C$ and $M$[$r$][$c$] != 0}
-                        %\If{$M$[$i$][$j$] != 0}
-                            \State{Add $M$[$r$][$c$] to $Traversed$}
-                        %\EndIf
-                    \EndIf 
-                \EndFor
-            \EndFor
+            \State{$dir$ = 'x'}
+            \While{len($Traversed$) < len($xList$)} 
+                \If{$xList$ not empty and $dir$ == 'x'}
+                    \State{$term$ = pop($xList$)}
+                    \If{$term$ not in $Traversed$}
+                        \State{Append $term$ to $Traversed$}
+                        \State{$dir$ = 'y'}
+                    \EndIf
+                \EndIf
+                \If{$yList$ not empty and $dir$ == 'y'}
+                    \State{$term$ = pop($yList$)}
+                    \If{$term$ not in $Traversed$}
+                        \State{Append $term$ to $Traversed$}
+                        \State{$dir$ = 'x'}
+                    \EndIf
+                \EndIf
+            \EndWhile
             \State{\textbf{return} $Traversed$}
         \EndProcedure
     \end{algorithmic}
@@ -146,7 +145,7 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
             \State{\textbf{return recursiveConceptMapSearch}($D.M$,$Q.L$)}
         \EndProcedure
         
-        \State{}    
+        \State{--------------------------------------------------------------------------------------------------------} 
         \State{\textit{\textbf{D.M} A ConceptMap Matrix with objects or 0s; [0,0] is NW most point}}
         \State{\textit{\textbf{Q.L} A NW to SE ordered list of query objects}}
         \State{\textit{\textbf{Dir} The alternating cardinal direction to prune from, 'N' (default) or 'W'}}
@@ -178,8 +177,12 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
     \end{algorithmic}
 \end{algorithm}
 
-
-
+\nrscomment{describe figure }
+\begin{figure}[h]
+    \centering
+        \includesvg[width=0.5\textwidth]{figures/rot-inv-diagram.svg}
+    \caption{\textbf{\nrscomment{............describe that these are examples of 2 of the max 3Q (Q=3) rotations needed to ensure cardinality invariance}}}\label{figure:rot-inv} 
+\end{figure}
 
 \begin{algorithm}[h]
     \caption{Cardinality-Invariant Object-Object Search}\label{alg:cardInvSearch}
