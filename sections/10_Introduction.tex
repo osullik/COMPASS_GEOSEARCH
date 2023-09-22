@@ -1,42 +1,46 @@
 \section{Introduction}
 \label{section:introduction}
 %\subsection{Background}
-\par{Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. 
-Consider a user trying to find a winery that they recall visiting on a tour recently.
-Wineries tend to be densely clustered in wine regions, and so unless the user knows the exact name of the winery, it can be difficult to find it with a keyword search because all the results will be geographically proximal.
-Users may remember some incomplete information about the winery they are trying to locate. 
-They might remember some of the \textit{objects} that are present at the winery (\textit{location}) they are looking for; a picnic table, a duck pond and a statue might come to mind.}
+\par{Many forms of spatial search require very precise query input, like the coordinates or exact name of a location of interest, to return an accurate result. 
+This formulation of the spatial search problem is cumbersome to users, as it requires queries to be issued in a format not inherently consistent with the way humans reason spatially.
+From a cognitive perspective, humans are more readily able to recall relative spatial layouts in their environment than they are able to estimate distances between objects or exact coordinates or addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
+As such, current methods in range querying and incremental nearest neighbor search that require a user specify distance thresholds to search for sets of objects are not ideal \osullikomment{cite hanan / dave mount here? }.
+If the estimate is too large (small), the search will return too many (few) results. 
+Further, these methods also suffer in cases where there is a high overlap in terms, giving little discriminative power to searching for their presence alone (e.g. picnic tables, benches, and bus stops are common features of many locations). 
+}
 %
-\par{Current methods in range querying and incremental nearest neighbour search allow a user to search for sets of objects within a given distance threshold. \osullikomment{cite hanan / dave mount here? }
-There are two major limitations of these approaches in geospatial serch for location matching. 
-First, these methods allow for checking set membership but not for matching the spatial arrangement of objects between the query and locations database. 
-In cases where there is a large overlap in terms (picnic tables, duck ponds and statues are common features at most wineries for example), there is little discriminitive power in checking for their presence alone. 
-The second issue with the conventional approaches is that they rely on the user having a good understanding of distance that contains all those objects. 
-If they estimate too large, it will pull in objects from multiple locations and yield poor matching results. 
-If they estimate too small, they will not pull in enough objects around a location and also yield poor matching results. }
+\par{Instead of forcing the human user to think like a map, a more natural approach is to have the 'map' organize itself to reflect how humans think. 
+Some work has been done enabling users to specify spatial search queries in a pictorial format, mimicking how a human might draw a rough sketch map of a location from memory.
+Although this approach is much preferable from a user perspective~\cite{SOMETHING}, there are significant computational challenges of pictorial querying. \nrscomment{Explain the challenges here.}
+}
+
+\par{We present \emph{COMPASS}, the \textit{Cardinal Orientation Manipulation and Pattern-Aware Spatial Search}, a collection of data structures and algorithms designed to address these issues, enabling a tractable form of spatial search that aligns with how humans think about space. 
+\nrscomment{say something concise about the novelty and efficiency.}
+\osullikomment{Might need a bit more on the 'how we solve it' here.}
+}
+
+%organizing geospatial data around the locations people can experience, cataloging the objects at those locations that they anchor their memories on, and abstracting away the need for the user to remember distances to objects, or their absolute cardinal positions we create an approach that focuses on the need of the human, not the convenient structure of the map.
+
+%is a worthwhile endeavor for many Geographic Information System (GIS) applications.
+
 %
-\par{The requirement to estimate distance is problematic in querying for locations, because the average person is terrible at estimating distances between things~\cite{Schwering2014}. 
-Even if humans weren't bad at judging distance, the heterogenous nature of locations means that it is difficult to estimate a range or nearest neighbour query size that would work for the full range of locations in a given region. 
-For example, in many wine regions there will be a few big-name wineries and function centres that cover multiple acres, coexisting with small cellar doors operating out of someone's front garden, and the full spectrum between. 
-Our proposed solution is to take a human-centric approach to geospatial search.
-Instead of forcing the human to think like a map, we seek to have the 'map' organize itself to reflect how humans think. 
-While we are bad at judging distance, we are typically very good at remembering the relative configuration of objects in the space around us~\cite{Schwering2014}.
-We also subconciously anchor on particularly salient sensory inputs that become representative of that location for us~\cite{Weisberg2016, Miller2013, Keatley2021}, and it is those anchor points that we most strongly recall into the future.}
-% 
-\par{Think about times someone has described a location they've visited to you.
-Does \textit{"it is 1.73 miles from the centre of the winery to the furthest edge of the property. 500 yards to the southwest of the cellar door is a duck pond. 300 yards north of that pond is a statue which is 400 yards west-south-west of the cellar door"} sound realistic?
-What about \textit{"I remember standing on the balcony of the cellar door and away in the distance to my left was a beautiful duck pond, and off to the right of that was this very odd statue of a goat in a top hat."}?
-Rather than focusing on how a map sees the world, we focus on how humans see the world.}
+%\par{The requirement to estimate distance is problematic in querying for locations, because the average person is terrible at estimating distances between things~\cite{Schwering2014}. 
+
+%Consider a user trying to find a winery that they recall visiting on a tour recently.
+%Wineries tend to be densely clustered in wine regions, and so unless the user knows the exact name of the winery, it can be difficult to find it with a keyword search because all the results will be geographically proximal.
+%Users may remember some incomplete information about the winery they are trying to locate. 
+%They might remember some of the \textit{objects} that are present at the winery (\textit{location}) they are looking for; a picnic table, a duck pond and a statue might come to mind.
+
+%Even if humans weren't bad at judging distance, the heterogeneous nature of locations means that it is difficult to estimate a range or nearest neighbor query size that would work for the full range of locations in a given region. 
+%For example, in many wine regions there will be a few big-name wineries and function centers that cover multiple acres, coexisting with small cellar doors operating out of someone's front garden, and the full spectrum between. 
+%Our proposed solution is to take a human-centric approach to geospatial search.
+
+%Instead of forcing the human to think like a map, we seek to have the 'map' organize itself to reflect how humans think. 
+%While we are bad at judging distance, we are typically very good at remembering the relative configuration of objects in the space around us~\cite{Schwering2014}.
+%We also subconsciously anchor on particularly salient sensory inputs that become representative of that location for us~\cite{Weisberg2016, Miller2013, Keatley2021}, and it is those anchor points that we most strongly recall into the future.}
 %
-\par{By organising geospatial data around the locations people can experience, cataloging the objects at those locations that they anchor their memories on, and abstracting away the need for the user to remember distances to objects, or their absolute caridinal positions we create an approach that focuses on the need of the human, not the convenient structure of the map. 
-We offer \textbf{COMPASS}, the \textit{Cardinal Orientation Manipulation and Pattern-Aware Spatial Search}, a collection of data structures and algorithms designed to make GIS accessible to users on their own terms.}
 
-\osullikomment{Added in the above to cover motivation, background, challenges and an introduction to how we solve it. Might need a bit more on the 'how we solve it' here as a teaser though. }
-%\nrscomment{Psych background motivating pictorial querying}
 
-%\nrscomment{Challenge of pictorial querying}
-
-%\nrscomment{How we solve challenge, what algos we provide}
 
 %Taking inspiration from the way humans recall spatial information~\cite{Helbing2020, Oliveira2016, Weisberg2016}, \nrscomment{update citations} we present \emph{COMPASS}, an approach for spatial pattern match querying that... \nrscomment{summarize high level contribution}. 
 Specifically, we provide the following contributions:
@@ -49,6 +53,15 @@ Specifically, we provide the following contributions:
 The rest of this paper is organized as follows. \nrscomment{update at the end} In section \ref{section:architecture}, we define the \emph{GESTALT} architecture and discuss how each subsystem contributes to our human-centric approach to automating the last-mile search. 
 Next, in section \ref{section:data}, we describe the process used to generate the gold standard wineries dataset and extract noisy object tags from geotagged images. Then, we describe the object ownership assignment process in section \ref{section:ownership}, the concept mapping step in section \ref{section:concept}, and the search problem in \ref{section:search}. 
 Finally, we summarize related work in section \ref{section:related} and conclude by identifying future research directions in section \ref{section:conclusion}.
+
+
+% 
+%\par{Think about times someone has described a location they've visited to you.
+%Does \textit{"it is 1.73 miles from the center of the winery to the furthest edge of the property. 500 yards to the southwest of the cellar door is a duck pond. 300 yards north of that pond is a statue which is 400 yards west-south-west of the cellar door"} sound realistic?
+%What about \textit{"I remember standing on the balcony of the cellar door and away in the distance to my left was a beautiful duck pond, and off to the right of that was this very odd statue of a goat in a top hat."}?
+%Rather than focusing on how a map sees the world, we focus on how humans see the world.}
+%
+
 
 %Traditionally, analysts will get to a \textit{near-enough} start point and then begin the excruciating manual review of remote sensing imagery, photography and other reports to try to match the objects they know about to the location they are searching for in the geospatial configuration they are expecting.
 
