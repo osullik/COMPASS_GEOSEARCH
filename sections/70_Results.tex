@@ -12,15 +12,24 @@ Our \textbf{objectObjectSearch} implementation traverses a matrix of size $\# Ob
 Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + O^2)$ for $Q$ query points and $O$ objects per location. 
 This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. %Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.
 
-Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} $3Q$ times, resulting in a time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
+Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of 3 reference points is necessary), resulting in a time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
 
 
 \subsection{Experimental Results}
 \nrscomment{add here}
-We demonstrate the performance of ........... by comparing execution times of ......... describe data generation process at a high level
+We demonstrate the performance of ........... by comparing execution times of ......... 
 
-\subsubsection{Discussion.} 
-The significance is ...................
+\subsubsection{Precision and Recall Performance.} 
+\nrscomment{Table \ref{Table:PerformanceResults} shows....}
+
+\subsubsection{Query Time.}
+The query response time for Location-Object search and Object-Object search almost negligibly with increased query terms (Figure \ref{figure:query-time}).
+Cardinality Invariant Object-Object search grows logarithmically with number of query terms, which is significantly better than the theoretical complexity, which indicates the search time should scale with $\mathcal{O}(Q^2)$ in the worst case query configuration.
+The empirical results show significantly better scalability than the theoretical worst-case because the number of rotations needed to ensure invariance with respect to cardinal directionality is less than $Q$ in practice. 
+The worst case is when query points are arranged in a circle, and every point must be aligned to the \textbf{N}, \textbf{W}, and \textbf{NW} reference points, resulting in $3Q$ runs of the regular Object-Object search.
+In practice, a pictorial query will typically contain points that are well-dispersed over the query canvas.
+In those cases, aligning many of the points in the "middle" of the query space to a given reference point will result in the same Concept Map representation as aligning an outer point to it, and so that Concept Map only needs to be checked against the database once.
+
 
 \subsubsection{Hardware specifications.} 
 All experimental results were obtained using .................
@@ -28,49 +37,23 @@ All experimental results were obtained using .................
 \small{
 \begin{table}[h]
     \begin{center}
-        \begin{tabular}{ |c|c|c|c|c| } 
+        \begin{tabular}{ |c|c|c| } 
             \hline
-            Method & $\#$ Query terms & $\#$ Constraints & Median $\#$ Objs per Loc & Recall\\
+            Search Method & Precision & Recall\\
             \hline
-            \multirow{5}{7em}{Obj-Obj} 
-            & ... & ... & ... & $0...$ \\ 
-            & ... & ... & ... & $0...$ \\ 
-            & ... & ... & ... & $0...$ \\
-            & ... & ... & ... & $0...$ \\ 
+            Location-Centric & $0.160$ & $0.109$ \\ 
+            Object-Object & $0.160$ & $0.109$ \\  
+            \textbf{Cardinality Invariant Object Object} & \textbf{0.913} & \textbf{1.000} \\ 
             \hline     
-            \multirow{5}{7em}{Direction Invariant Obj-Obj} 
-            & ... & ... & ... & $1.0$ \\ 
-            & ...  & ... & ... & $1.0$ \\
-            & ...  & ... & ... & $1.0$  \\
-            & ...  & ... & ... & $1.0$  \\
-            & ...  & ... & ... & $1.0$  \\
-            \hline
         \end{tabular}
         \caption{.....} 
-        \label{Table:RecallResultsObjObj}
+        \label{Table:PerformanceResults}
     \end{center}
 \end{table}
 }
 
-
-\small{
-\begin{table}[h]
-    \begin{center}
-        \begin{tabular}{ |c|c|c|c|c| } 
-            \hline
-            Method & $\#$ Query terms & $\#$ Constraints & Median $\#$ Objs per Loc & Recall\\
-            \hline
-            \multirow{5}{7em}{Loc-Obj} 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\  
-            \hline     
-        \end{tabular}
-        \caption{.....} 
-        \label{Table:RecallResultsLocObj}
-    \end{center}
-\end{table}
-}
-
-\nrscomment{plots for time measurements}
+\begin{figure}[h]
+    \centering
+        \includesvg[width=0.5\textwidth]{figures/compassQuerySizeTime.svg}
+    \caption{\textbf{Empirical Scalability of \emph{COMPASS}'s 3 search methods as number of query terms (constraints) increases. Cardinality Invariant Object-Object search is the only method to show increased response times as query terms grows.}}\label{figure:query-time} 
+\end{figure}

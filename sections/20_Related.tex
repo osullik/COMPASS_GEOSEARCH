@@ -30,9 +30,7 @@ Most of the methods formulate the search problem as qualitative spatial reasonin
 DiLoreto et. al. developed a pictorial querying system using a combination of set, topological, and metric dimensions to query their database~\cite{DiLoreto1996}.
 Soffer et. al's Pictorial Query Language began as set-based matching~\cite{Soffer1997, Soffer1998a}, allowing users to configure thresholds for match confidence, quantity, and topological similarity.
 To enable support of multiple instances of object classes in locations, Soffer et. al reframed the problem to use tree-based queries~\cite{Soffer1999}.
-They then formulated it as isomorphic subgraph matching to strengthen topological matching, at the cost of $\mathcal{O}(m2^m)$ complexity, where \textit{m} is the number of vertices in the database. 
-
-\nrscomment{at the contextual similarity levels reflecting an "AND" query, as the \emph{COMPASS} queries do~\cite{Folkers2000}. ... ???}
+They then formulated it as isomorphic subgraph matching to strengthen topological matching~\cite{Folkers2000}, at the cost of $\mathcal{O}(m\times 2^m)$ complexity for the computationally simpler "AND" queries, where \textit{m} is the number of vertices in the database. 
 
 Work in \textit{query-by-sketch} is a related area of spatial search that typically seeks to match a map area in database by a user sketch-map that encoded as a query. 
 Despite capturing the way humans naturally conceptualize their environment, these systems are better suited to retrieve areas larger than individual locations.
