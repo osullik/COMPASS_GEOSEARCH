@@ -1,14 +1,14 @@
 \section{Analysis and Results}
 \label{section:results}
 
-\nrscomment{signpost}
+Our theoretical analysis and experimental results both show that Cardinality Invariant Search performs very well and in practice scales better than expected.
 
 \subsection{Algorithm Analysis}
 
 Our \textbf{locationObjectSearch} implementation searches each quadrant of the candidate location for matching objects that were specified in the query, resulting in a time complexity of $\mathcal{O}(Q + O)$ for $Q$ query points and $O$ objects per location. 
 Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O)$ time complexity in most scenarios.
 
-Our \textbf{objectObjectSearch} implementation traverses a matrix of size $\# Objs \times \# Objs$ from North and West, slicing the matrix smaller and smaller as it traverses. 
+Our \textbf{objectObjectSearch} implementation traverses a matrix of size $O \times O$ from North and West, slicing the matrix smaller and smaller as it traverses. 
 Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + O^2)$ for $Q$ query points and $O$ objects per location. 
 This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. %Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.
 
@@ -16,11 +16,15 @@ Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \tex
 
 
 \subsection{Experimental Results}
-\nrscomment{add here}
-We demonstrate the performance of ........... by comparing execution times of ......... 
+We demonstrate the performance of the 3 search methods empirically by comparing the precision and recall and the execution times of each in terms of the number of query constraints. 
 
 \subsubsection{Precision and Recall Performance.} 
-\nrscomment{Table \ref{Table:PerformanceResults} shows....}
+Table \ref{Table:PerformanceResults} shows the precision and recall of all 3 spatial search methods on the data we generated.
+Location-Object search and Object-Object search both rely on the cardinal direction of the query matching the cardinal direction of the actual configuration of the objects under search.
+This is not often the case, which is reflected in the lower precision and recall.
+Cardinality Invariant Object-Object search is completely independent of cardinal direction, and therefore achieves perfect recall, finding all the locations matching the query configuration, regardless of cardinal direction.
+The precision of Cardinality Invariant search is high but not perfect due to collisions during the data generation process, where query terms inserted in the database may by chance match the spatial configuration of the query.
+The rarity of collisions (less than 10\%), measured across a variety of query sizes, indicates the discriminative power of searching for locations via spatial configurations of associated objects.
 
 \subsubsection{Query Time.}
 The query response time for Location-Object search and Object-Object search almost negligibly with increased query terms (Figure \ref{figure:query-time}).
@@ -33,6 +37,7 @@ In those cases, aligning many of the points in the "middle" of the query space t
 
 \subsubsection{Hardware specifications.} 
 All experimental results were obtained using .................
+\nrscomment{@kent}
 
 \small{
 \begin{table}[h]
@@ -46,7 +51,7 @@ All experimental results were obtained using .................
             \textbf{Cardinality Invariant Object Object} & \textbf{0.913} & \textbf{1.000} \\ 
             \hline     
         \end{tabular}
-        \caption{.....} 
+        \caption{Performance Metrics Across \emph{COMPASS}'s 3 Types of Spatial Search. Cardinality Invariant Object-Object search outperforms the other 2 methods, which fail when the query configuration is not provided in the same cardinal alignment that the objects exist in.} 
         \label{Table:PerformanceResults}
     \end{center}
 \end{table}
