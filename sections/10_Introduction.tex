@@ -18,11 +18,13 @@ as a qualitative spatial reasoning constraint satisfaction problem
 }
 
 \par{We present \emph{COMPASS}, the \textit{Cardinal Orientation Manipulation and Pattern-Aware Spatial Search}, a collection of data structures and algorithms designed to address the scalability issues of pictorial querying by reframing the search problem, thus enabling a tractable, human-centric form of spatial search. 
+\emph{COMPASS} extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
+By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
 Specifically, we provide the following contributions:
 /osullikomment{compress this list, check jordan's work}
 \begin{enumerate}
     \item A reframing of the pictorial querying problem to include early stopping at the first set of objects that indicate a location matched the spatial configuration of objects queried
-    \item A method for mapping objects associated with each location to a matrix (termed a \textit{Concept Map}) to facilitate pictorially querying spatial relations like "A bus stop, pond, and telephone pole configured in a triangle"
+    \item A method for mapping objects associated with each location to one of two proposed spatial data structures that facilitate pictorially querying spatial relations like "A bus stop, pond, and telephone pole configured in a triangle"
     \item A series of algorithms to perform three forms of spatial search based on pictorial query input
     \item A substantial data generation framework that produces a location and object database and pictorial queries against it, to enable comparisons of spatial search methods
 \end{enumerate}
