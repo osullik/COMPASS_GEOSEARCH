@@ -1,20 +1,23 @@
 \section{Conclusion}
 \label{section:conclusion}
 
-We present COMPASS, a collection of data structures and algorithms that frame geospatial search as a human-centric, rather than map-centric activity. 
+We present COMPASS, a collection of data structures and algorithms that frame geospatial search as a human-centric rather than a map-centric activity. 
 %
-The salient limitation to COMPASS is that it only handles point data for representing locations and querying.
-The lack of support for lines and polygons means that users need to estimate where the center of something large is to place other objects relative to it, and that it can not support containment queries where a small object might be within a larger one. 
-Extending COMPASS to represent polygons and lines in the concept map abstraction is the most pressing aspect for future work, as it is likely to have an immediate impact on the human experience.
-A formal user study will evaluate our design choices and will identify the 'pain points' that can more effectively move geospatial search from a map-centric to human-centric activity.
+The salient limitation of COMPASS is that it only handles point data for representing locations and querying.
+The lack of support for lines and polygons means that users need to estimate where the center of something large is to place other objects relative to it and that it can not support containment queries where a small object might be within a larger one. 
+Extending COMPASS to represent polygons and lines in the concept map abstraction is the most pressing aspect for future work, as it will likely immediately impact the human experience.
+A formal user study will evaluate our design choices.
+It will identify the 'pain points' that can more effectively move geospatial search from a map-centric to a human-centric activity.
 %
 Our work on COMPASS was driven by a desire to re-examine the struggle to balance accessibility and precision in geospatial search. 
-Common causes of struggle in the past comes from the theoretical complexity of their approaches, the requirement for domain expertise to conduct queries using advanced reasoning tools, and a map-centric worldview. 
-COMPASS takes an approach that mimics how humans percieve and remember the world around them. 
-We hierarchically decompose the world into regions, locations and objects, and facilitate users finding locations within a given region using pictorial queries of objects. 
-Abstracting away distance and global position to create \textit{concept maps} enable us to apply searching approaches that aggressively prune the search space with set operations, and recursive grid searching. 
+Common causes of struggle in the past come from the theoretical complexity of their approaches, the requirement for domain expertise to conduct queries using advanced reasoning tools, and a map-centric worldview. 
+COMPASS takes an approach that mimics how humans perceive and remember the world around them. 
+We hierarchically decompose the world into regions, locations, and objects and facilitate users finding locations within a given region using pictorial queries of objects. 
+Abstracting away distance and global position to create \textit{concept maps} enables us to apply searching approaches that aggressively prune the search space with set operations and recursive grid searching. 
 We show theoretically and empirically that these approaches are viable for real-world use and that the real-world complexity is, on average, much better than the theoretical worst case because of our abstraction and pruning.
-Our Cardinality-Invariant search achieves perfect recall on spatial datasets with power-law distributions of objects and object classes for what is only a modest computational cost, on queries of realistic sizes.
+Our Cardinality-Invariant search achieves perfect recall on spatial datasets with power-law distributions of objects and object classes for a modest computational cost on queries of realistic sizes.
+
+ 
 
  
 
