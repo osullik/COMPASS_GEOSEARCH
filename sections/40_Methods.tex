@@ -3,7 +3,7 @@
 
 In this section we outline the methods used to accomplish \emph{COMPASS}'s 3 forms of spatial search, and describe the process used to generate data for our experimental setup to test those search methods.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h!]
     \caption{Location-Object Search}\label{alg:locSearch}
     \begin{algorithmic}
         \State{\textit{\textbf{Q} A query of Objects with names and coordinates}}
@@ -120,7 +120,7 @@ There is also the ability to return partial matches, ranked by how close they ar
 It assumes that the user knows the cardinal bearings of their object configuration, but not where those objects are with respect to the location they belong to.
 Queries are specified pictorially.
 Both the locations and the queries are encoded as objects in $NxN$ matrices, where $N$ is the number of objects associated with a location or query. 
-Using algorithm~\ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
+Using Algorithm~\ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
 The matrix, which we refer to as a \textit{concept map} abstracts away the complexity of tracking distance and the position of each object to all other objects, while preserving the relative spatial positions of objects. 
 The intuition of the search is derived from two very simple ideas. First, at any point in time, any point in the location more north than the northern most point or west than the western most point of the query can't be part of a match.
 Second, the first idea is recursive.
@@ -174,7 +174,6 @@ Finally, the grid search is employed to recursively prune the search space and q
     \end{algorithmic}
 \end{algorithm}
 
-\nrscomment{describe figure }
 \begin{figure}[h]
     \centering
         \includesvg[width=0.5\textwidth]{figures/rot-inv-diagram.svg}
@@ -211,7 +210,7 @@ Finally, the grid search is employed to recursively prune the search space and q
 \end{algorithm}
 
 \subsection{Cardinality-Invariant Object-Object Search Method}
-\textbf{Cardinality Invariance} extends object-object search (algorithm~\ref{alg:gridSearch}) by removing the assumption that the user knows the cardinal bearings of the object pattern they wish to search for. 
+\textbf{Cardinality Invariance} extends object-object search (Algorithm~\ref{alg:gridSearch}) by removing the assumption that the user knows the cardinal bearings of the object pattern they wish to search for. 
 We address the lack of certainty of cardinal direction by rotating the query pattern the minimal number of times needed to cover the distinct configurations with respect to the actual cardinal bearings. 
 Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in Figure~\ref{figure:rot-inv}.
 To do this, we generate the minimum bounding rectangle for the query points, and label three reference points: 'North', 'West', and 'Northwest' on the bounding rectangle relative to the centroid. 
