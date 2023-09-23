@@ -57,14 +57,13 @@
 
 
 \subsection{Object-Location Search}
-\textbf{Object-location} relations are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates. The division of space aims to emulate how people relate the world to their position in it geospatially. 
-\nrscomment{describe more here}
-Searching the object-location structure involves a simple iteration through the candidate locations, searching each one's NW/NE/SW/SE quadrants for the relevant query objects, and ranking the locations based on how many objects were found in the correct quadrant.
-
-
-
-
-
+\textbf{Object-location} relations are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates.
+It assumes that the user sees the 'center' of the location as their reference point, and assumes that they know where North is when querying. 
+To conduct a query, a user inserts query terms around the 'center' of a location on the query canvas. 
+Algorithm~\ref{alg:locSearch} describes searching the object-location structure with a simple iteration through the candidate locations, searching each one's NW/NE/SW/SE quadrants for the relevant query objects.
+A true positive match occurs when the number of discovered objects in a location matches the number of query objects.
+For example, if the user queries for two objects in the southwest and one in the northeast, true positive matches will be all locations that feature those three objects in that configuration. 
+There is also the ability to return partial matches, ranked by how close they are to an exact match.
 
 
 \begin{algorithm}[h]
@@ -121,16 +120,17 @@ Searching the object-location structure involves a simple iteration through the 
 \end{algorithm}
 
 \subsection{Object-Object Search}
-\textbf{Object-object} relations encode objects in sparse $NxN$ matrices, where $N$ is the number of objects at a location. 
-Using algorithm \ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east (depicted in Figure \ref{fig:CM-OO-Setup}). \nrscomment{clean up this subsection/ describe more}
-
-Searching the object-object concept maps involves using the recursive grid search (Algorithm \ref{alg:gridSearch}) to identify which locations have objects matching the configuration specified in the pictorial query, and returning the relevant set of results. 
-The pictorial query is first converted into a concept map matrix using the process outlined in \nrscomment{...} and the search terms in the matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on until all search terms are in the queue.
-Then, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration.
-This process is depicted visually in Figure \ref{figure:ConceptMap}.
-
-
-
+\textbf{Object-object} search allows a user to search locations for spatial configurations of objects. 
+It assumes that the user knows where north is, and queries are entered pictorially through a query canvas. 
+Both the locations and the queries are encoded as objects in sparse $NxN$ matrices, where $N$ is the number of objects at a location (or terms in a query). 
+Using algorithm~\ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
+The matrix, which we refer to as a \textit{concept map} abstracts away the complexity of tracking distance and the position of each object to all other objects, while preserving the highly discriminative, and reliable relative spatial positions of objects. 
+The intuition of the search is derived from two very simple ideas. First, at any point in time, any point in the location more north than the northern most point or west than the western most point of the query can't be part of a match.
+Second, the first idea is recursive.
+Searching uses the recursive grid search (Algorithm~\ref{alg:gridSearch}) to identify which locations have objects matching the configuration specified in the pictorial query, and returning the relevant set of results. 
+The pictorial query is first converted into a concept map matrix using the same process as a location, outlined in figure~\ref{figure:ConceptMap}.
+Next, the search terms in the query matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on until all search terms are in the queue.
+Finally, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration.
 
 \begin{algorithm}[h!]
     \caption{Object-Object Search}\label{alg:gridSearch}
@@ -213,3 +213,23 @@ This process is depicted visually in Figure \ref{figure:ConceptMap}.
     \end{algorithmic}
 \end{algorithm}
 
+\subsection{Cardinality-Invariant Object-Object Search}
+\textbf{Cardinality Invariance} extends object-object search (algorithm~\ref{alg:gridSearch}) by removing the assumption that the user knows where north is. 
+We address the lack of known global direction by rotating the query terms a minimal number of times to cover the distinct configurations. 
+Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in figure~\ref{figure:rot-inv}.
+To do this, we generate the minimum bounding rectangle for the query points, and place three additional query points: 'west', 'north' and 'northwest' on the bounding rectangle relative to the centroid. 
+We use each of these reference points as part of a triangle with verticies of the reference point, the centroid and the point to be rotated. 
+We use the cosine rule to calculate the minimal angle of rotation to have any point cross any of the 'lines' connecting the centroid to the reference points while rotating clockwise. 
+When one of those lines is crossed, the state is saved as a possible unique spatial configuration of points, and repeated until they return to their original position. 
+We take the unique set of all possible rotations and use that unique set to query each of the locations, allowing the user to query in a more realistic manner with only a modest impact on complexity at realistic query sizes. 
+
+\subsection{Data Generation}
+\par{Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.
+The spatial randomnedd we see in locations, and the objects within them are not uniformly distributed, and generating synthetic data requires an approach that is able to reflect the power law distributions observed in location and object clusters.  
+We developed a data generator to support the evaluation of our algorithms. 
+The data generator use an implementations of the Recursive Matrix (RMAT) graph generation algorithm \cite{Chakrabarti2004} to produce the adjacency matrix of a scale-free graph with tunable size and density (setting the distribution parameters to reflect those standardized in graph500.).
+We use the edges of that adjacency matrix to represent the 'coordinates' of the points we are inserting into a location. 
+Labelling the points with their 'names' (object classes) involves generating samples across an inverse Pareto distribution, seperating those samples into \textit{n} bins and then walking through that sample, assigning each bin encountered in turn to an unlabelled point.
+To ensure we can control the query evaluation, we insert queries from a disjoint set of labels into the location once the initial labelling has been completed. 
+To reflect real-world variance, those input queries can be shifted vertically, shifted horizontally, starburst and rotated, or any combination of those four.
+The generator allows a user to generate an experiment, controlling how many locations there are, how many queries there are, how many objects are in each, and the amount of distortion applied to those queries to simulate the power-law distributions of locations, objects and object classes observed in the real world.}
