@@ -28,49 +28,20 @@ All experimental results were obtained using .................
 \small{
 \begin{table}[h]
     \begin{center}
-        \begin{tabular}{ |c|c|c|c|c| } 
+        \begin{tabular}{ |c|c|c| } 
             \hline
-            Method & $\#$ Query terms & $\#$ Constraints & Median $\#$ Objs per Loc & Recall\\
+            Search Method & Precision & Recall\\
             \hline
-            \multirow{5}{7em}{Obj-Obj} 
-            & ... & ... & ... & $0...$ \\ 
-            & ... & ... & ... & $0...$ \\ 
-            & ... & ... & ... & $0...$ \\
-            & ... & ... & ... & $0...$ \\ 
+            Location-Centric & $0.234$ & $0.114$ \\ 
+            Object-Object & $0.580$ & $0.377$ \\  
+            \textbf{Cardinality Invariant Object Object} & \textbf{0.860} & \textbf{0.611} \\ 
             \hline     
-            \multirow{5}{7em}{Direction Invariant Obj-Obj} 
-            & ... & ... & ... & $1.0$ \\ 
-            & ...  & ... & ... & $1.0$ \\
-            & ...  & ... & ... & $1.0$  \\
-            & ...  & ... & ... & $1.0$  \\
-            & ...  & ... & ... & $1.0$  \\
-            \hline
         \end{tabular}
         \caption{.....} 
-        \label{Table:RecallResultsObjObj}
+        \label{Table:RecallResults}
     \end{center}
 \end{table}
 }
 
-
-\small{
-\begin{table}[h]
-    \begin{center}
-        \begin{tabular}{ |c|c|c|c|c| } 
-            \hline
-            Method & $\#$ Query terms & $\#$ Constraints & Median $\#$ Objs per Loc & Recall\\
-            \hline
-            \multirow{5}{7em}{Loc-Obj} 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\ 
-            & ... & ... & ... & $1.0$ \\  
-            \hline     
-        \end{tabular}
-        \caption{.....} 
-        \label{Table:RecallResultsLocObj}
-    \end{center}
-\end{table}
-}
 
 \nrscomment{plots for time measurements}
