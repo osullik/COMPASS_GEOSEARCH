@@ -7,9 +7,18 @@
 %Based on a new best-case dataset developed for this project, \textit{The Swan Valley Wineries dataset}, demonstrates the functionality and utility of \textit{GESTALT} while identifying substantial opportunities for future work. 
 
 
-Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. However, current GIS capabilities do not enable users to easily search for locations about which they have imperfect or incomplete information. 
-\nrscomment{Motivation of pictorial querying}
+%Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. 
+Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
+When only partial or imperfect information is available, distance-based nearest neighbor searching can be used.
+However, that requires users to estimate distance between objects in the environment, a task that humans have been shown to perform poorly at.
+The more natural spatial search alternative is pictorial querying, where a sketch map is used to enable users to place objects in a configuration where their relative positions define the query constraints.
+Most approaches to pictorial query searching are intractable for any realistic number of query and database terms.
+We present \emph{COMPASS}, a collection of data structures and algorithms that address the scalability issues that previously rendered pictorial-based searching infeasible.
 
-\nrscomment{Issues of tractability}
 
-\nrscomment{How we reframe the problem and solve it tractably}
+%However, current GIS capabilities do not enable users to easily search for locations about which they have imperfect or incomplete information. 
+%\nrscomment{Motivation of pictorial querying}
+
+%\nrscomment{Issues of tractability}
+
+%\nrscomment{How we reframe the problem and solve it tractably}
