@@ -23,46 +23,45 @@ The errors of \textit{schematic structure} occur in part because people tend to 
 %The aspects of recalling locations accurately that Schwering's work identify are, unsurprisingly, driven by a strong ability for most people to recall the relative arrangement of objects to their position, and the order of encountering those objects when traveling~\cite{Schwering2014}.}
 
 \subsection{Pictorial Querying}
-\osullikomment{kent working here}
 
-\par{The spatial search functionality of \emph{GESTALT} leverages a pictorial query interface to bridge the gap between the user's mental model of objects, and the geospatial data available to search. 
+\par{The spatial search functionality \emph{COMPASS} enables leverages a pictorial query specification method to bridge the gap between the user's mental model of objects, and the geospatial data available to search. 
+Traditionally, pictorial query-based approaches are map-centric, as they were built on top of systems to digitize and database physical maps\cite{Samet1996,Samet1998}.
+Most of the methods formulate the search problem as qualitative spatial reasoning constraint satisfaction problems (CSPs), set-based search problems, or graph-matching problems, all of which have poor scaling factors.
+DiLoreto et. al. developed a pictorial querying system using a combination of set, topological, and metric dimensions to query their database~\cite{DiLoreto1996}.
+Soffer et. al.'s Pictorial Query Language began as set-based matching~\cite{Soffer1997, Soffer1998a}, allowing users to configure thresholds for match confidence, quantity, and topological similarity.
+To enable support of multiple instances of object classes in locations, Soffer et. al reframed the problem to use tree-based queries~\cite{Soffer1999}.
+They then formulated it as isomorphic subgraph matching to strengthen topological matching, at the cost of $\mathcal{O}(m2^m)$ complexity, where \textit{m} is the number of vertices in the database. 
 
-The most common forumulations of the problem are as qualitative spatial reasoning constraint satisfaction problems (CSP), set-based search and as a graph-matching problem, all of which have poor scaling factors.}
-% 
-\par{Dylla et. al. provided a comprehensive survey of these qualitative reasoning approaches in 2017~\cite{Dylla2017}. 
-They emphasise that the essence of the qualitative spatial reasoning approach is to abstract the infinite complexity of spatial and temporal configurations in the real world to a solvable representation. 
-The survey is notable in that they deliberately limit their scope to \textit{binary} relation constraint satisfaction problems, noting that \textit{n-ary} approaches using CSP are generally intractable.}
-\par{
-An exemplar from this category is the \textit{StarVars} system. 
-StarVars extends the earlier \textit{STAR} system to support reasoning about the relative locations of objects to each other by dividing the space around each of the \textit{n} objects into \textit{m} sectors that tracks the objects that fall witin each sector. 
-It implements an NP algorithm that runs in $m^n$ for constraint satisfcation that only fails when there is no solution, making it impractical for large query sets.}
+\nrscomment{at the contextual similarity levels reflecting an "AND" query, as the \emph{COMPASS} queries do~\cite{Folkers2000}. ... ???}
+
+
+}
+%As the system's ability to be more precise and powerful in its query formulation increased, so does the number of constraints and just like the qualitative spatial reasoning approaches, it rapidly approaches intractability.
+
+
+\subsection{Qualitative Spatial Reasoning}
+\par{Dylla et. al. provided a comprehensive survey of qualitative reasoning approaches in 2017~\cite{Dylla2017}, finding that the 11 surveyed approaches that handle relative location/orientation or cardinal directionality were at least $\mathcal{O}(n^3)$ complexity. 
+%They emphasize that the essence of the qualitative spatial reasoning approach is to abstract the infinite complexity of spatial and temporal configurations in the real world to a solvable representation. 
+They deliberately limit the scope of the survey to \textit{binary} relation constraint satisfaction problems, noting that \textit{n-ary} approaches using CSPs are generally intractable.
+An exemplar from this category is the \textit{StarVars} system, which extends the earlier \textit{STAR} system to support reasoning about the relative locations of objects to each other.
+In their approach, the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an NP $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.}
 %
-\par{Consider the family of work around Soffer's Pictorial Qeury Language as an example of how the tension between tractability and utility exist in pictorial querying approaches. 
-They began as set-based matching on the dimensions of \textit{matching similarity}, \textit{contextual similarity}, and \textit{spatial similariy} \cite{Soffer1997} \cite{Soffer1998a}. 
-That is, they allow users to configure a custom threshold for how confident the system must be that a given object in a query matches the object in the database, how many of the objects in the query need to match those in a location in the database and how similar the topological arrangement of objects needs to be to match a location in the database.}
+
 %
-\par{These set-based approaches were limited to supporting single instances of object classes in locations, and so they were reshaped as tree-based queries \cite{Soffer1999} to support querying for multuple objects of the same class.
-They then evolved again to be formulated as isomorphic subgraph matching problems to strengthen topological matching, at the cost of complexity $O(m2^m)$ where \textit{m} is the number of vertices in the database to be queried at the contextual similarity levels reflecting an "AND" query, as the COMPASS queries do~\cite{Folkers2000}.
-As the sysetm's ability to be more precice and powerful in its query formulation increased, so does the number of constraints and just like the qualitative spatial reasonining approaches, it rapidly approaches intractability.}
-%
-\par{It is useful to note that many of the pictorial query based approaches of this era are very map-centric. 
-The pictorial query language family we explored above was built on top of systems to digitize and database physical maps\cite{Samet1996,Samet1998}, and so were understandably focused on improving the searching of those map objects, rather than reconciling the human experience of the real world with the search task.
-DiLoreto et. al. also developed a pictorial querying system around the same time as Soffer's work was unfolding. 
-They use combinations of set, topological and metric dimensions to query their database, which was also focused on extracting information from maps.}
-%
-\par{Though it has been active for some time, work in \textit{query-by-sketch} appears to have gained popularity relative to the set based querying approaches. It is related but distinct area of that typically seeks to match a map area in database by a user sketch-map that is digitised and used as a query. 
+\subsection{Query-by-Sketch}
+\par{Though it has been active for some time, work in \textit{query-by-sketch} appears to have gained popularity relative to the set based querying approaches. It is related but distinct area of that typically seeks to match a map area in database by a user sketch-map that is digitized and used as a query. 
 It is notable as being a step towards being a human-centric view of geospatial search, trying to reconcile the computer understanding with the human representation of the 'map'. 
-However, existing \textit{query-by-sketch} systems are better suited for retriving areas larger than individual locations.
+However, existing \textit{query-by-sketch} systems are better suited for retrieving areas larger than individual locations.
 For example, the \textit{Sketchmapia} system developed by Schwering et. al. in 2014 accepts a user sketch, extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks} and \textit{city blocks} to formulate a \textit{Qualitative Constraint Network} that they then search for in the database using incremental sub-graph matching. 
-Three out of those four features rely on street configuraton and so work poorly for locations that are isolated, or whose distincitve features are indoors. 
+Three out of those four features rely on street configuration and so work poorly for locations that are isolated, or whose distinctive features are indoors. 
 
 The \textit{COMPASS} suite of data structures and algorithms addresses the complexity issues in several ways. First, we prune the search space by using the set-membership ideas to only conduct a spatial search on locations that can possible match those queries. 
-Next, we abstract away distance and absolute position so that our search space is an abstract representaiton that preserves relative spatial positioning. 
-The abstraction here reduces the search complexity and also supports the human centric view of the world, removing the requirement for distance estimation that we have established humans are bad at. 
-Next, we focus on maximising recall, and rely on the implicit precision derived from the possible relative configurations of objects in space to prune the result set. 
+Next, we abstract away distance and absolute position so that our search space is an abstract representation that preserves relative spatial positioning. 
+The abstraction here reduces the search complexity and also supports the human-centric view of the world, removing the requirement for distance estimation that we have established humans are bad at. 
+Next, we focus on maximizing recall, and rely on the implicit precision derived from the possible relative configurations of objects in space to prune the result set. 
 It logically follows that the fewer objects a person recalls, the less certain they are of the location and the more possible solutions they should be presented. 
 Finally, we build early-stopping into our search, meaning that as soon as a location is known to be a match, we return it.
-A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significiantly reducing the number of possible configurations that must be explored to satisfy a query.
+A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significantly reducing the number of possible configurations that must be explored to satisfy a query.
 Overall, we have focused on developing a search experience that supports the way a human interacts with and remembers the world, and made efforts to improve the tractability of that approach at each step, yielding a collection of data structures and algorithms that improve the human search experience.}
 
 %The core spatial search functionality of \emph{GESTALT} leverages a pictorial query interface to bridge the gap between the user's mental model of objects, and the geospatial data available to search. 
