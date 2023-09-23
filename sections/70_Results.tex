@@ -1,7 +1,7 @@
 \section{Analysis and Results}
 \label{section:results}
 
-Our theoretical analysis and experimental results both show that Cardinality Invariant Search performs very well and in practice scales better than expected.
+Our theoretical analysis and experimental results show that Cardinality Invariant Search performs very well and, in practice, scales better than expected.
 
 \subsection{Algorithm Analysis}
 
@@ -10,26 +10,25 @@ Since the number of query points is typically much smaller than the number of ob
 
 Our \textbf{objectObjectSearch} implementation traverses a matrix of size $O \times O$ from North and West, slicing the matrix smaller and smaller as it traverses. 
 Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + O^2)$ for $Q$ query points and $O$ objects per location. 
-This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. %Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.
-
-Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of 3 reference points is necessary), resulting in a time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
+This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
+Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of 3 reference points is necessary), resulting in time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
 
 
 \subsection{Experimental Results}
-We demonstrate the performance of the 3 search methods empirically by comparing the precision and recall and the execution times of each in terms of the number of query constraints. 
+We empirically demonstrate the performance of the three search methods by comparing the precision, recall, and execution times in terms of the number of query constraints. 
 
 \subsubsection{Precision and Recall Performance.} 
-Table \ref{Table:PerformanceResults} shows the precision and recall of all 3 spatial search methods on the data we generated.
+Table \ref{Table:PerformanceResults} shows the precision and recall of all three spatial search methods on the data we generated.
 Location-Object search and Object-Object search both rely on the cardinal direction of the query matching the cardinal direction of the actual configuration of the objects under search.
-This is not often the case, which is reflected in the lower precision and recall.
-Cardinality Invariant Object-Object search is completely independent of cardinal direction, and therefore achieves perfect recall, finding all the locations matching the query configuration, regardless of cardinal direction.
-The precision of Cardinality Invariant search is high but not perfect due to collisions during the data generation process, where query terms inserted in the database may by chance match the spatial configuration of the query.
-The rarity of collisions (less than 10\%), measured across a variety of query sizes, indicates the discriminative power of searching for locations via spatial configurations of associated objects.
+The cardinal direction is rarely aligned with the query direction by chance, reflected in the lower precision and recall.
+Cardinality Invariant Object-Object search is completely independent of cardinal direction and therefore achieves perfect recall, finding all the locations matching the query configuration, regardless of cardinal direction.
+The precision of Cardinality Invariant search is high but not perfect due to collisions during the data generation process, where query terms inserted in the database may, by chance, match the spatial configuration of the query.
+The rarity of collisions (less than 10\%), measured across various query sizes, indicates the discriminative power of searching for locations via spatial configurations of associated objects.
 
 \subsubsection{Query Time.}
-The query response time for Location-Object search and Object-Object search almost negligibly with increased query terms (Figure \ref{figure:query-time}).
-Cardinality Invariant Object-Object search grows logarithmically with number of query terms, which is significantly better than the theoretical complexity, which indicates the search time should scale with $\mathcal{O}(Q^2)$ in the worst case query configuration.
-The empirical results show significantly better scalability than the theoretical worst-case because the number of rotations needed to ensure invariance with respect to cardinal directionality is less than $Q$ in practice. 
+The query response time for Location-Object search and Object-Object search is negligible with increased query terms (Figure \ref{figure:query-time}).
+Cardinality Invariant Object-Object search grows logarithmically with the number of query terms, which is significantly better than the theoretical complexity, which indicates the search time should scale with $\mathcal{O}(Q^2)$ in the worst-case query configuration.
+The empirical results show significantly better scalability than the theoretical worst-case because the number of rotations needed to ensure invariance for cardinal directionality is less than $Q$ in practice. 
 The worst case is when query points are arranged in a circle, and every point must be aligned to the \textbf{N}, \textbf{W}, and \textbf{NW} reference points, resulting in $3Q$ runs of the regular Object-Object search.
 In practice, a pictorial query will typically contain points that are well-dispersed over the query canvas.
 In those cases, aligning many of the points in the "middle" of the query space to a given reference point will result in the same Concept Map representation as aligning an outer point to it, and so that Concept Map only needs to be checked against the database once.
@@ -51,7 +50,7 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
             \textbf{Cardinality Invariant Object Object} & \textbf{0.913} & \textbf{1.000} \\ 
             \hline     
         \end{tabular}
-        \caption{Performance Metrics Across \emph{COMPASS}'s 3 Types of Spatial Search. Cardinality Invariant Object-Object search outperforms the other 2 methods, which fail when the query configuration is not provided in the same cardinal alignment that the objects exist in.} 
+        \caption{Performance Metrics Across \emph{COMPASS}'s 3 Types of Spatial Search. Cardinality Invariant Object-Object search outperforms the other two methods, which fail when the query configuration is not provided in the same cardinal alignment that the objects exist in.} 
         \label{Table:PerformanceResults}
     \end{center}
 \end{table}
@@ -60,5 +59,7 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
 \begin{figure}[h]
     \centering
         \includesvg[width=0.5\textwidth]{figures/compassQuerySizeTime.svg}
-    \caption{\textbf{Empirical Scalability of \emph{COMPASS}'s 3 search methods as number of query terms (constraints) increases. Cardinality Invariant Object-Object search is the only method to show increased response times as query terms grows.}}\label{figure:query-time} 
+    \caption{\textbf{Empirical Scalability of \emph{COMPASS}'s three search methods as number of query terms (constraints) increases. Cardinality Invariant Object-Object search is the only method to show increased response times as query terms grow.}}\label{figure:query-time} 
 \end{figure}
+
+%Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.
