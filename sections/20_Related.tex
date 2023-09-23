@@ -22,7 +22,7 @@ The errors of \textit{schematic structure} occur in part because people tend to 
 %The success of high-performing players of \textit{Geoguessr} in their last-mile search shows that by combining the relative positions of enough objects, even common ones like bus stops and crosswalks, have the power to substantially prune a large search space down to just a few, or even one candidate location~\cite{BernersLee2023}.
 %The aspects of recalling locations accurately that Schwering's work identify are, unsurprisingly, driven by a strong ability for most people to recall the relative arrangement of objects to their position, and the order of encountering those objects when traveling~\cite{Schwering2014}.}
 
-\subsection{Pictorial Querying}
+\subsection{Pictorial and Sketch-Based Querying}
 
 \par{The spatial search functionality \emph{COMPASS} enables leverages a pictorial query specification method to bridge the gap between the user's mental model of objects, and the geospatial data available to search. 
 Traditionally, pictorial query-based approaches are map-centric, as they were built on top of systems to digitize and database physical maps\cite{Samet1996,Samet1998}.
@@ -34,7 +34,9 @@ They then formulated it as isomorphic subgraph matching to strengthen topologica
 
 \nrscomment{at the contextual similarity levels reflecting an "AND" query, as the \emph{COMPASS} queries do~\cite{Folkers2000}. ... ???}
 
-
+Work in \textit{query-by-sketch} is a related area of spatial search that typically seeks to match a map area in database by a user sketch-map that encoded as a query. 
+Despite capturing the way humans naturally conceptualize their environment, these systems are better suited to retrieve areas larger than individual locations.
+For example, the \textit{Sketchmapia} system developed by Schwering et. al. in 2014, which focuses on street layouts, accepts a user sketch and extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks}, and \textit{city blocks} to formulate a \textit{Qualitative Constraint Network} that is then searched for using incremental sub-graph matching.
 }
 %As the system's ability to be more precise and powerful in its query formulation increased, so does the number of constraints and just like the qualitative spatial reasoning approaches, it rapidly approaches intractability.
 
@@ -44,16 +46,12 @@ They then formulated it as isomorphic subgraph matching to strengthen topologica
 %They emphasize that the essence of the qualitative spatial reasoning approach is to abstract the infinite complexity of spatial and temporal configurations in the real world to a solvable representation. 
 They deliberately limit the scope of the survey to \textit{binary} relation constraint satisfaction problems, noting that \textit{n-ary} approaches using CSPs are generally intractable.
 An exemplar from this category is the \textit{StarVars} system, which extends the earlier \textit{STAR} system to support reasoning about the relative locations of objects to each other.
-In their approach, the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an NP $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.}
-%
+In their approach, the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an NP $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.
+Our location-centric approach mimics this method, but with a quadrant-level granularity aimed to capture the case when a user does know the cardinal direction of objects with respect to the location sought.}
 
 %
 \subsection{Query-by-Sketch}
-\par{Though it has been active for some time, work in \textit{query-by-sketch} appears to have gained popularity relative to the set based querying approaches. It is related but distinct area of that typically seeks to match a map area in database by a user sketch-map that is digitized and used as a query. 
-It is notable as being a step towards being a human-centric view of geospatial search, trying to reconcile the computer understanding with the human representation of the 'map'. 
-However, existing \textit{query-by-sketch} systems are better suited for retrieving areas larger than individual locations.
-For example, the \textit{Sketchmapia} system developed by Schwering et. al. in 2014 accepts a user sketch, extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks} and \textit{city blocks} to formulate a \textit{Qualitative Constraint Network} that they then search for in the database using incremental sub-graph matching. 
-Three out of those four features rely on street configuration and so work poorly for locations that are isolated, or whose distinctive features are indoors. 
+\par{
 
 The \textit{COMPASS} suite of data structures and algorithms addresses the complexity issues in several ways. First, we prune the search space by using the set-membership ideas to only conduct a spatial search on locations that can possible match those queries. 
 Next, we abstract away distance and absolute position so that our search space is an abstract representation that preserves relative spatial positioning. 
