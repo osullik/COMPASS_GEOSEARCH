@@ -4,28 +4,23 @@
 \nrscomment{signpost here}
 
 \subsection{Human Spatial Cognition and Reasoning}
-\par{Towards designing the COMPASS data structures and algorithms, we reviewed how humans percieve and recall the world. 
-The core idea is that most humans don't think of the world as a map, but as a collection of sensory anchors on salient locations. 
-Schwering et. al. reviewed relevant literature and conducted user studies in 2014. 
-They assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
-That is, humans inherently view the world as relative to their place in it, are not very good at estimating how far away from each other things are and are more likely to remember things that they find most interesting or attention-grabbing.}
+\par{Research in human spatial reasoning shows that humans tend to perceive the world not as a map, but as a collection of sensory anchors around salient locations. 
+Schwering et. al.~\cite{Schwering2014} assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
+That is, humans inherently view the world as relative to their place in it, perform poorly when estimating distances between objects, and are more likely to remember interesting or attention-grabbing things.}
 %
-\par{Errors of direction and distance are easily understood as a consequence of humans favouring a local (rather than global) approach to direction finding, and the well-documented problem of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
-The errors of \textit{schematic structure} are a more interesting case. 
-They occur in part because people tend to anchor memories on objects they see while experiencing a location~\cite{Helbing2020}, rather than sysetmatically mapping the objects to the ground.}
+\par{Errors of \textit{direction} and distance are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding, and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
+The errors of \textit{schematic structure} occur in part because people tend to anchor memories on objects they see while experiencing a location~\cite{Helbing2020}, rather than systematically mapping the objects to the ground.}
 % 
-\par{Understanding that people remember locations based on the salient objects within them has been leveraged to great effect for a long time.
-The notable case is the development of the \textit{Winthrop Method}~\cite{Keatley2021} for detecting secret caches.
-In essence, the method assumes that the person creating the cache wants to find it again, and so developes a methodical search pattern from distinctive landmarks in the area to maximise the probability of finding the concealed cache. 
-While the geospatial search problem we address is not dealing with concealed caches, it does rely on recalling what objects were present, and how they are arranged to prune the search space.}
+\par{Our proposed data structures and algorithms support user-centric spatial search by leveraging the human preference for relative object positioning while minimizing the expectation that the user can accurately recall cardinal direction or the distance between objects in the world around them.}
+
+%\par{Developments like the \textit{Winthrop Method}~\cite{Keatley2021} for detecting secret caches leverage the idea that people remember locations based on the salient objects near them.
+%The method includes a methodical search pattern from distinctive landmarks near a location to maximize the probability of finding the concealed cache. 
+%Similarly, the geospatial search problem we address relies on recalling what objects were present, and how they are arranged to prune the search space.}
 % 
-\par{A contemporary example of how much pruning power is derived from understanding the spatial arrangement of objects can be seen in the online game \textit{Geoguessr}~\footnote{\href{https://www.geoguessr.com/}{https://www.geoguessr.com/}}.
-In Geoguessr, the player must determine their exact location in the world from a street view panorama, only using the clues available in the panorama. 
-The success of high-performing players of \textit{Geoguessr} in their last-mile search shows that by combining the relative positions of enough objects, even common ones like bus stops and crosswalks, have the power to substantially prune a large search space down to just a few, or even one candidate location \cite{BernersLee2023}.
-The aspects of recalling locations accurately that Schwering's work identify are, unsurprisingly, driven by a strong ability for most people to recall the relative arrangement of objects to their position, and the order of encountering those objects when travelling~\cite{Schwering2014}.}
-\par{Data structures and algorithms to support user-centric spatial search must leverage the human preference for relative object positioning and minimise any expectation that the user can accurately recall cardinal direction or the distance between objects in the world around them.}
-
-
+%\par{A contemporary example of how much pruning power is derived from understanding the spatial arrangement of objects can be seen in the online game %\textit{Geoguessr}~\footnote{\href{https://www.geoguessr.com/}{https://www.geoguessr.com/}}.
+%In Geoguessr, the player must determine their exact location in the world from a street view panorama, only using the clues available in the panorama. 
+%The success of high-performing players of \textit{Geoguessr} in their last-mile search shows that by combining the relative positions of enough objects, even common ones like bus stops and crosswalks, have the power to substantially prune a large search space down to just a few, or even one candidate location~\cite{BernersLee2023}.
+%The aspects of recalling locations accurately that Schwering's work identify are, unsurprisingly, driven by a strong ability for most people to recall the relative arrangement of objects to their position, and the order of encountering those objects when traveling~\cite{Schwering2014}.}
 
 \subsection{Pictorial Querying}
 \osullikomment{kent working here}
