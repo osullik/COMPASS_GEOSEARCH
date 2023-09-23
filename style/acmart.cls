@@ -1459,8 +1459,8 @@
   \global\@ACM@journal@bibstripfalse
 }
 \if@ACM@journal\else
-\acmConference[Conference'17]{ACM Conference}{July 2017}{Washington,
-  DC, USA}%
+\acmConference[GEOSEARCH'23]{ACM Conference}{Novenber 2023}{Hamburg,
+  Germany}%
 \fi
 \def\acmBooktitle#1{\gdef\@acmBooktitle{#1}}
 \acmBooktitle{}
