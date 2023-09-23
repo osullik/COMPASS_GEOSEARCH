@@ -10,9 +10,8 @@ Schwering et al.~\cite{Schwering2014} assert that the three most common sources 
 Humans are rarely aware of the cardinal directions in an environment, perform poorly when estimating distances between objects, and inherently view the world as relative to their place in it.}
 %
 \par{Errors of \textit{direction} and \textit{distance} are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
-The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.}
-% 
-\par{Our proposed data structures and algorithms support user-centric spatial search by leveraging the human preference for relative object positioning while minimizing the expectation that the user can accurately recall cardinal direction or the distance between objects in the world around them.}
+The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.
+Our proposed data structures and algorithms support user-centric spatial search by leveraging the human preference for relative object positioning while minimizing the expectation that the user can accurately recall cardinal direction or the distance between objects in the world around them.}
 
 \subsection{Pictorial and Sketch-Based Querying}
 
@@ -32,7 +31,6 @@ For example, the \textit{Sketchmapia} system developed by Schwering et al. in 20
 
 \subsection{Qualitative Spatial Reasoning}
 \par{Dylla et al. provided a comprehensive survey of qualitative reasoning approaches in 2017~\cite{Dylla2017}, finding that the 11 surveyed approaches that handle relative location/orientation or cardinal directionality were at least $\mathcal{O}(n^3)$ complexity. 
-
 They deliberately limit the scope of the survey to \textit{binary} relation constraint satisfaction problems, noting that \textit{n-ary} approaches using CSPs are generally intractable.
 An exemplar from this category is the \textit{StarVars} system, which extends the earlier \textit{STAR} system to support reasoning about the relative locations of objects to each other.
 In their approach, the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an NP $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.
