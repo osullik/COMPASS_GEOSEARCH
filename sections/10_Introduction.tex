@@ -6,17 +6,31 @@ This formulation of the spatial search problem is cumbersome to users, as it req
 From a cognitive perspective, humans are more readily able to recall relative spatial layouts in their environment than they are able to estimate distances between objects or exact coordinates or addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
 As such, current methods in range querying and incremental nearest neighbor search that require a user specify distance thresholds to search for sets of objects are not ideal \osullikomment{cite hanan / dave mount here? }.
 If the estimate is too large (small), the search will return too many (few) results. 
-Further, these methods also suffer in cases where there is a high overlap in terms, giving little discriminative power to searching for their presence alone (e.g. picnic tables, benches, and bus stops are common features of many locations). 
+Further, these methods suffer in cases where there is a high overlap in terms, giving little discriminative power to searching for their presence alone (e.g. picnic tables, benches, and bus stops are common features of many locations). 
 }
 %
 \par{Instead of forcing the human user to think like a map, a more natural approach is to have the 'map' organize itself to reflect how humans think. 
 Some work has been done enabling users to specify spatial search queries in a pictorial format, mimicking how a human might draw a rough sketch map of a location from memory.
-Although this approach is much preferable from a user perspective~\cite{SOMETHING}, there are significant computational challenges of pictorial querying. \nrscomment{Explain the challenges here.}
+Although this approach is much preferable from a user \nrscomment{perspective~\cite{SOMETHING}}, pictorial querying invites significant computational challenges that have limited its use. 
+Most of the pictorial methods formulate the search problem
+as a qualitative spatial reasoning constraint satisfaction problem
+(CSPs), a set-based search problem, or a graph-matching problem, all of which scale prohibitively poorly for any realistic number of query constraint terms.
 }
 
-\par{We present \emph{COMPASS}, the \textit{Cardinal Orientation Manipulation and Pattern-Aware Spatial Search}, a collection of data structures and algorithms designed to address these issues, enabling a tractable form of spatial search that aligns with how humans think about space. 
-\nrscomment{say something concise about the novelty and efficiency.}
-\osullikomment{Might need a bit more on the 'how we solve it' here. We relax the problem to allow any match to do early stopping}
+\par{We present \emph{COMPASS}, the \textit{Cardinal Orientation Manipulation and Pattern-Aware Spatial Search}, a collection of data structures and algorithms designed to address the scalability issues of pictorial querying by reframing the search problem, thus enabling a tractable, human-centric form of spatial search. 
+Specifically, we provide the following contributions:
+/osullikomment{compress this list, check jordan's work}
+\begin{enumerate}
+    \item A reframing of the pictorial querying problem to include early stopping at the first set of objects that indicate a location matched the spatial configuration of objects queried
+    \item A method for mapping objects associated with each location to a matrix (termed a \textit{Concept Map}) to facilitate pictorially querying spatial relations like "A bus stop, pond, and telephone pole configured in a triangle"
+    \item A series of algorithms to perform three forms of spatial search based on pictorial query input
+    \item A substantial data generation framework that produces a location and object database and pictorial queries against it, to enable comparisons of spatial search methods
+\end{enumerate}
+
+The rest of this paper is organized as follows. \nrscomment{update at the end} In section \ref{section:related}, we discuss current methods for pictorial-based spatial search. 
+Next, in section \ref{section:prelim}, we define the three forms of spatial search \emph{COMPASS} enables.
+Then, in section \ref{section:methods} we describe the process used to generate the data and queries and the algorithms contributed to perform the search.
+Finally, in section \ref{section:results} we discuss the performance and scalability of the proposed methods, and conclude in section \ref{section:conclusion}.
 }
 
 %organizing geospatial data around the locations people can experience, cataloging the objects at those locations that they anchor their memories on, and abstracting away the need for the user to remember distances to objects, or their absolute cardinal positions we create an approach that focuses on the need of the human, not the convenient structure of the map.
@@ -43,16 +57,7 @@ Although this approach is much preferable from a user perspective~\cite{SOMETHIN
 
 
 %Taking inspiration from the way humans recall spatial information~\cite{Helbing2020, Oliveira2016, Weisberg2016}, \nrscomment{update citations} we present \emph{COMPASS}, an approach for spatial pattern match querying that... \nrscomment{summarize high level contribution}. 
-Specifically, we provide the following contributions:
-/osullikomment{compress this list, check jordan's work}
-\begin{enumerate}
-    \item \nrscomment{List contributions here}
-    \item Mapping objects associated with each location to a matrix (termed a \emph{ConceptMap}) to facilitate pictorially querying spatial relations like "A bus stop Northwest of a telephone pole"
-\end{enumerate}
 
-The rest of this paper is organized as follows. \nrscomment{update at the end} In section \ref{section:architecture}, we define the \emph{GESTALT} architecture and discuss how each subsystem contributes to our human-centric approach to automating the last-mile search. 
-Next, in section \ref{section:data}, we describe the process used to generate the gold standard wineries dataset and extract noisy object tags from geotagged images. Then, we describe the object ownership assignment process in section \ref{section:ownership}, the concept mapping step in section \ref{section:concept}, and the search problem in \ref{section:search}. 
-Finally, we summarize related work in section \ref{section:related} and conclude by identifying future research directions in section \ref{section:conclusion}.
 
 
 % 
