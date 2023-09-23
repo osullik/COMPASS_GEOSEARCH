@@ -1,6 +1,30 @@
 \section{Preliminaries}
 \label{section:prelim}
 
+
+
+
+
+\par{
+
+The \emph{COMPASS} suite of data structures and algorithms addresses the complexity issues in several ways. First, we prune the search space by using the set-membership ideas to only conduct a spatial search on locations that can possible match those queries. 
+Next, we abstract away distance and absolute position so that our search space is an abstract representation that preserves relative spatial positioning. 
+The abstraction here reduces the search complexity and also supports the human-centric view of the world, removing the requirement for distance estimation that we have established humans are bad at. 
+Next, we focus on maximizing recall, and rely on the implicit precision derived from the possible relative configurations of objects in space to prune the result set. 
+It logically follows that the fewer objects a person recalls, the less certain they are of the location and the more possible solutions they should be presented. 
+Finally, we build early-stopping into our search, meaning that as soon as a location is known to be a match, we return it.
+A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significantly reducing the number of possible configurations that must be explored to satisfy a query.
+Overall, we have focused on developing a search experience that supports the way a human interacts with and remembers the world, and made efforts to improve the tractability of that approach at each step, yielding a collection of data structures and algorithms that improve the human search experience.}
+
+
+
+
+
+
+
+
+
+
 \emph{COMPASS} extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
 By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
 \emph{COMPASS} supports two forms of spatial relations: object-location relations and object-object relations.
