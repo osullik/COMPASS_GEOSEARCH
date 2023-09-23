@@ -1,52 +1,63 @@
 \section{Preliminaries}
 \label{section:prelim}
 
+\par{
+We frame spatial search using pictorial queries over a database of locations and their associated objects.
+A \textit{pictorial query} is a canvas of points representing objects laid out in a spatial configuration of interest to the user.
+\textit{Objects} and \textit{locations} are physical entities in the world, represented as points, with $(x,y)$ coordinates and names (often derived from geotag information).
+We allow multiple objects of the same class or type, and assume objects have been assigned to their associated locations prior to search time.
+For more detailed analysis of the motivation and methods for assigning objects to locations, see \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})}~\cite{Osul2023}.
+Leveraging the data structures and algorithms that comprise \emph{COMPASS}, we apply one of three spatial search techniques to return a set of locations from the database that are associated with the object pattern of interest, as specified by the pictorial query. 
+This search paradigm assumes that a user has knowledge of several objects and their spatial configuration, and wishes to retrieve a list of all locations that contain that same query configuration within a given \textit{region}, or area under search.
+}
+
+%suite of data structures and algorithms address the scalability for complex spatial pattern matching through representation, abstraction and pruning.
+%In this section we introduce the terminology and intuition for our approaches, and briefly examine the enabling data structures. 
+%We describe the algorithms in detail in section \ref{section:Methods} and provide a theoretical and empirical complexity analysis in section~\ref{section:results}.
+%
+%Our human-centric approach begins with our hierarchcal representation of space, which reflects how people tend to understand and remember the world. 
+%Beginning from the largest elements, we divide the world into \textit{\textbf{regions}}, which could be a suburb, state or larger area depending on the use-case. 
+%A region is the largest collection that we search over, and all of our algorithms assume the user has narrowed down to a region prior to searching with COMPASS.
+%Rather than being defined explicilty by area, a region is a collection of \textit{\textbf{locations}}. 
+%A location can be thought of as a place of some public significance or interest. 
+%Locations contain \textit{\textbf{objects}} which are the things physically located in and around a location.
+%At their core within COMPASS, objects consist of a \textit{\textbf{name}} which associates it with an object class and its \textit{\textbf{coordinates}}.
+
+%Further detail on the data collection, assignment of objects to locations, and user interface are described in our introduction of the \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})} system \cite{osullivan2023}.
 
 
-
+%In the event of ties, we apply the convention that the object that is more northern then western is dominant, and then we use lexicographic order.
 
 \par{
+To enable spatial search, \emph{COMPASS} abstracts the infinite spatial complexity of the world into one of two concise representations- a location-centric structure, or a concept map.
+A \textit{location-centric structure} is a simple dictionary-based representation that describes a location by the objects contained in each of its 4 cardinal quadrants (Northwest, Northeast, Southwest, Southeast).
+A \textit{concept map} can be used to represent a set of objects arranged spatially without explicitly encoding how they relate spatially to a location. \nrscomment{cite image concept map paper}
+Entries in the matrix are either contain a $0$, representing empty space, or an object name, representing the position of that object.
+Critically, concept maps are generated such that the relative order of objects from north to south and west to east is preserved from the original Cartesian representation, making them a condensed representation that captures the relevant spatial information needed to perform pattern matching.
+Both location-centric structures and concept maps can be generated either from a pictorial query, or from a set of objects associated with a location. 
+We implement concept maps using $N \times N$ matrices (where $N$ is the number of objects).
+Figures~\ref{figure:ConceptMap-LO} and \ref{figure:conceptMap} show the abstraction process used to create and search over these two data structures.
+}
 
-The \emph{COMPASS} suite of data structures and algorithms address the complexity for complex spatial pattern matching through representation, abstraction and pruning.
-In this section we introduce the terminology and intuition for our approaches, and briefly examine the enabling data structures. 
-We describe the algorithms in detail in section \ref{section:Methods} and provide a theoretical and empirical complexity analysis in section~\ref{section:results}.
-%
-Our human-centric approach begins with our hierarchcal representation of space, which reflects how people tend to understand and remember the world. 
-Beginning from the largest elements, we divide the world into \textit{\textbf{regions}}, which could be a suburb, state or larger area depending on the use-case. 
-A region is the largest collection that we search over, and all of our algorithms assume the user has narrowed down to a region prior to searching with COMPASS.
-Rather than being defined explicilty by area, a region is a collection of \textit{\textbf{locations}}. 
-A location can be thought of as a place of some public significance or interest. 
-Locations contain \textit{\textbf{objects}} which are the things physically located in and around a location.
-At their core within COMPASS, objects consist of a \textit{\textbf{name}} which associates it with an object class and its \textit{\textbf{coordinates}}.
-There can be multiple objects of the same class, though we do not allow locations to be at the exact same coordinates, or to 'contain' other objects. 
-The coordinates of larger objects are defined by their center-of-mass.
-In the event of ties, we apply the convention that the object that is more northern then western is dominant, and then we use lexicographic order.
-Our search paradigm assumes that a user has knowledge of several objects and their spatial configuration (the \textit{\textbf{query}}) and wants to retrieve a list of all locations that contain that same query configuration where it occurs within their region.
-Further detail on the data collection, assignment of objects to locations, and user interface are described in our introduction of the \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})} system \cite{osullivan2023}.
-
-COMPASS abstracts the infinite spatial and temporal complexity of the world into a two dimensional representation of the world we term a \textbf{\textit{concept map}}.
-A concept map is an $N \times N$ matrix (where $N$ is the number of objects within a location or query) that arranges the objects in a relative order from north to south and west to east.
-Figure~\ref{figure:conceptMap} shows the abstraction process, and yields a concept map that only holds the necessary information to determine the relative locations of objects to each other within a location.
-Concept maps are one of the core data structures of COMPASS. 
-
-COMPASS employs aggressive pruning strategies to reduce the complexity of multi-object spatial pattern matching to tractable levels. 
-First is the implicit pruning of the search space by limiting the search area to regions.
-Next, while searching we employ the set-membership checks to exclude locations that cannot possibly satisfy the query, because they lack the objects required to fulfil it. 
-The concept maps abstract away distance and absolute position, redcing the search complexity and also supporting the human-centric view of the world. 
-An additional benefit of removing distance features is that it removes a map-centric criteria that people are typically very bad at estimating. 
-Another complexity reduction comes from focusing on maximizing recall by returning locations with any match. 
-The recall is checked by the logical step that as a person becomes more certain about a location they add more objects to the query, pruning the set of possible results dramatically with even just four or five query terms.
-Finally, we build early-stopping into our search, meaning that as soon as a location is known to be a match, we return it and cease checking the remainder of that location.
-A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significantly reducing the number of possible configurations that must be explored to satisfy a query.
-Overall, COMPASS focuses on a search experience that supports the way a human interacts with and remembers the world, and made efforts to improve the tractability of that approach at each step, yielding a collection of data structures and algorithms that improve the human search experience.}
+%\par{
+%COMPASS employs aggressive pruning strategies to reduce the complexity of multi-object spatial pattern matching to tractable levels. 
+%The concept maps abstract away distance and absolute position, reducing the search complexity and also supporting the human-centric view of the world, where distance estimation is not required. 
+%Finally, we build early-stopping into our search, meaning that as soon as a location is known to be a match, we return it and cease checking the remainder of that location.
+%}
+%A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significantly reducing the number of possible configurations that must be explored to satisfy a query.
+%Overall, COMPASS focuses on a search experience that supports the way a human interacts with and remembers the world, and made efforts to improve the tractability of that approach at each step, yielding a collection of data structures and algorithms that improve the human search experience.
+%First is the implicit pruning of the search space by limiting the search area to regions.
+%Next, while searching we employ the set-membership checks to exclude locations that cannot possibly satisfy the query, because they lack the objects required to fulfil it.
+%An additional benefit of removing distance features is that it removes a map-centric criteria that people are typically very bad at estimating. 
+%Another complexity reduction comes from focusing on maximizing recall by returning locations with any match. 
+%The recall is checked by the logical step that as a person becomes more certain about a location they add more objects to the query, pruning the set of possible results dramatically with even just four or five query terms.
 
 
-\emph{COMPASS} extracts and explicitly encodes the implicit geographic relationships between objects and locations. 
-By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
-\emph{COMPASS} supports two forms of spatial relations: object-location relations and object-object relations.
-Both cases involve an offline encoding phase that enables an online search phase. \nrscomment{clean up wording}
-We discuss the details of the encoding phase in this section and leave the search details to section \ref{section:search}.
-
+%\par{
+%\emph{COMPASS} supports two forms of spatial relations: object-location relations and object-object relations.
+%Both cases involve an offline encoding phase that enables an online search phase. 
+%We discuss the details of the encoding phase in this section and leave the search details to section \ref{section:search}.
+%}
 
 \subsection{Object-Location relations}
 Object-location relations encode cardinal directionality between objects and locations (i.e. whether an object is North, South, East, or West of a location). 
