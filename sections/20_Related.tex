@@ -1,21 +1,52 @@
 \section{Related Work}
 \label{section:related}
 
+\osullikomment{Update Signposting}
+
 The related work first describes how we approached making geospatial search human-centric rather than map-centric. 
 We then briefly explore two dominant approaches to spatial pattern matching, Pictorial Querying, and Qualitative Spatial Reasoning, mainly how they trade off querying power for computational tractability. 
-\osullikomment{Below is new}
 
 \subsection*{Relation Types}
 
 \par{
-    There are three commonly agreed-upon types of spatial relations~\cite{Carniel2020,Bertella2022,Carniel2023}. 
-    \textit{Topological} relations describe how (usually region or line) objects intersect, contain, touch, or otherwise interact.
-    \textit{Metric} relations describe how far apart objects are in space based on their distances from each other. 
-    \textit{Directional} relations describe how objects are positioned relatively to each other in space, these can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next-to}.
-    Most of the related work focuses on topological and metric queries.
-    Of the work that deals with direction-based queries, almost none of it is concerned with spatial pattern matching. 
-    The work that does focus on spatial pattern matching is almost entirely disjoint from directional relations. 
-    The COMPASS suite is a step towards closing the gap between spatial pattern matching and directional relation queries.
+    \textit{Points, Lines} and \textit{Regions} are generally agreed to be the classes of spatial objects. 
+    There are three commonly agreed-upon types of spatial relations between these object classes. 
+    \textit{Topological} relations describe how regions and lines intersect, contain, touch, or otherwise interact.
+    \textit{Metric} relations describe the distances between objects. 
+    \textit{Directional} relations describe how objects are positioned relative to each other in space.
+    %
+    These can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next-to}~\cite{Carniel2020,Bertella2022,Carniel2023}.
+}
+\par{Most of the related work focuses on topological and metric queries.
+    One reason for the lack of attention directional relationships receive is their inherent complexity.
+    %
+    Explicitly representing directional relations usually requires segmenting the space around spatial objects, or drawing relationship constraints between each object. 
+    Space segmentation typically assumes knowledge of a global coordinate system (i.e. an assumption of where North is) and either assumes that the objects are all positioned relative to a known point or that each object stores and tracks its 'view' of space.  
+    Drawing relationship constraints becomes costly, and depending on the link encoding scheme typically requires at least a fully connected weighted graph or multigraph to capture the relative directions of objects to each other.
+    %
+}
+\par{
+    The COMPASS suite focuses on using directional relations as the basis of its pattern matching because of the precision it allows us in specifying a target pattern of objects.
+    It aims to leverage implicit representations of directional relations to reduce the complexity incurred by explicitly representing directional relations as space segments or graphs. 
+    Ultimately, the COMPASS suite is intended as a step towards reducing the complexity of spatial pattern matching using directional relationships.
+    The remainder of the related work section explores the limitations of conventional approaches to spatial search, the subfield of spatial pattern matching, and the gaps that COMPASS seeks to fill.
+}
+
+\subsection{Human Spatial Cognition and Reasoning}
+\par{
+    Research in human spatial reasoning shows that humans perceive the world not as a map but as a collection of sensory anchors around salient locations. 
+    %
+    Schwering et al.~\cite{Schwering2014} assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
+    %
+    Humans are rarely aware of the cardinal directions in an environment, perform poorly when estimating distances between objects, and inherently view the world as relative to their place in it.
+    }
+\par{
+    Errors of \textit{direction} and \textit{distance} are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
+    %
+    The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.
+}
+\par{
+    The human preference for a local worldview that anchors on the relative positioning of salient objects motivates us to use \textit{directional} relations between spatial objects as the core of our spatial pattern matching approach.
 }
 
 \subsection{Conventional Spatial Querying Approaches}
@@ -23,92 +54,93 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
 \par{
     Conventional spatial querying approaches are dominated by approaches that leverage the \textit{Metric} and \textit{Topological} relationships of spatial data, along with external information like object labels, or keywords. 
     The two dominant approaches to classical spatial pattern querying are \textit{Spatial Keyword Queries} (SKQ) and \textit{Multi-Spatial Joins} (MSJ).} 
+\subsubsection{Spatial Keyword Queries}
 \par{
-    Arguably the most popular SKQ is the \textit{m-Closest Keyword} (mCK) query. 
-    mCK accepts a collection of keywords and returns the tightest group(s) of objects in the database that covers all those keywords~\cite{Zhang2009}.
-    While many algorithms have been developed to improve the efficiency of mCK, ultimately they all rely on \textit{metric} relations and keyword matching~\cite{Guo2015}.
-    SKQs are an appropriate baseline to compare against and to be useful, COMPASS queries should be able to at least match their recall. 
-    We also expect that the ability to specify directional relationship constraints will improve the precision of COMPASS over SKQ approaches. 
+    In general, SKQ accepts a collection of keywords and a user location and returns the object clusters that are spatially and textually relevant~\cite{Cao2012}.
+    \textit{m-Closest Keywords} (mCK) is a popular algorithm for SKQ~\cite{Zhang2009}.
+    While many algorithms have been developed to improve the efficiency of mCK, ultimately they all rely on \textit{metric} relations and keyword matching~\cite{Guo2015}. 
     }
+\subsubsection{Spatial Joins}
 \par{
-    Spatial Joins are operations that combine spatial datasets to facilitate querying, data mining, and other geospatial approaches.
-    MSJ is the multi-constraint instantiation of spatial joining, and its approaches have a lengthy history, with Papadias et al developing one of the most widely accepted approaches which notably can encode \textit{Metric, Topological} and \textit{Directional} queries. ~\cite{Papadias1998}.
-    They provide three algorithms that are all derived from the Forward-Checking algorithm for Constraint Satisfaction Problems (CSP). 
-    Their experiments show that their \textit{Multi-Forward-Checking} (MFC) algorithm runs exponentially to the number of query terms, while their Window-Reduction and Joint-Window-Reduction algorithms run close to linear to the number of query terms, but are still sensitive to the number of objects in the database being queried.
-    More modern approaches parallelize Multi-Spatial-Joins, and confirm that optimizing join-order is essential to efficient MSJ exection~\cite{Du2017}. 
+    \textit{Spatial Joins} (SJ) are operations that given two sets of spatial objects find all pairs of objects satisfying some specified spatial constraints~\cite{Jacox2007}.
+    MSJ is the multi-constraint instantiation of spatial joining and has been shown to successfully encode \textit{Metric, Topological} and \textit{Directional} constraints~\cite{Papadias1998}.
+    Papadias et. al. provide three algorithms derived from the Forward-Checking algorithm for Constraint Satisfaction Problems (CSP). 
+    Their experiments show that their \textit{Multi-Forward-Checking} (MFC) algorithm runs exponentially to the number of query terms, while their \textit{Window-Reduction} and \textit{Joint-Window-Reduction} algorithms run close to linear to the number of query terms, but are still sensitive to the number of objects and constraints in the database being queried, and degrade rapidly with large numbers of constraints.
+    There has been significant work on improving the algorithmic performance of MSJ, and a recent focus has been on parallelizing and distributing computation to improve execution speed~\cite{Du2017}. 
+}
+\par{
+    The conventional approaches are limited in their applicability to querying by directional constraints between objects to identify locations of interest.
+    While SKQ can return a location based on the presence of objects within a constrained distance that matches keyword queries, it does not allow for querying based on topological or directional relations, effectively performing as a set-intersection query in the COMPASS hierarchical data structure.
+    MSJ can match based on topological, metric, and directional constraints. 
+    Keyword-based queries are not typically implemented in MSJ. 
+    It is computationally intensive, and where the underlying data structures do not represent the relationships natively, needs some kind of solver to complete the join, which looks to implement specific Spatial Pattern Matching approaches. 
 }
 
-\subsection*{Spatial Pattern Matching}
+\subsection{Spatial Pattern Matching}
 
 \par{
-    Spatial Pattern Matching (SPM) is formally is introduced as a graph matching problem requiring that each vertex has a keyword label, each edge has a distance interval and each edge has a sign (exclusion in, exclusion out, mutual exclusion, and multiple inclusion)~\cite{Fang2019}.
-    More generally, it is the task of comparing a group of query objects with a set of constraints drawn from \textit{Topological, Metric} and \textit{Directional} relations to an underlying database of spatial objects to identify matching groups.
-    Most SPM methods formulate the search problem as a qualitative spatial reasoning constraint satisfaction problem (CSP), a set-based search problem, or a Subgraph-matching (SGM) problem, all of which have poor scaling factors. Both CSP and SGM these problems are NP-complete, so heuristic approaches are used. 
+    Spatial Pattern Matching (SPM) is formally introduced as a graph matching problem requiring that each vertex has a keyword label, each edge has a distance interval and each edge has a sign (\textit{exclusion in, exclusion out, mutual exclusion} and \textit{mutual inclusion})~\cite{Fang2019}.
+    That definition is problematic in that it assumes a graph-based structure, which limits options for other computational approaches.
+    \osullikomment{Need a cleaner definition of SPM}
+    More generally, we view SPM as the task of matching collections of spatial objects bound by \textit{Topological, Metric, Directional} and \textit{Keyword} constraints.
+    Most SPM methods formulate the problem as a \textit{set-intersection} problem, a \textit{qualitative spatial reasoning} (QSR)/\textit{constraint satisfaction problem} (CSP), or a \textit{subgraph-matching} (SGM) problem, all of which have poor scaling factors - up to NP-completeness for CSP and SGM. 
     }
+\subsubsection{Set-Intersection Problems}
 \par{  
-    DiLoreto et al. developed a pictorial querying system using a combination of set, topological, and metric dimensions to query their database~\cite{DiLoreto1996}.
-    Soffer et al.'s Pictorial Query Language began as set-based matching~\cite{Soffer1997, Soffer1998a}, allowing users to configure thresholds for match confidence, quantity, and topological similarity.
-    To enable support of multiple instances of object classes in locations, they reframed the problem to use tree-based queries~\cite{Soffer1999}.
-    They then formulated it as isomorphic subgraph matching to strengthen topological matching~\cite{Folkers2000}, at the cost of $\mathcal{O}(m\times 2^m)$ complexity for the computationally simpler "AND" queries, where \textit{m} is the number of vertices in the database. 
+    Early set-intersection approaches allow users to specify a combination of keyword, topological and metric dimensions to query their database~\cite{DiLoreto1996} with some approaches allowing users to configure thresholds for match confidence, quantity, and topological similarity~\cite{Soffer1997, Soffer1998a}. 
+    Extensions improve efficiency by introducing spatial data structures to underly the set queries~\cite{Soffer1999}.
+    The natural extension of these approaches is to formulate search as an isomorphic subgraph matching problem to strengthen topological matching~\cite{Folkers2000}, at the cost of $\mathcal{O}(m\times 2^m)$ complexity, where \textit{m} is the number of vertices in the database. 
 }
-
+\subsubsection{Subgraph-Matching Problems}
 \par{
-    More modern approaches have continued to leverage SGM, for example, the SpaceKey system allows users to search for patterns of objects based on metric (distance) relations and the inclusion or exclusion of certain objects within those distances which is encoded as a subgraph matching problem~\cite{Fang2018}.
+    More modern approaches have continued to leverage SGM, for example, the SpaceKey system allows users to search for patterns of objects based on a combination of SKQ and metric (distance) relations and the inclusion or exclusion of certain objects within those distances which is encoded as a subgraph matching problem~\cite{Fang2018}.
     Fang et. al. extend their work on using SGM for SPM by developing four algorithms~\cite{Fang2019}. 
-    Their \textbf{Multi-Pair-Join (MPJ)} algorithm which runs in $\mathcal{O}(m\zeta |D|^2+\xi)$ where $\zeta$ is a sampling threshold in range $[0,1]$ and $\xi$ is the maximal number of partial matches. 
-    Their \textbf{Multi-Star-Join (MSJ)} algorithm runs in $\mathcal{O}(n^4+m|D|^2+\xi)$ time worst case, but practically its running time is faster than the MPJ. 
-    \textbf{Top-K SPM} is used to refine the results set when recall is too high, and \textbf{Partial SPM} is used when too few results are returned. 
-    Both incur additional computational costs. 
-    Their evaluation is focused on execution time and shows that both of their approaches are faster to execute over the spatial pattern matching problem than generic subgraph matching algorithms like VF3 are~\cite{Fang2019}.
-    The same research group then introduces their Efficient Spatial Pattern Matching Algorithm (ESPM) which makes several improvements over MPJ and MSJ. 
-    Most notably, they replace the underlying IR-Tree with an Inverted Linear Quadtree, which performs more efficiently when working on large search spaces but still uses graph-matching as the underlying search system. 
-    ESPM takes $\mathcal{O}(|D_w|^n)$ time, where n = $|V|$ and $|D_w|$ = $\max{|D_i|}$where $|D_i|$ is the set of objects with query keyword $w_i$~\cite{Chen2019}.
-    A related but distinct approach is k-clique detection in spatial data. 
-    Taniguchi et. al develops a nearest-neighbor graph and in conjunction with iterative pruning and early stopping develop a graph-matching approach. Their worst-case complexity is $\mathcal{O}(n^k)$ with expected complexity of $\mathcal{O}(NK)$~\cite{Taniguchi2022}.
-    All of the graph-matching approaches are sensitive to the number of edges on the graph, and so tend to avoid searching based on relationships like relative direction, which typically resembles a fully connected graph of each pairwise constraint. 
-    Other approaches are required to implement spatial pattern matching of directional relationships.
-    }   
+    Their \textit{Multi-Pair-Join (MPJ)} algorithm runs in $\mathcal{O}(m\zeta |D|^2+\xi)$ where $\zeta$ is a sampling threshold in range $[0,1]$ and $\xi$ is the maximal number of partial matches. 
+    Their \textit{Multi-Star-Join (MSJ)} algorithm runs in $\mathcal{O}(n^4+m|D|^2+\xi)$ time worst case, but practically its running time is faster than the MPJ. 
+    \textit{Top-K SPM} is used to refine the results set when recall is too high, and \textit{Partial SPM} is used when too few results are returned to increase the candidate pool by returning maximally partial matches. 
+    Both \textit{Top-K SPM} and \textit{PSPM} incur additional computational costs~\cite{Fang2019}.
+    The Efficient Spatial Pattern Matching Algorithm (ESPM) improves MPJ and MSJ by replacing the underlying IR-Tree with an Inverted Linear Quadtree. 
+    The Quadtree is more efficient when working on large search spaces but still uses graph matching as the underlying search technique. 
+    ESPM takes $\mathcal{O}(|D_w|^n)$ time, where $n$ is the number of vertices in the graph and $|D_w|$ is the set of objects returned by the SKQ component~\cite{Chen2019}. 
+    K-Clique detection in spatial data uses a nearest-neighbor graph, iterative pruning, and early stopping in a graph-matching approach. 
+    Its worst-case complexity is $\mathcal{O}(n^k)$ with expected complexity of $\mathcal{O}(NK)$~\cite{Taniguchi2022}.
+    }  
 
+\subsubsection{Qualitative Spatial Reasoning and Constraint Satisfaction Problems}
     \par{
-    In addition to Papadias' formulation of MSJ as CSP~\cite{Papadias1998}, Dylla, et al. provided a comprehensive survey of qualitative reasoning approaches in 2017~\cite{Dylla2017} finding that the 11 surveyed approaches that handle relative location/orientation or cardinal directionality were at least $\mathcal{O}(n^3)$ complexity. 
-    They deliberately limit the scope of the survey to \textit{binary} relation constraint satisfaction problems, noting that \textit{n-ary} approaches using CSPs are generally intractable.
-    An exemplar from this category is the \textit{StarVars} system, which extends the earlier \textit{STAR} system to support reasoning about the relative locations of objects to each other.
-    In their approach, the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an NP $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.
-    Our location-centric approach mimics this method but with a quadrant-level granularity aimed to capture the case when a user does know the cardinal direction of objects concerning the location sought. 
-    Some approaches combine CSP and SGM. For example, the \textit{Sketchmapia} system developed by Schwering et al. in 2014, which focuses on street layouts, accepts a user sketch and extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks}, and \textit{city blocks} to formulate a \textit{Qualitative Constraint Network} that is then searched for using incremental sub-graph matching.
+    In addition to Papadias' formulation of MSJ as a CSP~\cite{Papadias1998}, Dylla, et al. survey \textit{Qualitative Spatial Reasoning} (QSR) approaches finding that the 11 approaches that use directional relations as \textit{binary} constraints have at least $\mathcal{O}(n^3)$ complexity. 
+    They scope out \textit{n-ary} constraints as being generally intractable~\cite{Dylla2017}. 
+    %
+    An exemplar QSR approach is the \textit{StarVars} system, which extends the earlier \textit{STAR} calculus~\cite{Renz2004} to support reasoning about the relative locations of objects to each other.
+    They take the space-segmentation approach, and the space around each of the \textit{n} objects is divided into \textit{m} sectors, and an $\mathcal{O}(m^n)$ algorithm for constraint satisfaction is used, making the approach impractical for large query sets.}
+    
+\par{
+        Some approaches combine CSP and SGM. For example, the \textit{Sketchmapia} system accepts a user sketch and extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks}, and \textit{city blocks} and takes the explicit link-encoding approach to formulate a \textit{Qualitative Constraint Network} that is then searched against a database of maps for matches using incremental sub-graph matching.
 }    
-
+\subsubsection{Other Problem Formulations}
 \par{
     Other approaches do not fit neatly into either SGM or CSP. For example, Liu et. al. developed an Open Shape-based Strategy (OSS) to search for spatial objects based on query terms that are not aligned with the global coordinate system~\cite{Liu2003}.
     Della Penna et. al. develop a framework for implicitly and explicitly encoding relative spatial positions, and the Spatial Relation Query Language (SRQL).  
     SRQL is a SQL-like language that allows users to search through documents for elements arranged in certain positions like \textit{left, right, above} or \textit{below}~\cite{Dellapenna2012, Dellapenna2017}
 }
 
-
-\par{The spatial search functionality \emph{COMPASS} enables leverages a pictorial query specification method to bridge the gap between the user's mental model of objects and the geospatial data available to search. 
-
-
-
+\subsubsection{Summary}
+\par{
+    We consider SPM as the underlying problem COMPASS sets out to solve. 
+    Broadly, we observe that directional relations offer powerful discrimination capabilities in spatial queries, but effectively representing and querying them is computationally prohibitive. 
+    %
+    Traditional SKQ approaches are limited by their inability to represent directional relations. In the overarching GESTALT system, we implement SKQ as a filtering technique to prune the candidate locations being provided to our spatial pattern matching approaches~\cite{Osul2023}.
+    %
+    Set-intersection approaches will only allow for a naive bucketing approach to spatial relationships, which we implement with our \textit{location-centric} approach for comparison.
+    %
+    SGM approaches are generally infeasible for matching directional relations because adequately representing all directional constraints requires at least a fully connected graph and graph-matching complexity scales to the density of the graph.
+    %
+    CSP/QSR approaches experience similar difficulties to SGM, with their performance degrading rapidly as the number of constraints increases.
+    %
+    Complexity increases further when there is no known global coordinate system to compare against. 
+    By viewing the problem from a user-centric perspective we need to not only match a pictorially-specified query pattern against the underlying database, but that query pattern is unlikely to be aligned with the global coordinate system underpinning the database. 
+    None of the surveyed problems are capable of efficiently supporting cardinality-invariant directional relation spatial pattern matching, and the COMPASS suite aims to offer a mechanism to fill this gap. 
 }
-
-\subsection{Qualitative Spatial Reasoning}
-
-
-\osullikomment{Below is old}
-
-\subsection{Human Spatial Cognition and Reasoning}
-\par{Research in human spatial reasoning shows that humans perceive the world not as a map but as a collection of sensory anchors around salient locations. 
-Schwering et al.~\cite{Schwering2014} assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
-Humans are rarely aware of the cardinal directions in an environment, perform poorly when estimating distances between objects, and inherently view the world as relative to their place in it.}
-%
-\par{Errors of \textit{direction} and \textit{distance} are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
-The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.
-Our proposed data structures and algorithms support user-centric spatial search by leveraging the human preference for relative object positioning while minimizing the expectation that the user can accurately recall cardinal direction or the distance between objects in the world around them.}
-
-
-
-
-
 
 %They emphasize that the essence of the qualitative spatial reasoning approach is to abstract the infinite complexity of spatial and temporal configurations in the real world to a solvable representation. 
 
