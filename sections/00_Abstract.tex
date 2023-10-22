@@ -10,11 +10,11 @@
 %Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. 
 Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
 When only partial or imperfect information is available, distance-based nearest-neighbor searching can be used.
-However, distance-based approaches require users to estimate the distance between objects in the environment, a task that humans have been shown to perform poorly at.
+However, distance-based approaches require users to estimate the distance between objects in the environment, a task that humans perform poorly.
 The more natural spatial search alternative is pictorial querying, where a sketch map enables users to place objects in a configuration where their relative positions define the query constraints.
 Most approaches to pictorial query searching are intractable for any realistic number of query and database terms.
 We present \emph{COMPASS}, a collection of data structures and algorithms that address geospatial search as a human-centric rather than a map-centric task. 
-The COMPASS suite addresses scalability issues that previously rendered pictorial-based searching infeasible. 
+The \emph{COMPASS} suite addresses scalability issues that previously rendered pictorial-based searching infeasible. 
 Of our three search methods, our Cardinality-Invariant Object-Object search achieves perfect recall in testing, an improvement of 0.9 on non-invariant approaches with a worst-case complexity of $\mathcal{O}(Q^2 + Q\times O^2)$.
 
 

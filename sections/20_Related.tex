@@ -9,45 +9,31 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
 \subsection*{Relation Types}
 
 \par{
-    \textit{Points, Lines} and \textit{Regions} are generally agreed to be the classes of spatial objects. 
-    There are three commonly agreed-upon types of spatial relations between these object classes. 
-    \textit{Topological} relations describe how regions and lines intersect, contain, touch, or otherwise interact.
-    \textit{Metric} relations describe the distances between objects. 
-    \textit{Directional} relations describe how objects are positioned relative to each other in space.
-    %
-    These can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next-to}~\cite{Carniel2020,Bertella2022,Carniel2023}.
+    Spatial objects are typically classed as\textit{Points, Lines} or \textit{Regions}. 
+    Spatial objects can be related to each other in the following ways:
+    \begin{itemize}
+        \item \textit{Topological} relations describe how regions and lines intersect, contain, touch, or otherwise interact.
+        \item \textit{Metric} relations describe the distances between objects. 
+        \item \textit{Directional} relations describe how objects are positioned relative to each other in space.
+    \end{itemize}
+
+    The focus of this paper is directional relations between spatial objects. These can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next to}~\cite{Carniel2020,Bertella2022,Carniel2023}.
 }
-\par{Most of the related work focuses on topological and metric queries.
-    One reason for the lack of attention directional relationships receive is their inherent complexity.
+\par{Most of the work in spatial search focuses on topological and metric queries, rather than directional queries, which are inherently complex.
     %
-    Explicitly representing directional relations usually requires segmenting the space around spatial objects, or drawing relationship constraints between each object. 
-    Space segmentation typically assumes knowledge of a global coordinate system (i.e. an assumption of where North is) and either assumes that the objects are all positioned relative to a known point or that each object stores and tracks its 'view' of space.  
-    Drawing relationship constraints becomes costly, and depending on the link encoding scheme typically requires at least a fully connected weighted graph or multigraph to capture the relative directions of objects to each other.
+    Explicitly representing directional relations usually requires segmenting the space around spatial objects or defining pairwise relationship constraints between objects. 
+    Space segmentation typically assumes knowledge of a global coordinate system (i.e. an assumption of which direction North is) and either assumes that objects are positioned relative to a known point or that each object stores and tracks its `view' of space.  
+    Defining relationship constraints is costly and typically requires a fully connected weighted graph or multigraph to capture the relative directions of objects to each other.
     %
 }
 \par{
-    The COMPASS suite focuses on using directional relations as the basis of its pattern matching because of the precision it allows us in specifying a target pattern of objects.
+    The \emph{COMPASS} suite uses directional relations as the basis of its pattern matching because of the precision it allows us in specifying a target pattern of objects.
     It aims to leverage implicit representations of directional relations to reduce the complexity incurred by explicitly representing directional relations as space segments or graphs. 
     Ultimately, the COMPASS suite is intended as a step towards reducing the complexity of spatial pattern matching using directional relationships.
     The remainder of the related work section explores the limitations of conventional approaches to spatial search, the subfield of spatial pattern matching, and the gaps that COMPASS seeks to fill.
 }
 
-\subsection{Human Spatial Cognition and Reasoning}
-\par{
-    Research in human spatial reasoning shows that humans perceive the world not as a map but as a collection of sensory anchors around salient locations. 
-    %
-    Schwering et al.~\cite{Schwering2014} assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
-    %
-    Humans are rarely aware of the cardinal directions in an environment, perform poorly when estimating distances between objects, and inherently view the world as relative to their place in it.
-    }
-\par{
-    Errors of \textit{direction} and \textit{distance} are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
-    %
-    The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.
-}
-\par{
-    The human preference for a local worldview that anchors on the relative positioning of salient objects motivates us to use \textit{directional} relations between spatial objects as the core of our spatial pattern matching approach.
-}
+
 
 \subsection{Conventional Spatial Querying Approaches}
 
@@ -117,12 +103,7 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
 \par{
         Some approaches combine CSP and SGM. For example, the \textit{Sketchmapia} system accepts a user sketch and extracts features of \textit{street segments}, \textit{junctions}, \textit{landmarks}, and \textit{city blocks} and takes the explicit link-encoding approach to formulate a \textit{Qualitative Constraint Network} that is then searched against a database of maps for matches using incremental sub-graph matching.
 }    
-\subsubsection{Other Problem Formulations}
-\par{
-    Other approaches do not fit neatly into either SGM or CSP. For example, Liu et. al. developed an Open Shape-based Strategy (OSS) to search for spatial objects based on query terms that are not aligned with the global coordinate system~\cite{Liu2003}.
-    Della Penna et. al. develop a framework for implicitly and explicitly encoding relative spatial positions, and the Spatial Relation Query Language (SRQL).  
-    SRQL is a SQL-like language that allows users to search through documents for elements arranged in certain positions like \textit{left, right, above} or \textit{below}~\cite{Dellapenna2012, Dellapenna2017}
-}
+
 
 \subsubsection{Summary}
 \par{
@@ -141,6 +122,83 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
     By viewing the problem from a user-centric perspective we need to not only match a pictorially-specified query pattern against the underlying database, but that query pattern is unlikely to be aligned with the global coordinate system underpinning the database. 
     None of the surveyed problems are capable of efficiently supporting cardinality-invariant directional relation spatial pattern matching, and the COMPASS suite aims to offer a mechanism to fill this gap. 
 }
+
+\setlength\tabcolsep{0pt}
+\small{
+\begin{table*}[t]
+    \begin{center}
+        \begin{tabular}{|c|ccccccccc|c|} 
+            \hline
+            \rot{Approach} & 
+            \rot{Class} & 
+            \rot{Objects} &
+            \rot{Keyword} &
+            \rot{Metric} &
+            \rot{Topological} &
+            \rot{Directional} &
+            \rot{Fuzzy} &
+            \rot{Negation} &
+            \rot{Cardinality-Invariant} &
+            \rot{Complexity} \\
+            \hline
+            %   Approach                                & Class       & obj& K & M & T & D & F & N & C & O \\
+            mKQ~\cite{Zhang2009}                        & SKQ        & P   & X & X &   &   &   & X & X & ? \\
+            PQL-GD~\cite{DiLoreto1996}                  & SI         & PLR & X & X & X & X & X & X &   & ? \\
+            PQL-Tree~\cite{Soffer1997,Soffer1998a}      & SI         & P   & X & X &   &   &   & X &   & ? \\
+            PQL-SGM~\cite{Folkers2000}                  & SGM        & P   & X & X &   &   &   & X &   & $\mathcal{O}(M\times2^m)$ \\
+            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta |D|^2+\xi)$ \\
+            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(n^4+m|D|^2+\xi)$ \\
+            ESPM~\cite{Chen2019}                        & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(|D_w|^n)$ \\
+            K-Clique~\cite{Taniguchi2022}               & SGM        & P   &   &   &   &   &   &   &   & $\mathcal{O}(n^k)$ \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP        & PLR &   & X & X & X & X &   &   & Exponential in $\mathcal{Q}$ \\
+            MSJ$_{WR}$~\cite{Papadias1998}              & CSP        & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
+            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP        & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
+            STARVARS~\cite{Lee2013}                     & CSP        & P   &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
+            SketchMapia~\cite{Schwering2014}            & CSP        & PLR & X &   & X & X & X &   & X & ? \\
+            OSS~\cite{Liu2003}                          & OTH        & PR  &   & X & X & X &   &   & X & ? \\
+            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & OTH        & R   & X &   & X & X &   &   &   & ? \\
+            COMPASS$_{II}$                              & SI         & P   & X &   &   & X & X &   & X &  \\
+            COMPASS$_{LO}$                              &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q + O)$ \\    
+            COMPASS$_{OO}$                              &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q + O^2)$ \\  
+            COMPASS$_{CI_OO}$                           &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q^2 + Q\times O^2)$ \\
+            
+            
+            
+            \hline     
+        \end{tabular}
+        \caption{related\_work} 
+        \label{Table:related_work}
+    \end{center}
+\end{table*}
+}
+
+
+%%% JOURNALL
+% \subsection{Human Spatial Cognition and Reasoning}
+% \par{
+%     Research in human spatial reasoning shows that humans perceive the world not as a map but as a collection of sensory anchors around salient locations. 
+%     %
+%     Schwering et al.~\cite{Schwering2014} assert that the three most common sources of error in how humans recall their environment are \textit{errors in direction, errors in distance} and \textit{errors in schematic structure}.
+%     %
+%     Humans are rarely aware of the cardinal directions in an environment, perform poorly when estimating distances between objects, and inherently view the world as relative to their place in it.
+%     }
+% \par{
+%     Errors of \textit{direction} and \textit{distance} are easily understood as a consequence of humans favoring a local (rather than global) approach to direction finding and the well-documented difficulty of estimating distances of unknown objects at uncertain ranges in varying lighting and weather conditions. 
+%     %
+%     The errors of \textit{schematic structure} partly occur because people tend to anchor memories on salient objects they encounter while experiencing a location~\cite{Helbing2020}, so they recall those objects more readily than others.
+% }
+% \par{
+%     The human preference for a local worldview that anchors on the relative positioning of salient objects motivates us to use \textit{directional} relations between spatial objects as the core of our spatial pattern matching approach.
+% }
+
+% \subsubsection{Other Problem Formulations}
+% \par{
+%     Other approaches do not fit neatly into either SGM or CSP. For example, Liu et. al. developed an Open Shape-based Strategy (OSS) to search for spatial objects based on query terms that are not aligned with the global coordinate system~\cite{Liu2003}.
+%     Della Penna et. al. develop a framework for implicitly and explicitly encoding relative spatial positions, and the Spatial Relation Query Language (SRQL).  
+%     SRQL is a SQL-like language that allows users to search through documents for elements arranged in certain positions like \textit{left, right, above} or \textit{below}~\cite{Dellapenna2012, Dellapenna2017}
+% }
+
+
 
 %They emphasize that the essence of the qualitative spatial reasoning approach is to abstract the infinite complexity of spatial and temporal configurations in the real world to a solvable representation. 
 
