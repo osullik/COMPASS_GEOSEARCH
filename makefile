@@ -11,6 +11,14 @@ clean:
 	rm -fR auto_commit_fig
 	rm -fR auto_fig
 	rm -fR *.tgz
+	rm -f *.pdf
+
+publish:
+	rm -f *.aux *.dvi *.log *.bbl /*.pdf *~ *.out *.blg *.nav *.toc *.snm *.fdb_latexmk *.fls *.synctex.gz *.xmpi
+	rm -f */*.aux */*.dvi */*.log */*.bbl */*~ */*.out */*.blg */*/*~
+	rm -fR auto_commit_fig
+	rm -fR auto_fig
+	rm -fR *.tgz
 
 .PRECIOUS: auto_fig/res.txt
 
