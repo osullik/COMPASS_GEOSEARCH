@@ -130,47 +130,65 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
 \small{
 \begin{table*}[t]
     \begin{center}
-        \begin{tabular}{|c|ccccccccc|c|} 
+        \begin{tabular}{|c|cc|cccc|ccc|c|} 
+
+        
+
+            %   Approach                                & Class       & obj & K & M & T & D & F & N & C & O \\
             \hline
-            \rot{Approach} & 
-            \rot{Class} & 
-            \rot{Objects} &
-            \rot{Keyword} &
-            \rot{Metric} &
-            \rot{Topological} &
-            \rot{Directional} &
-            \rot{Fuzzy} &
-            \rot{Negation} &
-            \rot{Invariant} &
-            \rot{Complexity} \\
+            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Algorithm}}}& 
+            \multicolumn{1}{|c}{\multirow{2}{*}{\textbf{Class}}} &
+            \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Objects}~}} &
+            \multicolumn{4}{|c|}{\multirow{2}{*}{\textbf{Relationship Constraints}}} &
+            \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Search Features}}} &
+            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Complexity}}}\\
+            &&&&&&&&&&\\
+        
+            %\hline 
+            %Algorithm                                    & Class     & Objects      &\multicolumn{4}{|c|}{Relationship Constraints} & \multicolumn{3}{|c|}{Search Features} & Complexity  \\
+            %\hline
+
+            %\NewDocumentCommand{\rot}{O{45} O{5em} m}{\makebox[#2][c]{\rotatebox{#1}{#3}}}%
+
+             &  
+             &  
+             & \rot{Keyword} 
+             & \rot{Metric} 
+             & \rot{Topological} 
+             & \rot{Directional} 
+             & \rot{Fuzzy} 
+             & \rot{Negation} 
+             & \rot{Card. Inv.}
+             %& \multirow{3}{*}{\rotatebox[origin=c]{45}{~Cardinality~\hspace{-6em}}}{\rotatebox[origin=c]{45}{Invariant~\hspace{-4em}}} {\rotatebox[origin=c]{45}{~}}
+             &  \\
             \hline
-            %   Approach                                & Class       & obj& K & M & T & D & F & N & C & O \\
-            mKQ~\cite{Zhang2009}                        & SKQ         & P   & X & X &   &   &   & X & X & ? \\
-            PQL-GD~\cite{DiLoreto1996}                  & SI          & PLR & X & X & X & X & X & X &   & ? \\
-            PQL-Tree~\cite{Soffer1997,Soffer1998a}      & SI          & P   & X & X &   &   &   & X &   & ? \\
-            ~GESTALT$_{II}$~\cite{Osul2023}~            & SI          & P   & X &   &   &   &   &   & X &  $\mathcal{O}(l\times O)$ \\
-            ~GESTALT$_{II-Ranked}$~\cite{Osul2023}~     & SI          & P   & X &   &   &   &   &   & X &  $\mathcal{O}(l\times O +R \mathcal{Q})$\\
-            ~GESTALT$_{II-Fuzzy}$~\cite{Osul2023}~      & SI          & P   & X &   &   &   & X &   & X &  $\mathcal{O}(\mathcal{Q}\times l\times O)$ \\
-            PQL-SGM~\cite{Folkers2000}                  & SGM         & P   & X & X &   &   &   & X &   & $\mathcal{O}(m\times2^C)$ \\
-            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta O^2+\xi)$ \\
-            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & ~$\mathcal{O}(O^4+CO^2+\xi)$~ \\
-            ESPM~\cite{Chen2019}                        & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(R^O)$ \\
-            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP         & PLR &   & X & X & X & X &   &   & ~Exponential in $\mathcal{Q}$~ \\
-            MSJ$_{WR}$~\cite{Papadias1998}              & CSP         & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
-            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP         & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
-            STARVARS~\cite{Lee2013}                     & CSP         & P   &   &   &   & X &   &   & X & $\mathcal{O}(C^O)$ \\
-            SketchMapia~\cite{Schwering2014}            & CSP         & PLR & X &   & X & X & X &   & X & ? \\
-            OSS~\cite{Liu2003}                          & OTHER       & PR  &   & X & X & X &   &   & X & ? \\
-            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & OTHER       & R   & X &   & X & X &   &   &   & ? \\
-            COMPASS$_{LO}$                              &             & P   & X &   &   & X &   &   &   & $\mathcal{O}(Q + O)$ \\    
-            COMPASS$_{OO}$                              &             & P   & X &   &   & X &   &   &   & $\mathcal{O}(Q + O^2)$ \\  
-            COMPASS$_{CI}$                              &             & P   & X &   &   & X &   &   & X & ~$\mathcal{O}(Q^2 + Q\times O^2)$~ \\
+            %   Approach                                & Class       & obj            & K & M    & T  & D & F & N & C & O  \\
+            SKECa+~\cite{Zhang2009}                     & SKQ         & P              & X & X    &    &   &   & X & - & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
+            PQL~\cite{DiLoreto1996}                     & SI          & P\textit{,L,R} & X & X & X & X & X & X &   & Unclear \\
+            McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}& SI    & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
+            ~GESTALT$_{SI}$~\cite{Osul2023}~            & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G n)$ \\
+            ~GESTALT$_{SI-Ranked}$~\cite{Osul2023}~     & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G (n +n' \mathcal{Q}))$\\
+            ~GESTALT$_{SI-Fuzzy}$~\cite{Osul2023}~      & SI          & \textit{P}     & X &   &   &   & X &   & - & $\mathcal{O}(\mathcal{Q}Gn)$ \\
+            PQL-SGM~\cite{Folkers2000}                  & SGM         & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(m^m)$ \\
+            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
+            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
+            ESPM~\cite{Chen2019}                        & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
+            MSJ$_{WR}$~\cite{Papadias1998}              & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            STARVARS~\cite{Lee2013}                     & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
+            SketchMapia~\cite{Schwering2014,Jan2015}    & CSP \& SGM  & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
+            OSS~\cite{Liu2003}                          & Other       & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
+            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & Other       & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
+            COMPASS$_{LO}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
+            COMPASS$_{OO}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
+            COMPASS$_{CI}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
             
             
             
             \hline     
         \end{tabular}
-        \caption{Summary of related work. \\ \textnormal{Where PLR refers to \textit{Point, Line} and \textit{Region} spatial objects, \textit{Fuzzy, Negation} and \textit{(cardinality) invariant} are search types. In complexity, $O$ is the number of spatial objects in the database, $C$ is the number of constraints, $\mathcal{Q}$ is the number of query objects, $R$ is the set of objects matching a spatial keyword query, $\zeta$ is a sampling threshold in $[0,1]$ and $\xi$ is the maximal number of partial matches.}} 
+        \caption{Summary of related work. \\ \textnormal{Where PLR refers to \textit{Point, Line} and \textit{Region} spatial objects, \textit{Fuzzy, Negation} and \textit{(cardinality) invariant} are search types. Where worse-case complexity is not provided by the authors, we estimate (denoted with $^{\star}$). $n$ is the number of spatial objects in the database, $m$ is the number of constraints, $G$ is the number of object collections (locations) to search over, $\mathcal{Q}$ is the number of query objects, $n'$ is the subset of objects matching a keyword  query, $\zeta$ is a sampling threshold in $[0,1]$ and $\xi$ is the maximal number of partial matches to a query.}} 
         \label{Table:related_work}
     \end{center}
 \end{table*}
