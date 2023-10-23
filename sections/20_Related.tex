@@ -73,7 +73,7 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
     }
 \subsubsection{Set-Intersection Problems}
 \par{  
-    Early set-intersection approaches allow users to specify a combination of keyword, topological and metric dimensions to query their database~\cite{DiLoreto1996} with some approaches allowing users to configure thresholds for match confidence, quantity, and topological similarity~\cite{Soffer1997, Soffer1998a}. 
+    Early set-intersection (SI) approaches allow users to specify a combination of keyword, topological and metric dimensions to query their database~\cite{DiLoreto1996} with some approaches allowing users to configure thresholds for match confidence, quantity, and topological similarity~\cite{Soffer1997, Soffer1998a}. 
     Extensions improve efficiency by introducing spatial data structures to underly the set queries~\cite{Soffer1999}.
     The natural extension of these approaches is to formulate search as an isomorphic subgraph matching problem to strengthen topological matching~\cite{Folkers2000}, at the cost of $\mathcal{O}(m\times 2^m)$ complexity, where \textit{m} is the number of vertices in the database. 
 }
@@ -88,6 +88,9 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
     The Efficient Spatial Pattern Matching Algorithm (ESPM) improves MPJ and MSJ by replacing the underlying IR-Tree with an Inverted Linear Quadtree. 
     The Quadtree is more efficient when working on large search spaces but still uses graph matching as the underlying search technique. 
     ESPM takes $\mathcal{O}(|D_w|^n)$ time, where $n$ is the number of vertices in the graph and $|D_w|$ is the set of objects returned by the SKQ component~\cite{Chen2019}. 
+
+    \osullikomment{is the K-Clique stuff even worth including? I'm not sure its relevant}
+    
     K-Clique detection in spatial data uses a nearest-neighbor graph, iterative pruning, and early stopping in a graph-matching approach. 
     Its worst-case complexity is $\mathcal{O}(n^k)$ with expected complexity of $\mathcal{O}(NK)$~\cite{Taniguchi2022}.
     }  
@@ -138,35 +141,36 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
             \rot{Directional} &
             \rot{Fuzzy} &
             \rot{Negation} &
-            \rot{Cardinality-Invariant} &
+            \rot{Invariant} &
             \rot{Complexity} \\
             \hline
             %   Approach                                & Class       & obj& K & M & T & D & F & N & C & O \\
-            mKQ~\cite{Zhang2009}                        & SKQ        & P   & X & X &   &   &   & X & X & ? \\
-            PQL-GD~\cite{DiLoreto1996}                  & SI         & PLR & X & X & X & X & X & X &   & ? \\
-            PQL-Tree~\cite{Soffer1997,Soffer1998a}      & SI         & P   & X & X &   &   &   & X &   & ? \\
-            PQL-SGM~\cite{Folkers2000}                  & SGM        & P   & X & X &   &   &   & X &   & $\mathcal{O}(M\times2^m)$ \\
-            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta |D|^2+\xi)$ \\
-            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(n^4+m|D|^2+\xi)$ \\
-            ESPM~\cite{Chen2019}                        & SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(|D_w|^n)$ \\
-            K-Clique~\cite{Taniguchi2022}               & SGM        & P   &   &   &   &   &   &   &   & $\mathcal{O}(n^k)$ \\
-            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP        & PLR &   & X & X & X & X &   &   & Exponential in $\mathcal{Q}$ \\
-            MSJ$_{WR}$~\cite{Papadias1998}              & CSP        & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
-            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP        & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
-            STARVARS~\cite{Lee2013}                     & CSP        & P   &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
-            SketchMapia~\cite{Schwering2014}            & CSP        & PLR & X &   & X & X & X &   & X & ? \\
-            OSS~\cite{Liu2003}                          & OTH        & PR  &   & X & X & X &   &   & X & ? \\
-            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & OTH        & R   & X &   & X & X &   &   &   & ? \\
-            COMPASS$_{II}$                              & SI         & P   & X &   &   & X & X &   & X &  \\
-            COMPASS$_{LO}$                              &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q + O)$ \\    
-            COMPASS$_{OO}$                              &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q + O^2)$ \\  
-            COMPASS$_{CI_OO}$                           &            & P   & X &   &   & X & X &   &   & $\mathcal{O}(Q^2 + Q\times O^2)$ \\
+            mKQ~\cite{Zhang2009}                        & SKQ         & P   & X & X &   &   &   & X & X & ? \\
+            PQL-GD~\cite{DiLoreto1996}                  & SI          & PLR & X & X & X & X & X & X &   & ? \\
+            PQL-Tree~\cite{Soffer1997,Soffer1998a}      & SI          & P   & X & X &   &   &   & X &   & ? \\
+            ~GESTALT$_{II}$~\cite{Osul2023}~            & SI          & P   & X &   &   &   &   &   & X &  $\mathcal{O}(l\times O)$ \\
+            ~GESTALT$_{II-Ranked}$~\cite{Osul2023}~     & SI          & P   & X &   &   &   &   &   & X &  $\mathcal{O}(l\times O +R \mathcal{Q})$\\
+            ~GESTALT$_{II-Fuzzy}$~\cite{Osul2023}~      & SI          & P   & X &   &   &   & X &   & X &  $\mathcal{O}(\mathcal{Q}\times l\times O)$ \\
+            PQL-SGM~\cite{Folkers2000}                  & SGM         & P   & X & X &   &   &   & X &   & $\mathcal{O}(m\times2^C)$ \\
+            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta O^2+\xi)$ \\
+            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & ~$\mathcal{O}(O^4+CO^2+\xi)$~ \\
+            ESPM~\cite{Chen2019}                        & ~SKQ \& SGM & P   & X & X &   &   & X & X &   & $\mathcal{O}(R^O)$ \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP         & PLR &   & X & X & X & X &   &   & ~Exponential in $\mathcal{Q}$~ \\
+            MSJ$_{WR}$~\cite{Papadias1998}              & CSP         & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
+            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP         & PLR &   & X & X & X & X &   &   & Linear in $\mathcal{Q}$ \\
+            STARVARS~\cite{Lee2013}                     & CSP         & P   &   &   &   & X &   &   & X & $\mathcal{O}(C^O)$ \\
+            SketchMapia~\cite{Schwering2014}            & CSP         & PLR & X &   & X & X & X &   & X & ? \\
+            OSS~\cite{Liu2003}                          & OTHER       & PR  &   & X & X & X &   &   & X & ? \\
+            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & OTHER       & R   & X &   & X & X &   &   &   & ? \\
+            COMPASS$_{LO}$                              &             & P   & X &   &   & X &   &   &   & $\mathcal{O}(Q + O)$ \\    
+            COMPASS$_{OO}$                              &             & P   & X &   &   & X &   &   &   & $\mathcal{O}(Q + O^2)$ \\  
+            COMPASS$_{CI}$                              &             & P   & X &   &   & X &   &   & X & ~$\mathcal{O}(Q^2 + Q\times O^2)$~ \\
             
             
             
             \hline     
         \end{tabular}
-        \caption{related\_work} 
+        \caption{Summary of related work. \\ \textnormal{Where PLR refers to \textit{Point, Line} and \textit{Region} spatial objects, \textit{Fuzzy, Negation} and \textit{(cardinality) invariant} are search types. In complexity, $O$ is the number of spatial objects in the database, $C$ is the number of constraints, $\mathcal{Q}$ is the number of query objects, $R$ is the set of objects matching a spatial keyword query, $\zeta$ is a sampling threshold in $[0,1]$ and $\xi$ is the maximal number of partial matches.}} 
         \label{Table:related_work}
     \end{center}
 \end{table*}
