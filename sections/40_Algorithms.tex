@@ -1,4 +1,4 @@
-\section{Methods}
+\section{COMPASS Search Algorithms}
 \label{section:methods}
 
 In this section we outline the methods used to accomplish \emph{COMPASS}'s 3 forms of spatial search, and describe the process used to generate data for our experimental setup to test those search methods.
@@ -217,22 +217,3 @@ To do this, we generate the minimum bounding rectangle for the query points, and
 For each point in the query, we then compute the angle between each reference point, the centroid, and the given point. 
 Rotating the entire query configuration by each of these angle aligns the given point to each reference direction.
 The unique set of query configurations obtained in this manner represent the minimum set of object-object queries that then need to be run to determine if the pattern specified in the query matches, irrespective of cardinality. 
-
-\subsection{Data Generation Method}
-\par{Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.
-The spatial distribution of locations, and the objects associated with them are not uniformly distributed, and generating synthetic data requires an approach that is able to reflect the power law distributions observed in location and object clusters.  
-To this end, we developed a data generator to support the evaluation of our algorithms. 
-The data generator uses an implementations of the Recursive Matrix (RMAT) graph generation algorithm \cite{Chakrabarti2004} to produce the adjacency matrix of a scale-free graph with tunable size and density (setting the distribution parameters to reflect those standardized in graph500).
-We use the edges of that adjacency matrix to represent the 'coordinates' of the points associated with a location. 
-Labeling the points with their 'names' (object classes) involves generating samples across an inverse Pareto distribution, separating those samples into \textit{n} bins and then walking through that sample, assigning each bin encountered in turn to an unlabeled point.
-To ensure we can control the query evaluation, we insert queries from a disjoint set of labels into the location object matrices once the initial labeling has been completed. 
-To reflect real-world variance, those input queries undergo the following transformations that reflect the differences between how objects might exist in the real world vs. how a user might sketch or place them in a pictorial query.
-These transformations include 
-\begin{enumerate}
-    \item \textit{Translation}, where the query is shifted vertically and/or horizontally, to represent incorrect placement of the object pattern with respect to the location it should be associated with
-    \item \textit{Dilation}, where the query is expanded from its centroid by a random amount to represent inaccurate recollection of object-object distance by the user
-    \item \textit{Rotation}, where the query is rotated about its centroid to represent lack of knowledge about cardinal bearings by the user
-\end{enumerate}
-
-
-The data generator framework allows for flexible experimentation to test how spatial queries perform in terms of precision, recall, and query response time, while controlling the number of locations generated, the number of queries constructed, number and distribution of objects in each query and associated with each location, and the type and degree of transformation applied to the queries to simulate real world conditions where users have imperfect information.}

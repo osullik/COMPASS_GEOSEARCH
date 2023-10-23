@@ -1,9 +1,9 @@
-\section{Analysis and Results}
+\section{Results}
 \label{section:results}
 
 Our theoretical analysis and experimental results show that Cardinality Invariant Search performs very well and, in practice, scales better than expected.
 
-\subsection{Algorithm Analysis}
+\subsection{Theoretical Complexity}
 
 Our \textbf{locationObjectSearch} implementation searches each quadrant of the candidate location for matching objects that were specified in the query, resulting in a time complexity of $\mathcal{O}(Q + O)$ for $Q$ query points and $O$ objects per location. 
 Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O)$ time complexity in most scenarios.
@@ -14,7 +14,7 @@ This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$.
 Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of 3 reference points is necessary), resulting in time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
 
 
-\subsection{Experimental Results}
+\subsection{Empirical Performance}
 We empirically demonstrate the performance of the three search methods by comparing the precision, recall, and execution times in terms of the number of query constraints. 
 
 \subsubsection{Precision and Recall Performance.} 

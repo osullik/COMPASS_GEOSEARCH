@@ -1,5 +1,89 @@
 \section{Introduction}
+
+MOTIVATION
+DEFINITION OF PRIMITIVES
+DIFFICULTY OF DIRECTION RELATIONS
+OUR DEFINITIONS
+HOW WE SOLVE IT IMPLICITLY
+
+BACKGROUND
+    DETAILED DEFINTIONS
+    BASICS OF SPATIAL SEARCH
+    ID THE GAP
+
+COMPASS DATA STRUCTURES
+
+
+
+
 \label{section:introduction}
+
+\subsection{Motivation}
+\par{
+    Determining the location a photo was taken, matching a sketch to the real-world location it describes and even using a written description to geolocate the described event are important tasks in open-source intelligence. \osullikomment{cite}
+    Ideally, an analyst would examine the picture metadata to determine the location.
+    However, when the location data has been stripped from a photo, or is not available in a sketch or description, analysts are forced to use other, manually-intensive methods based on what can be deduced from the objects in the description.
+    Techniques like skyline matching, vegetation matching and reading street signs are helpful, but rely on the presence of those features in the image. \osullikomment{Cite Here}
+    How should an analyst proceed when the only features that they have to try and locate an image are a low-resolution hypothesis of where the desired location may be and a collection of everyday objects to try and confirm that hypothesis.
+}
+
+\subsection{Definitions}
+\par{
+    Here, we examine the problem of \textit{spatial pattern matching}. That is, given a "world" of geospatially arranged objects, and a "query" of geospatial objects, determine where in the world that query is referring to.
+}
+
+\subsubsection{Geospatial Primitives}
+\par{
+    Geospatial objects are commonly classified as being \textit{points}, \textit{lines} or \textit{regions} \textit{(P,L,R)}. 
+    When arranged in common space, geospatial objects have relations that are  \textit{topological} (touch, contain, intersect etc), \textit{metric} (ten miles, near, far etc.) and \textit{directional} (north, left, below etc)~\cite{Carniel2020,Bertella2022,Carniel2023}.
+    In \emph{COMPASS}, we constrain ourselves to the \textit{Point} objects.
+    }
+
+\par{
+    When searching for patterns of objects, we typically encode the \textit{topological, metric} and \textit{directional} relations as constraints, and search our world of constrained objects with a query consisting of a subset of those constrained world objects for matches.
+    Topological relations are typically discrete - A road intersects another road, or it does not. 
+    Metric relations can be easily binned from continuous to discrete values - a train station is near or far from your house and are mathematically trivial to infer.
+    Directional relations are more difficult.
+    }
+
+\par{
+    Directional relations generally require explicit representation, and have a fully-connected set of relationships with every other object in the shared space.
+    That is, their location in space depends on the location of every other object in space. 
+    There are two dominant approaches to representing directional constraints, space segmentation and link encoding\cite{Dellapenna2012,Dellapenna2017}.\osullikomment{Double check this cite} 
+    }
+
+\osullikomment{Insert human factors here to explain why we care about directional relations.}
+
+\subsubsection{Directional Relations}
+\par{    
+    Segmentation frequently makes a simplifying assumption that a both the query and the world are aligned to a global coordinate system (cardinal directions).
+    With the coordinate system assumption, the space can be segmented around the objects (north, west, south-east etc), and each object will maintain a list of which segment every other object in the shared space lays in.
+    A query in global coordinate space that asks for everything \textit{west} of object $A$ can easily just return anything with a \textit{west} relationship of $A$ in the 'world'.
+    Without the coordinate system assumption, the relations must be more general (left, behind, above, etc) and the matching problem becomes significantly more difficult as there is no guarantee that the query \textit{left} and the world \textit{west} are both referring to the same direction.
+    The problem has become \textit{cardinality invariant}.
+    }
+\par{
+    Explicit link encoding creates a graph that at a minimum is fully connected, and commonly will be a multigraph when a more granular encoding scheme is used.
+    Every node in that graph is an object in the shared space, and every edge is a directional relation to every other node. 
+}
+\
+\subsubsection{Approaches to Spatial Pattern Matching}
+\par{
+    Spatial pattern matching problems are commonly approached in three ways, \textit{set intersection} (SI), \textit{subgraph matching} (SGM), and \textit{qualitative spatial reasoning} (QSR). 
+    QSR is a special case of \textit{Constraint Satisfaction Problem} (CSP) and we will refer to them as CSP hereon. 
+    }
+\par{
+    SI for spatial pattern matching intersects a \textit{query set} with one or more \textit{world sets}, and returns those \textit{world sets} which contain the query set. 
+    SI typically does not allow for explicit encoding of \textit{topological} \textit{metric} or \textit{directional} constraints, and so are not well suited for the pattern matching problem.
+    SGM for spatial pattern matching seeks to match a \textit{query graph} against one or more \textit{world graphs}, assuming that the query graph is a subgraph of the world graph. 
+    SGM approaches scale poorly with the size of query terms and the density of edges in the graph, and so are of limited utility in for the densely connected directional constraint relationships.
+    CSP for spatial pattern matching seek to find an assignment of variables (objects) that are valid given the c
+    
+    
+
+}
+
+
 \par{Many forms of spatial search require precise query input, like the coordinates or exact name of a location of interest, to return an accurate result. 
 This formulation of the spatial search problem is cumbersome to users, as it requires queries to be issued in a format not inherently consistent with how humans reason spatially.
 From a cognitive perspective, humans can more readily recall relative spatial layouts in their environment than they can estimate distances between objects or exact coordinates or addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
