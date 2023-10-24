@@ -1,15 +1,22 @@
 \section{Conclusion}
 \label{section:conclusion}
 \normalsize
-We present \emph{COMPASS}, a collection of data structures and algorithms that view spatial search as a human-centric activity. 
-\emph{COMPASS} re-frames the \textit{spatial pattern matching} problem to focus on the expressive \textit{directional} relations that humans more easily parse. 
+We present \emph{COMPASS}, a collection of data structures and algorithms that enable search over directional spatial relations at scale. 
+%\emph{COMPASS} re-frames the \textit{spatial pattern matching} problem to focus on the expressive \textit{directional} relations that humans more easily parse. 
 %
-We store collections of geospatial objects in semantically meaningful groups called \textit{locations} and develop the \textit{concept map} data structure to simplify and store directional relations for locations. 
-We use \textit{Recursive Grid Search} as a method to confirm whether the directional relations in a location can satisfy the directional constraints specified in a query. 
+To accomplish this, we develop the matrix-based \textit{concept map} data structure to implicitly encode the otherwise unmanageable number of pairwise directional relations between objects.
+We further simplify the previously intractable directional spatial pattern matching problem by encoding geospatial objects hierarchically, dividing them into semantically meaningful groups called \textit{locations}. 
+%We recursively search the concept maps to confirm whether the directional relations can satisfy the constraints specified in a query. 
 %
-The theoretical worst-case complexity of our approach is no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existence of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(Gn^{2})$ for our \textit{Cardinality-Invariant} algorithm, where $G$ is the number of locations in the database and $n$ is the number of objects. We demonstrated with experiments that our \textit{Cardinality Invariant} algorithm has perfect recall even when a user aligns their queries incorrectly.
+We provide a detailed comparison of existing approaches to spatial pattern matching, and show that the theoretical worst-case complexity of our approach is significantly better than any previous approaches that handle directional relations.
 %
-\emph{COMPASS} is a step towards automating the manual pattern matching that still occurs regularly in open-source intelligence investigations and geospatial science.
+We hope that by taking the first step in solving this simplified version of the directional spatial pattern matching problem, this work will inspire further attempts to break the complexity barrier of this powerful but computationally challenging method of spatial search.
+
+
+%no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existence of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(Gn^{2})$ for our \textit{Cardinality-Invariant} algorithm, where $G$ is the number of locations in the database and $n$ is the number of objects. 
+%We demonstrate with experiments that our \textit{Cardinality Invariant} algorithm has perfect recall even when a user aligns their queries incorrectly.
+%
+%\emph{COMPASS} is a step towards automating the manual pattern matching that still occurs regularly in open-source intelligence investigations and geospatial science.
 %
 %The salient limitation of \emph{COMPASS} is that it only handles point data for representing locations and querying.
 %The lack of support for lines and polygons means that users need to estimate where the center of something large is to place other objects relative to it and that it can not support containment queries where a small object might be within a larger one. 

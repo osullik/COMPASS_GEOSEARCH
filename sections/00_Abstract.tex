@@ -4,16 +4,19 @@
 % Results
 % Conclusion
 
-The \textit{Spatial Pattern Matching} paradigm offers a promising direction for searching with incomplete or imperfect information, but it is badly constrained by dependence on graph-based representations and computationally intensive search algorithms. 
-We present \emph{COMPASS} as a reframing of the spatial pattern matching problem. 
-We group geospatial objects into semantic \textit{locations} and replace graph structures with an abstracted matrix \textit{competency map} representation of each location. 
-The abstracted view permits encoding of the directional relationships that are usually too dense for representation using graph-based methods. We search using our \textit{Cardinality Invariant Object-Object Recursive 
-Grid Search} algorithm, which finds matches even when the query is not aligned to the global coordinate system, resulting in perfect recall in our evaluation. 
-Our analysis shows that while the theoretical complexity of our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
-%for $Q$ query points and $n$ objects for each of $G$ locations 
-in the worst case, the empirical performance is closer to logarithmic growth on the number of query terms.
-\emph{COMPASS} is a suite of data structures and algorithms that enable pattern-based search using directional relation constraints and offers a viable alternative to the dominant set-intersection, subgraph matching, and constraint satisfaction approaches.
+%The abstracted view permits encoding of the directional relationships that are usually too dense for searching using graph-based methods. 
+%search using our \textit{Cardinality Invariant Object-Object Recursive Grid Search} 
+%we re-frame the spatial pattern matching problem by defining semantic groups of geospatial objects as \textit{locations}.
 
+The \textit{Spatial Pattern Matching} paradigm offers a promising direction for searching with incomplete or imperfect information, but it is badly constrained by dependence on graph-based representations and computationally intensive search algorithms like subgraph matching and constraint satisfaction. 
+To address these limitations, we present \emph{COMPASS}, a suite of data structures and algorithms that enable pattern-based search by encoding the directional relationships between objects in abstracted matrix representations rather than graph structures.
+We provide a series of recursive search algorithms that leverage our matrix representations to enable spatial search queries with directional constraints, which are typically too dense for previous graph-based approaches.
+Our search methods find matches even when the query pattern is not aligned to the global coordinate system, resulting in perfect recall in our evaluation. 
+Computationally, our search methods scale with the number of query objects times the number of database objects squared in the worst case, which is significantly better than previous methods.
+Our empirical measurements show that the performance is typically even better, approaching logarithmic in the number of query terms.
+
+%Our analysis shows that while the theoretical complexity of our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
+%for $Q$ query points and $n$ objects for each of $G$ locations 
 
 %Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
 %When only partial or imperfect information is available, distance-based nearest-neighbor searching can be used.

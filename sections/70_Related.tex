@@ -1,9 +1,13 @@
 \section{Related Work}
 \label{section:related}
 \normalsize
+
+
+
+
 \par{
     Most practical applications of spatial search aim to answer queries like "Where are the Italian restaurants near me?".
-    Most of the work in this area is based on Spatial Keyword Queries (SKQ), which handle topological and metric constraints but lack support for directional constraints~\cite{Guo2015, Cao2012, Zhang2009, Osul2023}. 
+    Most of the work in this area is based on Spatial Keyword Queries (SKQ), which handle topological and metric constraints but lack support for directional constraints~\cite{Guo2015, Cao2012, Zhang2009, Osul2023}, or conventional spatial joins, which do not typically capture more than two-way directional relations~\cite{Jacox2007}. 
     Directional constraints are densely interrelated, and current methods for encoding and searching over them (set intersection, subgraph matching, and constraint satisfaction problems) are impractical at scale.
     We describe the notable works in these areas and include a complexity analysis in Table \ref{Table:related_work}.
 }
@@ -18,95 +22,32 @@
 
 \subsection{Subgraph Matching (SGM)}
 \par{
-   
     Subgraph matching (SGM) approaches assume the database is encoded as a graph of objects and relations, and queries are encoded as a subgraph of objects and constraints of interest.
     These methods then seek to identify where the query pattern exists in the database graph. 
-    Spatial SGM methods like PQIS~\cite{Folkers2000} and Spacekey$_{MPJ}$~\cite{Fang2019} approach exponential in the number of constraints, ESPM and SpaceKey$_{MSJ}$ are bound by the number of nodes in exponential~\cite{Chen2019} or quartic~\cite{Fang2019} time, and fuzziness adds further complexity~\cite{Fang2019}.
+    Spatial SGM methods like PQIS~\cite{Folkers2000} and Spacekey$_{MPJ}$~\cite{Fang2019} approach exponential in the number of constraints, and ESPM and SpaceKey$_{MSJ}$ are bound by the number of nodes in exponential~\cite{Chen2019} or quartic~\cite{Fang2019} time.
+    Fuzziness and partial matching adds further complexity~\cite{Fang2019}.
     }
     
 \subsection{Constraint Satisfaction Problems (CSP)}
-    
-
     \par{
-    Constraint Satisfaction Problems (CSP) for SPM find an assignment of valid variables (database objects) given the query constraints.
+    Constraint Satisfaction Problems (CSP) for spatial pattern matching find an assignment of valid variables (database objects) given the query constraints.
     In the worst case, where constraints are numerous, specificity is low, and constraints are poorly ordered, CSP approaches perform poorly.
-    
+   % 
     Most CSP are at least cubic in the number of objects~\cite{Dylla2017}.
-    Some approaches like StarVars, are exponential in the number of objects~\cite{Lee2013}, \textit{Forward Checking} algorithms like MSJ$_{WR}$ and MSJ$_{JWR}$  are exponential in the number of constraints~\cite{Papadias1998}, MSJ$_{MSJ}$  is exponential in query terms~\cite{Papadias1998}, and \textit{Sketchmapia} which combines a QCN representation with a subgraph matching solver we estimate performs similarly~\cite{Schwering2014, Jan2015} to these algorithms.
+    Some approaches like StarVars, are exponential in the number of objects~\cite{Lee2013}.
+    \textit{Forward Checking} algorithms, like MSJ$_{WR}$, MSJ$_{JWR}$, and $_{MSJ}$ are exponential in the number of constraints or in the number of query terms~\cite{Papadias1998}.
+    \textit{Sketchmapia,} which combines a qualitative constraint network representation with a subgraph matching solver, we estimate performs similarly~\cite{Schwering2014, Jan2015}.
    
 
 \subsection{Summary}
 
 \par{
     %All of the current approaches for spatial pattern matching are unsuitable for the directionally constrained search task under consideration.% \emph{COMPASS} to fulfill. 
-    Reviewing Table \ref{Table:related_work} shows that \emph{COMPASS} offers a combination of directional constraints, cardinality invariance and better worst-case complexity than systems with comparable functionality.
+    Table \ref{Table:related_work} shows that \emph{COMPASS} offers a combination of directional constraints, cardinality invariance and better worst-case complexity than systems with comparable functionality.
     Formulating spatial pattern matching problems as graph or constraint network problems has fostered search methods dependent on those data structures. 
     Set intersection, subgraph matching, and constraint satisfaction problems all degrade when the number of constraints and query terms increase, making them unsuitable for dense directional relations. 
     The data structures and algorithms presented in \emph{COMPASS} re-frame the underlying representation of spatial pattern matching problems so that new search methods can be applied that scale reasonably for directional relation-based search.
 }
-
-\setlength\tabcolsep{0pt}
-\small{
-\begin{table*}[h!]
-    \begin{center}
-        \begin{tabular}{|c|ccc|cccc|ccc|c|} 
-
-        
-
-            %   Approach                                & Class       & obj & K & M & T & D & F & N & C & O \\
-            \hline
-            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Algorithm}}}& 
-            \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Implementation}}} &
-            \multicolumn{4}{|c|}{\multirow{2}{*}{\textbf{Relationship Constraints}}} &
-            \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Search Features}}} &
-            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Complexity}}} \\
-            &&&&&&&&&&& \\
-        
-             & \rot{Encoding}
-             & \rot{Search}
-             & \rot{Objects}
-             & \rot{Keyword} 
-             & \rot{Metric} 
-             & \rot{Topological} 
-             & \rot{Directional} 
-             & \rot{Fuzzy} 
-             & \rot{Negation} 
-             & \rot{Card. Inv.}
-             &  \\
-            \hline
-            %   Approach                                        &Encoding         & Class       & obj            & K & M    & T  & D & F & N & C & O  \\
-            SKECa+~\cite{Guo2015}                               & N/A & SKQ         & \textbf{P}     & X & X    &    &   &   & X & N/A & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
-            PQL~\cite{DiLoreto1996}                             & Set & SI          & \textit{P,L,R} & X & X & X & X & X & X &   & Unclear \\
-            McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}  & Set & SI          & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
-            ~GESTALT$_{SI-Basic}$~\cite{Osul2023}~              & Set & SI          & \textit{P}     & X &   &   &   &   &   & N/A & $\mathcal{O}(G n)$ \\
-            ~GESTALT$_{SI-Ranked}$~\cite{Osul2023}~             & Set & SI          & \textit{P}     & X &   &   &   &   &   & N/A & $\mathcal{O}(G (n +n' \mathcal{Q}))$\\
-            ~GESTALT$_{SI-Fuzzy}$~\cite{Osul2023}~              & Set & SI          & \textit{P}     & X &   &   &   & X &   & N/A & $\mathcal{O}(\mathcal{Q}Gn)$ \\
-            PQIS~\cite{Folkers2000}                             & Link & SGM         & \textit{P}     & X & X &   & X &   & X &   & $\mathcal{O}(m^m)$ \\
-            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
-            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
-            ESPM~\cite{Chen2019}                                & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
-            MSJ$_{MSJ}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
-            MSJ$_{WR}$~\cite{Papadias1998}                      & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            MSJ$_{JWR}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            STARVARS~\cite{Lee2013}                             &Segment & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
-            SketchMapia~\cite{Schwering2014,Jan2015}            & Link   & SGM   & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
-            OSS~\cite{Liu2003}                                  &Segment & Other & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
-            SRQL~\cite{Dellapenna2012,Dellapenna2017}           &Segment & Other & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
-            COMPASS$_{LO}$ [ours]                               & Set    &  SI  & \textit{P}     & X &   &   & X &   & X &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
-            COMPASS$_{OO}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
-            COMPASS$_{CI}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
-            
-            
-            
-            \hline     
-        \end{tabular}
-        \caption{Summary of related work. \\ \textnormal{Where the authors do not provide worst-case complexity, we estimate (denoted with $^{\star}$). $n$ is the number of spatial objects in the database, $m$ is the number of relations, $G$ is the number of object collections (locations) to search over, $\mathcal{Q}$ is the number of query objects, $n'$ is the subset of objects matching a keyword  query, $\zeta$ is a sampling threshold in $[0,1]$ and $\xi$ is the maximal number of partial matches to a query}} 
-        \label{Table:related_work}
-    \end{center}
-\end{table*}
-}
-\normalsize
-
 
 %%% JOURNALL
 % \subsection{Human Spatial Cognition and Reasoning}

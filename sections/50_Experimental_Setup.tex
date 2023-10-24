@@ -3,24 +3,22 @@
 
 
 \par{
-    We design our experiments balance the power-law distribution of real-world object placement with the cleanliness required for robust experimental evaluation. 
-    }  
-    
-\par{
-    We developed a data generator to create a replicable benchmark dataset and make the code available on our Github\footnote{\url{https://github.com/osullik/GESTALT_GEOSEARCH}}. We generate objects and class labels using power-law distributions and use query terms from a disjoint set of labels so we can evaluate precision and recall.
-    }
-   
-\par{
-    The generator can distort the queries to simulate real-world user variance and error by introducing the following:
+    We design our experiments to balance the power-law distribution of real-world object placement with the cleanliness required for robust experimental evaluation. 
+%
+    We provide a data generator that produces a replicable benchmark dataset.
+    We generate objects using a power-law distribution and generate query terms from a disjoint set of labels from those objects, enabling precision and recall measurements.
+%
+    When generating queries, the data generator simulates real-world user variance and error by introducing the following distortions:
     \begin{enumerate}
-        \item \textit{Translation}, shifts the query in $x$ and $y$, to simulate drift.
-        \item \textit{Dilation}, expands the query from its centroid to induce noise in the object-object distance.
-        \item \textit{Rotation}, spins the query about its centroid to simulate poorly aligned local and global coordinate systems.
+        \item \textit{Translation}, which shifts the query objects in $x$ and $y$, to simulate lack of user knowledge about where in the region objects lie.
+        \item \textit{Dilation}, which expands the query from its centroid to simulate lack of user knowledge about the distance between objects.
+        \item \textit{Rotation}, which spins the query about its centroid to simulate a query that is misaligned with the global coordinate systems.
     \end{enumerate}
     }
 \par{
-    We generate two benchmark suites. \textit{Normal} has no distortions applied and \textit{Distorted} has all distortions applied. 
-    Both datasets grow in proportionally between $2^2$ and $2^9$ in both the number of database objects and number of query objects for a total of 35 experiments within the suite (i.e., for a database of $2^2$ there is only one query of $2^2$, but for a database of $2^4$ there are queries of $2^2$ $2^3$ and $2^4$).
+    We generate two benchmark datasets, one with the aforementioned distortions (\textit{Distorted}) and one without (\textit{Normal}). 
+    In both datasets, we vary the number of objects in the database and in the query, which allows for empirical measurements of search performance across different spatial search methods.
+    %Both datasets grow in proportionally between $2^2$ and $2^9$ in both the number of database objects and number of query objects for a total of 35 experiments within the suite (i.e., for a database of $2^2$ there is only one query of $2^2$, but for a database of $2^4$ there are queries of $2^2$ $2^3$ and $2^4$).
 }
 
  %Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.

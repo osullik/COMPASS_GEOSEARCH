@@ -1,11 +1,13 @@
 \section{COMPASS Data Structures}
 \label{section:data_structures}
 To enable spatial search without relying on costly graph representations, \emph{COMPASS} encodes spatial entities using \textit{Location-Object} data structures and \textit{Object-Object} \textit{Concept Map} data structures. 
-All our data structures are implemented hierarchically. \textit{Objects} are the atomic elements. They are semantically grouped into \textit{Locations}, which are grouped into \textit{Regions}, which are our division of the world. For example, the `Washington DC' region might have `park' and `hospital' locations, and the `park' might have `swing', `slide', and `bench' objects, with directional relations defined between them. 
+Our data structures are implemented hierarchically, with \textit{Objects} as the atomic elements. 
+Objects are semantically grouped into \textit{Locations}, which are grouped into \textit{Regions}, which segment the world. 
+For example, the `Washington DC' region might have `park' and `hospital' locations, and the `park' might have `swing', `slide', and `bench' objects, with directional relations defined between them. 
 For a more detailed analysis of the motivation and methods for assigning objects to locations, see \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting} (\textbf{\textit{GESTALT}})~\cite{Osul2023}.
 
 \subsection{Location-Object Data Structure}
-An \textit{Location-Object Data Structure} is a per-location set-based representation of the directional relations between objects and their locations.
+A \textit{Location-Object} data structure is a per-location set-based representation of the directional relations between objects and their locations.
 It subdivides the space around a location into the four cardinal quadrants (NorthWest, NorthEast, SouthWest, SouthEast) centered on the location coordinate.
 
 Each location-object relationship is encoded independently of other objects at that location.
@@ -14,10 +16,10 @@ Figure \ref{figure:ConceptMap-LO} shows how we encode objects (\ref{fig:CM-LO-Ex
 
 \subsection{Object-Object Concept Map Data Structure}
 
-A \textit{concept map} (CM) is an $(n\times n)$ matrix representation that implicitly encodes the $m$ directional relations between $n$ stored objects, similar to the intuition behind the concept map representations of images~\cite{Xu2010}.
+An \textit{Object-Object concept map} (CM) is an $(n\times n)$ matrix representation that implicitly encodes the $m$ directional relations between $n$ stored objects, with similar intuition to image concept map representations~\cite{Xu2010}.
 Matrix entries are either $0$, representing empty space, or an object ID, representing the relative position of that object to the $(n-1)$ other objects.
-Using Algorithm~\ref{alg:geoToGrid}, we assign each object to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
-This method preserves the relative ordering of objects from north to south and west to east for the original Cartesian representation.
+Using Algorithm~\ref{alg:geoToGrid}, we assign each object to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is its order of appearance from west to east.
+This method preserves the relative ordering of objects with respect to the original Cartesian representation.
 Figure \ref{figure:ConceptMap} shows how a set of objects (\ref{fig:CM-Example}) are encoded in a concept map (\ref{fig:CM-OO-Setup}), preserving their directional relations. 
 
 

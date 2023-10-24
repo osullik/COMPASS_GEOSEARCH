@@ -10,22 +10,22 @@ As the number of query points is usually much smaller than the number of objects
 Our \textbf{objectObjectSearch} implementation traverses a matrix of size ($n \times n$) from the North and West, slicing the matrix smaller and smaller as it traverses. 
 Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(G \times (Q + n^2))$ for $Q$ query points and $n$ objects for each of $G$ locations. 
 This reduces to $\mathcal{O}(G\times n^2)$ when $Q \ll n$. 
-Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of three reference points is necessary), resulting in time complexity of $\mathcal{O}(GQ \times (Q + n^2))$ for $Q$ query points and $n$ objects for each of $G$ locations, which reduces to $\mathcal{O}(G \times n^2)$ when $Q \ll n$. 
+Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of three reference points is necessary), resulting in an expected complexity of $\mathcal{O}(GQ \times (Q + n^2))$ for $Q$ query points and $n$ objects for each of $G$ locations, which reduces to $\mathcal{O}(G \times n^2)$ when $Q \ll n$. 
 
 
 \subsection{Empirical Performance}
-We empirically demonstrate the performance of the three search methods by comparing the precision, recall, and execution times regarding the number of query constraints. 
+We empirically demonstrate the performance of the three search methods by comparing the precision, recall, and execution times across a varying number of query constraints. 
 
 \subsubsection{Precision and Recall Performance.} 
 Table \ref{Table:PerformanceResults} shows the precision and recall of all three spatial search methods on the data we generated.
 \textit{Location-Object} search and \textit{Object-Object} search both rely on the cardinal direction of the query matching the cardinal direction of the actual configuration of the objects under search.
-The cardinal direction is rarely aligned with the query direction by chance, reflected in the lower precision and recall.
+The cardinal direction is rarely aligned with the query direction by chance, reflected in the lower precision and recall of these methods.
 \textit{Cardinality Invariant Object-Object} search is entirely independent of cardinal direction and therefore achieves perfect recall, finding all the locations matching the query configuration, regardless of cardinal direction.
 The precision of \textit{Cardinality Invariant} search is high but not perfect due to collisions during the data generation process, where query terms inserted in the database may, by chance, match the spatial configuration of the query.
 The rarity of collisions (less than 10\%), measured across various query sizes, indicates the discriminative power of directional relationship patterns.
 
 \subsubsection{Query Time.}
-The query response time for \textit{Location-Object} search and \textit{Object-Object} search is negligible with increased query terms (Figure \ref{figure:query-time}).
+The query response time for \textit{Location-Object} search and \textit{Object-Object} search is negligible with increased query terms (figure \ref{figure:query-time}).
 Cardinality Invariant \textit{Object-Object} search grows logarithmically with the number of query terms, which is significantly better than the theoretical complexity, which indicates the search time should scale with $\mathcal{O}(Q^2)$ in the worst-case query configuration.
 The empirical results show significantly better scalability than the theoretical worst-case because the number of rotations needed to ensure invariance for cardinal directionality is less than $Q$ in practice. 
 The worst case is when query points are arranged in a circle, and every point must be aligned to the \textbf{N}, \textbf{W}, and \textbf{NW} reference points, resulting in $3Q$ runs of the regular \textit{Object-Object} search.
@@ -61,5 +61,79 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
         \includesvg[width=0.5\textwidth]{figures/compassQuerySizeTime.svg}
     \caption{\textbf{Empirical Scalability of \emph{COMPASS}'s three search methods as number of query terms (constraints) increases. Cardinality Invariant Object-Object search is the only method with increased response times as query terms grow.}}\label{figure:query-time} 
 \end{figure}
+
+
+
+\setlength\tabcolsep{0pt}
+\small{
+\begin{table*}[h!]
+    \begin{center}
+        \begin{tabular}{|c|ccc|cccc|ccc|c|} 
+
+        
+
+            %   Approach                                & Class       & obj & K & M & T & D & F & N & C & O \\
+            \hline
+            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Algorithm}}}& 
+            \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Implementation}}} &
+            \multicolumn{4}{|c|}{\multirow{2}{*}{\textbf{Relationship Constraints}}} &
+            \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Search Features}}} &
+            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Complexity}}} \\
+            &&&&&&&&&&& \\
+        
+             & \rot{Encoding}
+             & \rot{Search}
+             & \rot{Objects}
+             & \rot{Keyword} 
+             & \rot{Metric} 
+             & \rot{Topological} 
+             & \rot{Directional} 
+             & \rot{Fuzzy} 
+             & \rot{Negation} 
+             & \rot{Card. Inv.}
+             &  \\
+            \hline
+            %   Approach                                        &Encoding         & Class       & obj            & K & M    & T  & D & F & N & C & O  \\
+            SKECa+~\cite{Guo2015}                               & N/A & SKQ         & \textbf{P}     & X & X    &    &   &   & X & N/A & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
+            PQL~\cite{DiLoreto1996}                             & Set & SI          & \textit{P,L,R} & X & X & X & X & X & X &   & Unclear \\
+            McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}  & Set & SI          & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
+            ~GESTALT$_{SI-Basic}$~\cite{Osul2023}~              & Set & SI          & \textit{P}     & X &   &   &   &   &   & N/A & $\mathcal{O}(G n)$ \\
+            ~GESTALT$_{SI-Ranked}$~\cite{Osul2023}~             & Set & SI          & \textit{P}     & X &   &   &   &   &   & N/A & $\mathcal{O}(G (n +n' \mathcal{Q}))$\\
+            ~GESTALT$_{SI-Fuzzy}$~\cite{Osul2023}~              & Set & SI          & \textit{P}     & X &   &   &   & X &   & N/A & $\mathcal{O}(\mathcal{Q}Gn)$ \\
+            PQIS~\cite{Folkers2000}                             & Link & SGM         & \textit{P}     & X & X &   & X &   & X &   & $\mathcal{O}(m^m)$ \\
+            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
+            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
+            ESPM~\cite{Chen2019}                                & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
+            MSJ$_{WR}$~\cite{Papadias1998}                      & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            MSJ$_{JWR}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            STARVARS~\cite{Lee2013}                             &Segment & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
+            SketchMapia~\cite{Schwering2014,Jan2015}            & Link   & SGM   & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
+            OSS~\cite{Liu2003}                                  &Segment & Other & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
+            SRQL~\cite{Dellapenna2012,Dellapenna2017}           &Segment & Other & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
+            COMPASS$_{LO}$ [ours]                               & Set    &  SI  & \textit{P}     & X &   &   & X &   & X &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
+            COMPASS$_{OO}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
+            COMPASS$_{CI}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
+            
+            
+            
+            \hline     
+        \end{tabular}
+        \caption{Summary of related work. \\ \textnormal{Where the authors do not provide worst-case complexity, we estimate (denoted with $^{\star}$). $n$ is the number of spatial objects in the database, $m$ is the number of relations, $G$ is the number of object collections (locations) to search over, $\mathcal{Q}$ is the number of query objects, $n'$ is the subset of objects matching a keyword  query, $\zeta$ is a sampling threshold in $[0,1]$ and $\xi$ is the maximal number of partial matches to a query}} 
+        \label{Table:related_work}
+    \end{center}
+\end{table*}
+}
+\normalsize
+
+
+
+
+
+
+
+
+
+
 
 %Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.

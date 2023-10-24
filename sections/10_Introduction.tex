@@ -2,146 +2,26 @@
 
 \label{section:introduction}
 
+Modern spatial search methods are derived from traditional search techniques that were not designed with spatial search constraints in mind.
+Keyword querying, which is a natural constraint in relational data, can be applied to narrow spatial regions, but the full richness of the spatial information is lost~\cite{Guo2015, Cao2012, Zhang2009, Osul2023}.
+Likewise, simple metric or topological constraints like "near", "within x miles of", etc. cannot capture the inherent complexity of spatial data, where every entity relates to every other entity through its position in a region~\cite{Carniel2020,Bertella2022,Carniel2023}. 
+Current methods for searching spatial data require encoding schemes that collapse rich spatial information down to basic relationships that fail to capture the most important aspect of the data - how multiple spatial entities relate to each other directionally.
 
-\par{
-    Determining where a photo was taken, matching a sketch to the real-world location it describes, and using a written description to geolocate a described event are essential tasks in open-source intelligence~\cite{Higgins2021}.
-    When the location data has been stripped from a photo, a sketch map is poorly labeled, or a description is vague, analysts are forced to use other methods that exploit the content, rather than the metadata.
-    Techniques like skyline matching~\cite{Stein1995, Baatz2012} and automatic vegetation matching~\cite{Schmidt2022} are helpful but rely on the presence of specific features in the image.
-    How should an analyst proceed when the only features that they have are a low-resolution hypothesis of where the desired location may be, and a collection of everyday objects to try to confirm that hypothesis?
-}
-\par{
-    The analyst works with imperfect and incomplete information, so conventional query approaches are of limited utility. 
-    From a cognitive perspective, humans reason more effectively about spatial layouts in their environment than distances between objects, exact coordinates or the street addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
-    So, how can we use computational approaches to augment the human preference for reasoning on directional relations?
-}
-
-\par{
-     The analyst is facing a \textit{spatial joining} problem. Given two collections of spatial objects (their query and database), they must find the pairs of objects satisfying some specified spatial constraints~\cite{Jacox2007}. 
-    More specifically, it is a \textit{spatial pattern matching} problem - confirming if the objects, constrained to some pattern in their query, exist in their database of geospatial points and relationships.
-}
-\par{
-    We present \emph{COMPASS}, (\textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}), a collection of data structures and algorithms designed to address the scalability issues of geospatial pattern matching. It offers a new representation for directional relationships and reframes the search problem by structuring geospatial objects hierarchically, grouped as \textit{locations} that are semantically meaningful to humans.
-    Moreover, we demonstrate how the \emph{COMPASS} framework intuitively supports pictorial queries, further supporting the human-centric view of search.   
-
-    We develop a new encoding scheme (concept map) and associated spatial pattern-matching algorithms that handle directional relations as a scalable alternative to graph-based constraint formulations.
-    We also provide a data generator to produce a location and object database and valid pictorial queries for evaluation.
+Under this paradigm, natural spatial pattern queries like "Where is there a pond, a statue, and a bridge arranged in a triangle?" are impossible to answer.
+Previous work in spatial pattern matching, which handles exactly this type of multi-entity directional queries, requires encoding the data in densely connected graphs or multigraphs, or segmenting space with respect to every object individually~\cite{Folkers2000, Fang2019,Chen2019,Fang2019}.
+Because of their underlying encoding schemes, these approaches are intractable for any reasonable number of objects and query constraints.
  
-    We begin by describing relevant background on spatial search in section \ref{section:background}. Sections \ref{section:data_structures} and \ref{section:methods} outline our proposed solution. We evaluate each algorithm's theoretical complexity and efficiency on the datasets we generate in sections \ref{section:experimental_setup} and \ref{section:results} and briefly summarize relevant related work in section \ref{section:related} before concluding.
-}
+%Because of the (typically cubic) complexity barrier to directional spatial search, most spatial search methods simply ignore directional relations.
+This gap between the natural spatial expressiveness of directional queries and the intractibility of resolving them for nontrivially-sized collections of spatial data is the reason modern search engines do not support them.
 
- %The paper proceeds in Section \ref{section:related} with a discussion of current and historical approaches to pictorial-based spatial search and spatial point data matching. 
-    %Next, Section \ref{section:prelim} introduces our approach and the three forms of spatial search \emph{COMPASS} enables.
-    %We describe the process used to generate the data, as well as the queries and algorithms that contributed to performing the search in Section \ref{section:methods}. 
-    %Finally, in Section \ref{section:results}, we discuss the performance and scalability of the proposed methods.
+We present We present \textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}, (\emph{COMPASS})\footnote{\url{https://github.com/osullik/COMPASS_GEOSEARCH}}, a suite of data structures and algorithms that begin to address the scalability limitations of directional spatial pattern matching.
+To accomplish this, we encode the directional relationships between objects in abstracted matrix representations rather than the graph-based structures that most current approaches use.
+We enable search over these matrix representations through a series of recursive spatial pattern-matching algorithms that traverse the objects searching \emph{if} there exists at least one set of objects that satisfies the constraints (rather than retreiving all sets that do).
+This simplification of the problem allows us to achieve worst case complexity of $\mathcal{O}(n^2)$ in the number of objects, a significant improvement over previous methods.
+By simplifying the problem, we enable users to search over geospatial objects using directional constraints at scale, which has not been achieved previously.
 
- %\emph{COMPASS} abstracts away the \textit{metric} and \textit{topological} dimensions of the real world, generating a \textit{concept map}, an arrangement of \textit{keyword-labelled} geospatial objects that preserves their directional constraints.
-%We show that the \textit{concept map} representation 
-%By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.  
-    
-    %\begin{enumerate}
-       % \item The \textit{concept map} abstraction of directional and keyword constraints as an alternative to graph-based constraint formulations.
-        %\item The Location-Object, Object-Object and Cardinality-Invariant-Object-Object spatial pattern matching algorithms. 
-       % \item A data generation framework that produces a location and object database and valid pictorial queries to support testing and evaluation.
-        
-        %\item A reframing of the pictorial querying problem to include early stopping at the first set of objects that indicate a location matched the spatial configuration of objects queried
-        %\item A method for mapping objects associated with each location to one of two proposed spatial data structures that facilitate pictorially querying spatial relations like "A bus stop, pond, and telephone pole configured in a triangle."
-        %\item A series of algorithms to perform three forms of spatial search based on pictorial query input
-        %\item A substantial data generation framework that produces a location and object database and pictorial queries against it to enable comparisons of spatial search methods
-    %\end{enumerate}
+Further, when objects are grouped semantically at a `location' the \emph{if} question can be used to retrieve any locations that contain at least one set of objects matching the query constraints.
+For instance, "Find all parks with a pond, a statue, and a bridge arranged in a triangle." becomes answerable.
+To encourage evaluation of future methods against our initial matrix-based solution, we provide a data generator that produces location and object databases and pictorially-specified directional spatial queries to run against them.
 
-
-
-
-%Here, we examine the problem of \textit{spatial pattern matching}. That is, given a database of geospatially arranged objects, and a query of geospatial objects, determine where in the database that query is referring to.
-
-%\par{Many forms of spatial search require precise query input, like the coordinates or exact name of a location of interest, to return an accurate result. 
-%This formulation of the spatial search problem is cumbersome to users, as it requires queries to be issued in a format not inherently consistent with how humans reason spatially.
-%From a cognitive perspective, humans can more readily recall relative spatial layouts in their environment than they can estimate distances between objects or exact coordinates or addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
-%As such, current methods in range querying and incremental nearest neighbor search require a user to specify distance thresholds to search for sets of objects, which is not ideal for a user having only partial information about their target location.
-%If the estimate is too large (small), the search returns too many (few) results. 
-%Further, these methods suffer in cases where there is a high overlap in terms, giving little discriminative power to searching for their presence alone (e.g., picnic tables, benches, and bus stops are common features of many locations). 
-%}
-%
-%\par{Instead of forcing the human user to think like a map, a more natural approach is to have the map organized to reflect how humans think. 
-%Some work has been done enabling users to specify spatial search queries in a pictorial format through a query interface~\cite{Soffer1997,DiLoreto1996} or mimicking how a human might draw a rough sketch map of a location from memory~\cite{Schwering2014}.
-%Although this approach allows a user to be much more expressive without needing to articulate their query using formal languages, pictorial querying invites significant computational challenges that have limited its use. 
-%Most pictorial methods formulate the search problem as a qualitative spatial reasoning constraint satisfaction problem (CSP), a set-based search problem, or a graph-matching problem, which scales prohibitively poorly for any realistic number of query constraint terms.
-%}
-
-
-%organizing geospatial data around the locations people can experience, cataloging the objects at those locations that they anchor their memories on, and abstracting away the need for the user to remember distances to objects, or their absolute cardinal positions we create an approach that focuses on the need of the human, not the convenient structure of the map.
-
-%is a worthwhile endeavor for many Geographic Information System (GIS) applications.
-
-%
-%\par{The requirement to estimate distance is problematic in querying for locations, because the average person is terrible at estimating distances between things~\cite{Schwering2014}. 
-
-%Consider a user trying to find a winery that they recall visiting on a tour recently.
-%Wineries tend to be densely clustered in wine regions, and so unless the user knows the exact name of the winery, it can be difficult to find it with a keyword search because all the results will be geographically proximal.
-%Users may remember some incomplete information about the winery they are trying to locate. 
-%They might remember some of the \textit{objects} that are present at the winery (\textit{location}) they are looking for; a picnic table, a duck pond and a statue might come to mind.
-
-%Even if humans weren't bad at judging distance, the heterogeneous nature of locations means that it is difficult to estimate a range or nearest neighbor query size that would work for the full range of locations in a given region. 
-%For example, in many wine regions there will be a few big-name wineries and function centers that cover multiple acres, coexisting with small cellar doors operating out of someone's front garden, and the full spectrum between. 
-%Our proposed solution is to take a human-centric approach to geospatial search.
-
-%Instead of forcing the human to think like a map, we seek to have the 'map' organize itself to reflect how humans think. 
-%While we are bad at judging distance, we are typically very good at remembering the relative configuration of objects in the space around us~\cite{Schwering2014}.
-%We also subconsciously anchor on particularly salient sensory inputs that become representative of that location for us~\cite{Weisberg2016, Miller2013, Keatley2021}, and it is those anchor points that we most strongly recall into the future.}
-%
-
-
-
-%Taking inspiration from the way humans recall spatial information~\cite{Helbing2020, Oliveira2016, Weisberg2016}, \nrscomment{update citations} we present \emph{COMPASS}, an approach for spatial pattern match querying that... \nrscomment{summarize high level contribution}. 
-
-
-
-% 
-%\par{Think about times someone has described a location they've visited to you.
-%Does \textit{"it is 1.73 miles from the center of the winery to the furthest edge of the property. 500 yards to the southwest of the cellar door is a duck pond. 300 yards north of that pond is a statue which is 400 yards west-south-west of the cellar door"} sound realistic?
-%What about \textit{"I remember standing on the balcony of the cellar door and away in the distance to my left was a beautiful duck pond, and off to the right of that was this very odd statue of a goat in a top hat."}?
-%Rather than focusing on how a map sees the world, we focus on how humans see the world.}
-%
-
-
-%Traditionally, analysts will get to a \textit{near-enough} start point and then begin the excruciating manual review of remote sensing imagery, photography and other reports to try to match the objects they know about to the location they are searching for in the geospatial configuration they are expecting.
-
-%is searching for a specific location, they have many tools at their disposal. If they remember the exact name of the location they are looking for, most modern systems can return an exact match. If they know the physical address of the location, they can use that information to determine what they are looking for. There are situations, however, where a user has access to imperfect information about a location they are searching for. 
-
-%%Perhaps it is a location they visited a long time ago which has faded in memory or a vague recommendation from a friend. Perhaps they attempt to combine fragmented evidence for a police investigation or fuse intelligence in a military operation. %%NSCH add as motivation somewhere?
-
-%Regardless of the reason, common approaches to the problem now see users employing GIS tools for their bold adjust to get them to the correct general area and then rely on a manual last-mile effort typically involving the visual inspection of remote sensing imagery,searching for distinct landmarks or terrain features that match their partial information. While the most important, the last mile effort is also the bottleneck.
-
-%The two key research questions driving the development of \textit{GESTALT} are:
-%\begin{enumerate}
-%\item What components of the \textit{last-mile} search can be automated
-%\item How helpful is automation in completing the \textit{last-mile} search?
-%\end{enumerate}
-
-%\subsection{Overview of Running-Example}
-%A running scenario illustrates the architecture in use throughout the \textit{GESTALT} paper. 
-%The running scenario is a \textit{last-mile search} problem. The searcher's task is to find out which of the wineries they visited before attending a lunch with %friends to share their recommendations. 
-%However, because of over-indulgence while on tour, they are struggling to recall which wineries they visited.
-%They know that the general region is the Swan Valley Wine Region near Perth in Western Australia. There are more than 30 wineries in the small Swan Valley Wine %Region and far more locations, including the many distilleries, breweries, chocolate shops and other auxiliary venues. 
-%They remember a few key facts about their trip, but the details are fuzzy. That is, they have \textit{partial information} about each of the wineries:
-%\begin{enumerate}
-%	\item They have a photo in front of Oakover Grounds, so know they must have visited it. 
-%	\item They recall drinking a lovely Verdehlo at a table made from wine barrels. 
-%	\item They didn't like the Chenin Blanc they were drinking in the place with palm trees.
-%	\item There was a noisy generator at one that ruined the ambience. 
-%\end{enumerate}	
-%They could find Oakover Estate quickly enough using Google Maps but didn't recognise any other names. 
-%Searching for "Winery with wine barrel tables" yielded inconclusive results listing most of the wineries from the original set. The lack of search-space reduction is likely due to the text associated with most wineries mentioning wine, barrels and tables. 
-%Ordinarily, they would manually use google maps satellite imagery, street view and user review photos to identify which wineries they were at. Indeed, there is a better way.
-
-%\subsection{Contributions}
-%The critical contribution of this work is the architecture for \textit{GESTALT}, an end-to-end pipeline for extracting geospatial data, transforming it into coherent object-location relations, and loading it into a store and searching it. Further, this work evaluates the performance of popular clustering algorithms on the geospatial object ownership assignment inference task. It contributes a new gold standard \textit{Swan Valley Wineries} dataset and a proof of concept implementation of the architecture using the Wineries Dataset.This paper will explore the sourcing and creation of datasets for the \textit{GESTALT} project in section \ref{section:datasets}. It will then explore the architecture and define the goals for each subsystem in section \ref{section:architecture} before exploring the implementation in section \ref{section:implementation}. A detailed comparison of Object ownership assignment methods is in section \ref{section:results} before exploring related work in section \ref{section:related}. The paper concludes by identifying future work in section \ref{section:conclusion}.  
-
-%\subsection{Organization}
-%This paper will explore the sourcing and creation of datasets for the \textit{GESTALT} project in section \ref{section:datasets}. It will then explore the architecture and define the goals for each subsystem in section \ref{section:architecture} before exploring the implementation in section \ref{section:implementation}. A detailed comparison of Object ownership assignment methods is in section \ref{section:results} before exploring related work in section \ref{section:related}. The paper concludes by identifying future work in section \ref{section:conclusion}.  
-
-%that identifying locations based on collections of objects associated with them is a technique actively used by investigators. 
-%The investigative requirements are evidently great enough to necessitate Bellingcat developing an \textit{OpenStreetMap Search Tool} to search for locations using objects\footnote{\href{https://www.bellingcat.com/resources/how-tos/2023/05/08/finding-geolocation-leads-with-bellingcats-openstreetmap-search-tool/}{https://www.bellingcat.com/resources/how-tos/2023/05/08/finding-geolocation-leads-with-bellingcats-openstreetmap-search-tool/}}.
-%Bellingcat's tool puts a user-friendly interface on the OSM Overpass-Turbo Interface\footnote{\href{https://overpass-turbo.eu/}{https://overpass-turbo.eu/}} 
-%Our testing indicates a rapid degradation in query execution time as scale increases, and is distinct from our work in that it only queries OSM data, only checks for set intersections of objects within a given proximity threshold of each other and does not allow for pictorial querying.
-%\emph{GESTALT} approaches the same problem in a more comprehensive way, aiming to help investigators with their \textit{last-mile} search to identify locations of interest based on the objects that they know (or suspect) are associated with the location. 
+We begin the rest of this paper by describing relevant background on spatial search in section \ref{section:background}. Sections \ref{section:data_structures} and \ref{section:methods} outline our proposed solution. We evaluate each algorithm's theoretical complexity and efficiency on the datasets we generate in sections \ref{section:experimental_setup} and \ref{section:results} and briefly summarize relevant related work in section \ref{section:related} before concluding.
