@@ -1,3 +1,28 @@
+% Introduction
+% Research significance
+% Methodology
+% Results
+% Conclusion
+
+The \textit{Spatial Pattern Matching} paradigm offers a promising direction for searching with incomplete or imperfect information, but it is badly constrained by dependence on graph-based representations and computationally intensive search algorithms. 
+We present \emph{COMPASS} as a reframing of the spatial pattern matching problem. 
+We group geospatial objects into semantic \textit{locations} and replace graph structures with an abstracted matrix \textit{competency map} representation of each location. 
+The abstracted view permits encoding of the directional relationships that are usually too dense for representation using graph-based methods. We search using our \textit{Cardinality Invariant Object-Object Grid Search} algorithm, which finds matches even when the query is not aligned to a global coordinate system, resulting in perfect recall across distorted query sets in our evaluation. 
+Our analysis shows that while the theoretical complexity of that our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
+%for $Q$ query points and $n$ objects for each of $G$ locations 
+in the worst case, the empirical performance is closer to logarithmic growth on the number of query terms.
+\emph{COMPASS} is a suite of data structures and algorithms that enable pattern-based search using directional relation constraints and offers a viable alternative to the dominant set-intersection, subgraph matching, and constraint satisfaction approaches.
+
+
+%Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
+%When only partial or imperfect information is available, distance-based nearest-neighbor searching can be used.
+%However, distance-based approaches require users to estimate the distance between objects in the environment, a task that humans perform poorly.
+%The more natural spatial search alternative is pictorial querying, where a sketch map enables users to place objects in a configuration where their relative positions define the query constraints.
+%Most approaches to pictorial query searching are intractable for any realistic number of query and database terms.
+%We present \emph{COMPASS}, a collection of data structures and algorithms that address geospatial search as a human-centric rather than a map-centric task. 
+%The \emph{COMPASS} suite addresses scalability issues that previously rendered pictorial-based searching infeasible. 
+%Of our three search methods, our Cardinality-Invariant Object-Object search achieves perfect recall in testing, an improvement of 0.9 on non-invariant approaches with a worst-case complexity of $\mathcal{O}(Q^2 + Q\times n^2)$.
+
 %Humans spend a lot of time searching for things. 
 %With the advent of tools like google maps and open street maps, people can search through geospatial data at a whim. 
 %These tools focus on providing exact matches to queries or a list of candidate locations based on the user's query. 
@@ -8,16 +33,6 @@
 
 
 %Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. 
-Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
-When only partial or imperfect information is available, distance-based nearest-neighbor searching can be used.
-However, distance-based approaches require users to estimate the distance between objects in the environment, a task that humans perform poorly.
-The more natural spatial search alternative is pictorial querying, where a sketch map enables users to place objects in a configuration where their relative positions define the query constraints.
-Most approaches to pictorial query searching are intractable for any realistic number of query and database terms.
-We present \emph{COMPASS}, a collection of data structures and algorithms that address geospatial search as a human-centric rather than a map-centric task. 
-The \emph{COMPASS} suite addresses scalability issues that previously rendered pictorial-based searching infeasible. 
-Of our three search methods, our Cardinality-Invariant Object-Object search achieves perfect recall in testing, an improvement of 0.9 on non-invariant approaches with a worst-case complexity of $\mathcal{O}(Q^2 + Q\times n^2)$.
-
-
 
 
 %However, current GIS capabilities do not enable users to easily search for locations about which they have imperfect or incomplete information. 

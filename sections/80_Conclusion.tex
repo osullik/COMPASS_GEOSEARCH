@@ -1,17 +1,15 @@
 \section{Conclusion}
 \label{section:conclusion}
 \normalsize
-\osullikomment{Nicole to edit conclusion}
-We present \emph{COMPASS}, a collection of data structures and algorithms that frame geospatial search as a human-centric rather than a map-centric activity. 
-
-\emph{COMPASS} re-frames the \textit{spatial pattern matching} problem to focus on the expressive \textit{directional} relations that are more easily parsed by humans. 
+We present \emph{COMPASS}, a collection of data structures and algorithms that view spatial search as a human-centric activity. 
+\emph{COMPASS} re-frames the \textit{spatial pattern matching} problem to focus on the expressive \textit{directional} relations that humans more easily parse. 
 %
 We store collections of geospatial objects in semantically meaningful groups called \textit{locations} and develop the \textit{concept map} data structure to simplify and store directional relations for locations. 
 We use \textit{Recursive Grid Search} as a method to confirm whether the directional relations in a location can satisfy the directional constraints specified in a query. 
 %
-The theoretical worst-case complexity of our approach is no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existance of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(N^{2})$ for our \textit{Cardinality-Invariant} algorithm, which which we demonstrated with experiments has perfect recall even when a user aligns their queries incorrectly.
+The theoretical worst-case complexity of our approach is no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existence of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(N^{2})$ for our \textit{Cardinality-Invariant} algorithm, which we demonstrated with experiments has perfect recall even when a user aligns their queries incorrectly.
 %
-\emph{COMPASS} is a step towards automating the manual pattern matching that still occurs regularly in open-source intelligence investigations and geospatial science more broadly.
+\emph{COMPASS} is a step towards automating the manual pattern matching that still occurs regularly in open-source intelligence investigations and geospatial science.
 %
 %The salient limitation of \emph{COMPASS} is that it only handles point data for representing locations and querying.
 %The lack of support for lines and polygons means that users need to estimate where the center of something large is to place other objects relative to it and that it can not support containment queries where a small object might be within a larger one. 
