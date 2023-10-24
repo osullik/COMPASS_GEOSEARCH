@@ -1,85 +1,66 @@
 \section{Related Work}
 \label{section:related}
 
-\osullikomment{Update Signposting}
-
-The related work first describes how we approached making geospatial search human-centric rather than map-centric. 
-We then briefly explore two dominant approaches to spatial pattern matching, Pictorial Querying, and Qualitative Spatial Reasoning, mainly how they trade off querying power for computational tractability. 
-
-\subsection*{Relation Types}
-
-\par{Most of the work in spatial search focuses on topological and metric queries, rather than directional queries, which are inherently complex.
-
-\osullikomment{I think explaining how directional relations are derived is important to the work, but it takes up a lot of room... }
-
-    %
-    Explicitly representing directional relations usually requires segmenting the space around spatial objects or defining pairwise relationship constraints between objects. 
-    Space segmentation typically assumes knowledge of a global coordinate system (i.e. an assumption of which direction North is) and either assumes that objects are positioned relative to a known point or that each object stores and tracks its `view' of space.  
-    Defining relationship constraints is costly and typically requires a fully connected weighted graph or multigraph to capture the relative directions of objects to each other.
-    %
+\par{
+    Most practical applications of spatial search are optimized for answering simple queries like "Where are the Italian restaurants near me?".
+    Most of the work in this area is based on Spatial Keyword Queries (SKQ), which handle topological and metric constraints, but lack support for directional relationship constraints~\cite{Guo2015, Cao2012, Zhang2009, Osul2023}. 
+    Directional constraints are densely inter-related, and current methods for encoding and searching over them (set intersection, subgraph matching, and constraint satisfaction problems) are impractical at scale.
+    We describe the major works in each of these three areas and include a detailed complexity analysis in Table \ref{Table:related_work}.
+    %representing and solving geospatial pattern matching queries are impractical for the task.
 }
 
-\osullikomment{Does the next paragraph actually add anything here? I think we might be able to delete it}
+% \par{
+%     In general, Spatial Keyword Queries (SKQ) accepts a collection of keywords and a user location and returns the object clusters that are spatially and textually relevant~\cite{Cao2012,Zhang2009} using algorithms like SKECa+~\cite{Guo2015} and the GESTALT system's \textit{basic}, \textit{ranked} and \textit{fuzzy} queries~\cite{Osul2023}.
 
-\par{
-    The \emph{COMPASS} suite uses directional relations as the basis of its pattern matching because of the precision it allows us in specifying a target pattern of objects.
-    It aims to leverage implicit representations of directional relations to reduce the complexity incurred by explicitly representing directional relations as space segments or graphs. 
-    Ultimately, the \emph{COMPASS} suite is intended as a step towards reducing the complexity of spatial pattern matching using directional relationships.
-    The remainder of the related work section explores the limitations of conventional approaches to spatial search, the subfield of spatial pattern matching, and the gaps that \emph{COMPASS} seeks to fill.
-}
+%     }
+    
+    %While SKQ can return a location based on the presence of objects within a constrained distance that matches keyword queries, it does not allow for querying based on topological or directional relations.
+%}
+%\par{
+%    Conventional pattern-based spatial querying approaches are dominated by the \textit{Metric} and \textit{Topological} relationships of spatial data, along with external information like object labels, or keywords. 
+
+%    The keyword approaches avoid directional constraints because of how dense representing n-ary directional relationships is.
+
+% \subsection{Spatial Joins}
+% \par{
+%     \textit{Spatial Joins} (SJ) are operations that given two collections of spatial objects find all pairs of objects satisfying some specified spatial constraints~\cite{Jacox2007}.
+%     %SJs are commonly executed as a set-intersection, and the multi-constraint instantiation of spatial joining (MSJ) has been shown to successfully encode \textit{Metric, Topological} and \textit{Directional} constraints and solve for the join using a CSP~\cite{Papadias1998}.
+%     %The efficiency of MSJ is highly dependent on the data structures being joined, and the method used to execute the `search' for suitable join conditions.
+%     }
 
 
+\subsection{Set Intersection (SI)}
+\par{  
+    Set-intersection (SI) approaches allow users to specify a combination of keyword, topological metric, and directional constraints to query against a database of objects~\cite{DiLoreto1996, Soffer1996, Soffer1997, Soffer1998a,Soffer1999}.
+    These approaches are limited by the requirement to extract the sets matching each specified constraint from the underlying representation before intersecting them. 
+    Most modern approaches employ set intersection as an initial keyword filter prior to conducting the more expensive search operations described below~\cite{Schwering2014, Osul2023}.
+    %Set-intersection problems suffer from low precision with small numbers of query terms, and so adding constraints in terms of \textit{distance, topology} and \textit{direction} is required to prune the result set.
+}    
 
-\subsection{Spatial Querying}
 
-\par{
-    Conventional pattern-based spatial querying approaches are dominated by the \textit{Metric} and \textit{Topological} relationships of spatial data, along with external information like object labels, or keywords. 
-    The two dominant approaches to classical spatial pattern querying are \textit{Spatial Keyword Queries} (SKQ) and \textit{Multi-Spatial Joins} (MSJ).} 
-\subsubsection{Spatial Keyword Queries}
-\par{
-    In general, SKQ accepts a collection of keywords and a user location and returns the object clusters that are spatially and textually relevant~\cite{Cao2012}.
-    \textit{m-Closest Keywords} (mCK) is a popular paradigm for SKQ~\cite{Zhang2009}.
-    Many algorithms developed for efficient mCK, like the \textit{Smallest Keywords Enclosing Circle a+} (SKECa+) algorithm  ultimately rely on \textit{metric} relations and keyword matching~\cite{Guo2015}. 
-    When applied to a hierarchical grouping of spatial objects, SKQ effectively becomes a set-intersection problem, with the GESTALT system's \textit{basic}, \textit{ranked} and \textit{fuzzy} queries all working as set-intersections based on object class labels~\cite{Osul2023}.
-    }
-\subsubsection{Spatial Joins}
-\par{
-    \textit{Spatial Joins} (SJ) are operations that given two sets of spatial objects find all pairs of objects satisfying some specified spatial constraints~\cite{Jacox2007}.
-    MSJ is the multi-constraint instantiation of spatial joining and has been shown to successfully encode \textit{Metric, Topological} and \textit{Directional} constraints~\cite{Papadias1998}.
-    Papadias et. al. provide three algorithms derived from the Forward-Checking algorithm for Constraint Satisfaction Problems (CSP). One of the algorithms is very sensitive to the number of query objects, with the other two degrade as constraints become more numerous and dense. 
+    %Papadias et. al. provide three algorithms derived from the Forward-Checking algorithm for Constraint Satisfaction Problems (CSP). One of the algorithms is very sensitive to the number of query objects, with the other two degrade as constraints become more numerous and dense. 
     %Their experiments show that their \textit{Multi-Forward-Checking} (MFC) algorithm runs exponentially to the number of query terms, while their \textit{Window-Reduction} and \textit{Joint-Window-Reduction} algorithms run close to linear to the number of query terms, but are still sensitive to the number of objects and constraints in the database being queried, and degrade rapidly with large numbers of constraints.
     %There has been significant work on improving the algorithmic performance of MSJ, and a recent focus has been on parallelizing and distributing computation to improve execution speed~\cite{Du2017}. 
-}
-\subsubsection{Summary}
 
+    %MSJ can match based on topological, metric, and directional constraints but do not widely support keyword querying. 
+    %MSJ are computationally intensive, and typically leverage another Spatial Pattern Matching approach as the 'solver' for the join. 
+%}
+
+
+\subsection{Subgraph Matching (SGM)}
 \par{
-    The conventional approaches typically do not use directional constraints because of how dense representing n-ary directional relationships is.
-    While SKQ can return a location based on the presence of objects within a constrained distance that matches keyword queries, it does not allow for querying based on topological or directional relations.
-    MSJ can match based on topological, metric, and directional constraints but do not widely support keyword querying. 
-    MSJ are computationally intensive, and typically leverage another Spatial Pattern Matching approach as the 'solver' for the join. 
-}
-
-\subsection{Spatial Pattern Matching}
-
-
-\subsubsection{Set-Intersection Problems}
-\par{  
-    Set-intersection (SI) approaches allow users to specify a combination of keyword, topological and metric dimensions to query their database~\cite{DiLoreto1996} with some approaches allowing users to configure thresholds for match confidence, quantity, and topological similarity~\cite{Soffer1996, Soffer1997, Soffer1998a}. 
-    Extensions improve efficiency by introducing spatial data structures to underly the set queries~\cite{Soffer1999} or by hierarchically arranging the object space into disjoint subsets to reduce complexity~\cite{Osul2023}.
-    Set-intersection problems suffer from low precision with small numbers of query terms, and so adding constraints in terms of \textit{distance, topology} and \textit{direction} is required to prune the result set.
-    
-}
-\subsubsection{Subgraph-Matching Problems}
-\par{
-    Intuitively, when we denote a constraint between two objects we would draw a line and label the constraint. 
-    Computationally, graphs offer the ability to specify all of the pairwise constraints that apply to an object set. 
-    Given a graph of all objects and their constraints, and a query subgraph of objects and their constraints, the subgraph matching approach to spatial pattern matching looks to identify where the same pattern of nodes and constraints from the query exist in the underlying object set. 
+    %Graphs are the most natural structure to encode pairwise constraints that apply to an object set. 
+    Subgraph matching approaches assume spatial data is encoded as a graph of database objects and relations and queries are encoded as a subgraph of objects and constraints of interest.
+    These methods then seek to identify where the query pattern exists in the database graph. 
+    Common SGM methods like PQIS~\cite{Folkers2000} and Spacekey$_{MPJ}$~\cite{Fang2019} approach exponential in the number of constraints, ESPM and SpaceKey$_{MSJ}$ are bound by the number of nodes in exponential~\cite{Chen2019} or quartic~\cite{Fang2019} time, and fuzziness adds further complexity~\cite{Fang2019}.
+    }
     
     %The natural extension of these approaches is to formulate search as an isomorphic subgraph matching problem to strengthen topological matching~\cite{Folkers2000}, at the cost of $\mathcal{O}(m\times 2^m)$ complexity, where \textit{m} is the number of vertices in the database. 
-    SGM approaches like Pictorial Querying with Isomorphic Subgraphs (PQIS)~\cite{Folkers2000} and Spacekey$_{MPJ}$~\cite{Fang2019} quickly approach exponential time based on the number of constraints. 
-    The slightly better case occurs when SGM approaches like ESPM and SpaceKey$_{MSJ}$are bound by the number of nodes in exponential~\cite{Chen2019} or quartic~\cite{Fang2019} time respectively. 
-    Adding fuzziness to the search using a \textit{Top-K} or \textit{Partial Spatial Match} adds further complexity~\cite{Fang2019}.
-    Ultimately, SGM does better on sparser graphs, and so when the dense connections of directional relations are applied the approach begins to break down. 
+    %\nrscomment{below paragraph simplifies to one sentence summary and see table for detailed complexity comparison}
+%\par{    
+    
+    %
+    %SGM is the natural approach to apply to the SPM problem based on the underlying graph representation common to SPM tasks.  
     %More modern approaches have continued to leverage SGM, for example, the SpaceKey system allows users to search for patterns of objects based on a combination of SKQ and metric (distance) relations and the inclusion or exclusion of certain objects within those distances which is encoded as a subgraph matching problem~\cite{Fang2018}.
     %Fang et. al. extend their work on using SGM for SPM by developing four algorithms~\cite{Fang2019}. 
     %Their \textit{Multi-Pair-Join (MPJ)} algorithm runs in $\mathcal{O}(m\zeta |D|^2+\xi)$ where $\zeta$ is a sampling threshold in range $[0,1]$ and $\xi$ is the maximal number of partial matches. 
@@ -94,16 +75,22 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
     
     %K-Clique detection in spatial data uses a nearest-neighbor graph, iterative pruning, and early stopping in a graph-matching approach. 
     %Its worst-case complexity is $\mathcal{O}(n^k)$ with expected complexity of $\mathcal{O}(NK)$~\cite{Taniguchi2022}.
-    }  
+%    }  
 
-\subsubsection{Qualitative Spatial Reasoning and Constraint Satisfaction Problems}
-    \par{
-    The AI community has been interested in resolving constraint satisfaction problems for a long time.
-    In the worst case, where the number of constraints is large, they have low selectivity and are ordered poorly, CSP approaches degrade.}
+\subsection{Constraint Satisfaction Problems (CSP)}
+    %\par{
+    %The AI community has been interested in resolving constraint satisfaction problems for a long time.
     
-    \par{Most approaches have a at least a cubic complexity in the number of objects~\cite{Dylla2017}, with a popular method - StarVars - which uses the less intensive space-segmentation approach to directional relationships having a worst case performance of  $\mathcal{O}(m^n)$. The \textit{Sketchmapia} sketch-to-query system builds on the related \textit{Oriented Point Relational Algebra} (OPRA). Solving with OPRA is NP-Complete~\cite{Dylla2017},so they solve the OPRA Qualitative Constraint Network (QCN) they create with an SGM approach~\cite{Schwering2014,Jan2015}.
-    \textit{Forward Checking} algorithms like MSJ$_{WR}$ and MSJ$_{JWR}$ are exponential in the number of constraints in the worst case, but have expected performance much closer to linear in the number of query terms.
-    That observation is not universal, with applications like MSJ$_{MSJ}$ proving exponential in the number of query terms~\cite{Papadias1998}.} 
+    %}
+
+    \par{
+    Constraint Satisfaction Problems (CSP) are a class of spatial pattern matching algorithms that ....... \nrscomment{define what CSP is here}
+    In the worst case, where the number of constraints is large, selectivity is low, and constraints are ordered poorly, CSP approaches suffer poor performance. \nrscomment{is that an accurate way to state it?}
+    
+    Most CSP methods are at least cubic in the number of objects~\cite{Dylla2017}.
+    Some approaches include StarVars, which is exponential in the number of objects~\cite{Lee2013}, \textit{Forward Checking} algorithms like MSJ$_{WR}$ and MSJ$_{JWR}$ which are exponential in the number of constraints~\cite{Papadias1998}, MSJ$_{MSJ}$ which is exponential in the number of query terms~\cite{Papadias1998}, and \textit{Sketchmapia} which combines a Qualitative Constraint Network representation with a subgraph matching solver and performs similarly~\cite{Schwering2014,Jan2015}.
+    %in the worst case, but have expected performance much closer to linear in the number of query terms.
+    %That observation is not universal, with applications like  proving exponential in the number of query terms~\cite{Papadias1998}.} 
     %In addition to Papadias' formulation of MSJ as a CSP~\cite{Papadias1998}, Dylla, et al. survey \textit{Qualitative Spatial Reasoning} (QSR) approaches finding that the 11 approaches that use directional relations as \textit{binary} constraints have at least $\mathcal{O}(n^3)$ complexity. 
     %They scope out \textit{n-ary} constraints as being generally intractable~\cite{Dylla2017}. 
     %
@@ -115,24 +102,31 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
 %}    
 
 
-\subsubsection{Summary}
+\subsection{Summary}
+\nrscomment{mention main takewaway from the table and refer to the table}
 \par{
-    We consider SPM as the underlying problem COMPASS sets out to solve. 
-    Broadly, we observe that directional relations offer powerful discrimination capabilities in spatial queries, but effectively representing and querying them is computationally prohibitive. 
+    All of the current approaches for spatial pattern matching are unsuitable for the directionally-constrained search task under consideration.% \emph{COMPASS} to fulfill. 
+    The formulation of spatial pattern matching problems as graph or constraint network problems has fostered search methods that are dependent on those data structures. 
+    Set intersection, subgraph matching, and constraint satisfaction problems all degrade when the number of constraints and query terms increase, making them unsuitable for dense directional relations. 
+    The data structures and algorithms presented in \emph{COMPASS} are a step towards re-framing the underlying representation of spatial pattern matching problems, so that new search methods can be applied that scale reasonably for directional relation-based search.
+}
+%\par{
+%    We consider SPM as the underlying problem COMPASS sets out to solve. 
+%    Broadly, we observe that directional relations offer powerful discrimination capabilities in spatial queries, but effectively representing and querying them is computationally prohibitive. 
     %
-    Traditional SKQ approaches are limited by their inability to represent directional relations. 
+%    Traditional SKQ approaches are limited by their inability to represent directional relations. 
     %In the overarching GESTALT system, we implement SKQ as a filtering technique to prune the candidate locations being provided to our spatial pattern matching approaches~\cite{Osul2023}.
     %
-    Set-intersection approaches will only allow for a naive bucketing approach to spatial relationships, which we implement with our \textit{location-centric} query approach for comparison.
+%    Set-intersection approaches will only allow for a naive bucketing approach to spatial relationships, which we implement with our \textit{location-centric} query approach for comparison.
     %
-    SGM approaches are generally infeasible for matching directional relations because adequately representing all directional constraints requires at least a fully connected graph and graph-matching complexity scales to the density of the graph.
+%    SGM approaches are generally infeasible for matching directional relations because adequately representing all directional constraints requires at least a fully connected graph and graph-matching complexity scales to the density of the graph.
     %
-    CSP/QSR approaches experience similar difficulties to SGM, with their performance degrading rapidly as the number of constraints increases.
+%    CSP/QSR approaches experience similar difficulties to SGM, with their performance degrading rapidly as the number of constraints increases.
     %
-    Complexity increases further when there is no known global coordinate system to compare against. 
-    By viewing the problem from a user-centric perspective we need to not only match a pictorially-specified query pattern against the underlying database, but that query pattern is unlikely to be aligned with the global coordinate system underpinning the database. 
-    None of the surveyed problems are capable of efficiently supporting cardinality-invariant directional relation spatial pattern matching, and the COMPASS suite aims to offer a mechanism to fill this gap. 
-}
+%    Complexity increases further when there is no known global coordinate system to compare against. 
+%    By viewing the problem from a user-centric perspective we need to not only match a pictorially-specified query pattern against the underlying database, but that query pattern is unlikely to be aligned with the global coordinate system underpinning the database. 
+%    None of the surveyed problems are capable of efficiently supporting cardinality-invariant directional relation spatial pattern matching, and the COMPASS suite aims to offer a mechanism to fill this gap. 
+%}
 
 \setlength\tabcolsep{0pt}
 \small{
@@ -171,26 +165,26 @@ We then briefly explore two dominant approaches to spatial pattern matching, Pic
              &  \\
             \hline
             %   Approach                                & Class       & obj            & K & M    & T  & D & F & N & C & O  \\
-            SKECa+~\cite{Guo2015}                     & SKQ         & P              & X & X    &    &   &   & X & - & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
-            PQL~\cite{DiLoreto1996}                     & SI          & P\textit{,L,R} & X & X & X & X & X & X &   & Unclear \\
-            McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}& SI    & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
-            ~GESTALT$_{SI-Basic}$~\cite{Osul2023}~            & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G n)$ \\
-            ~GESTALT$_{SI-Ranked}$~\cite{Osul2023}~     & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G (n +n' \mathcal{Q}))$\\
-            ~GESTALT$_{SI-Fuzzy}$~\cite{Osul2023}~      & SI          & \textit{P}     & X &   &   &   & X &   & - & $\mathcal{O}(\mathcal{Q}Gn)$ \\
-            PQIS~\cite{Folkers2000}                  & SGM         & \textit{P}     & X & X &   & X &   & X &   & $\mathcal{O}(m^m)$ \\
-            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
-            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}   & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
-            ESPM~\cite{Chen2019}                        & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
-            MSJ$_{MSJ}$~\cite{Papadias1998}             & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
-            MSJ$_{WR}$~\cite{Papadias1998}              & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            MSJ$_{JWR}$~\cite{Papadias1998}             & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            STARVARS~\cite{Lee2013}                     & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
-            SketchMapia~\cite{Schwering2014,Jan2015}    & CSP \& SGM  & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
-            OSS~\cite{Liu2003}                          & Other       & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
-            SRQL~\cite{Dellapenna2012,Dellapenna2017}   & Other       & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
-            COMPASS$_{LO}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
-            COMPASS$_{OO}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
-            COMPASS$_{CI}$ [ours]                       &             & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
+            SKECa+~\cite{Guo2015}                               & SKQ         & \textbf{P}     & X & X    &    &   &   & X & - & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
+            PQL~\cite{DiLoreto1996}                             & SI          & \textit{P,L,R} & X & X & X & X & X & X &   & Unclear \\
+            McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}  & SI          & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
+            ~GESTALT$_{SI-Basic}$~\cite{Osul2023}~              & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G n)$ \\
+            ~GESTALT$_{SI-Ranked}$~\cite{Osul2023}~             & SI          & \textit{P}     & X &   &   &   &   &   & - & $\mathcal{O}(G (n +n' \mathcal{Q}))$\\
+            ~GESTALT$_{SI-Fuzzy}$~\cite{Osul2023}~              & SI          & \textit{P}     & X &   &   &   & X &   & - & $\mathcal{O}(\mathcal{Q}Gn)$ \\
+            PQIS~\cite{Folkers2000}                             & SGM         & \textit{P}     & X & X &   & X &   & X &   & $\mathcal{O}(m^m)$ \\
+            Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}           & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
+            Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}           & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
+            ESPM~\cite{Chen2019}                                & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}                     & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
+            MSJ$_{WR}$~\cite{Papadias1998}                      & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            MSJ$_{JWR}$~\cite{Papadias1998}                     & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
+            STARVARS~\cite{Lee2013}                             & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
+            SketchMapia~\cite{Schwering2014,Jan2015}            & CSP \& SGM  & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
+            OSS~\cite{Liu2003}                                  & Other       & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
+            SRQL~\cite{Dellapenna2012,Dellapenna2017}           & Other       & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
+            COMPASS$_{LO}$ [ours]                               &             & \textit{P}     & X &   &   & X &   & X &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
+            COMPASS$_{OO}$ [ours]                               &             & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
+            COMPASS$_{CI}$ [ours]                               &             & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
             
             
             

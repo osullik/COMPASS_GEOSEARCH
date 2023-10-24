@@ -1,7 +1,8 @@
 \section{COMPASS Search Algorithms}
 \label{section:methods}
-
-In this section we outline the methods used to accomplish \emph{COMPASS}'s 3 forms of spatial search, and describe the process used to generate data for our experimental setup to test those search methods.
+Our choice of data structures allow us the freedom to employ search methods not well suited for graph structures. 
+We show how the abstraction to encoding only relative position information makes the problem more tractable. 
+In this section we outline the methods used to accomplish \emph{COMPASS}'s three forms of spatial search, and the process used to generate data for our experimental setup to test those search methods.
 
 \begin{algorithm}[h!]
     \caption{Location-Object Search}\label{alg:locSearch}
@@ -52,14 +53,23 @@ In this section we outline the methods used to accomplish \emph{COMPASS}'s 3 for
 \end{algorithm}
 
 
-\subsection{Object-Location Search Method}
-\textbf{Object-location} relations are encoded as a per-location index that subdivides the search space into four quadrants - NorthWest, NorthEast, SouthWest, and SouthEast, splitting on the location coordinates.
-It assumes that the user sees the 'center' of the location as their reference point, and assumes that they know where North is when querying. 
-To conduct a query, a user inserts query terms around the 'center' of a location on the query canvas. 
-Algorithm~\ref{alg:locSearch} describes searching the object-location structure with a simple iteration through the candidate locations, searching each one's NW/NE/SW/SE quadrants for the relevant query objects.
-A true positive match occurs when the number of discovered objects in a location matches the number of query objects.
-For example, if the user queries for two objects in the southwest and one in the northeast, true positive matches will be all locations that feature those three objects in that configuration. 
-There is also the ability to return partial matches, ranked by how close they are to an exact match.
+\subsection{Location-Object Search Method}
+\par{
+    The Location-Object search assumes a globally aligned coordinate system and the existence of a Location-Object data structure for each location in the region of interest.
+    To issue a Location-Object query, a user inserts query objects around the `center' of the location on the query canvas, encoding them by their directional constraints with respect to the location (NW/NE/SW/SE). 
+    The search is executed on the Location-Object structure by iterating through the candidate locations, searching each location's NW/NE/SW/SE quadrants for object-quadrant relationships that match the directional constraints specified in the query.
+    Figure \ref{fig:CM-LO-Query} shows how to query the Location-Object data structure, and the process is formalized by Algorithm~\ref{alg:locSearch}.
+}
+\par{
+    The search function returns candidate locations ranked by the number of query terms that match the appropriate quadrant with respect to the location. 
+    Multiple constraints can be combined to form a more specific query, such as a lake northwest of the location and a pond southeast of the location.
+    Partial matches are returned, ranked by how many of the query's directional constraints are satisfied.
+    }
+
+ 
+%A true positive match occurs when the number of discovered objects in a location matches the number of query objects.
+%For example, if the user queries for two objects in the southwest and one in the northeast, true positive matches will be all locations that feature those three objects in that configuration. 
+
 
 
 \begin{algorithm}[h]
@@ -116,18 +126,27 @@ There is also the ability to return partial matches, ranked by how close they ar
 \end{algorithm}
 
 \subsection{Object-Object Search Method}
-\textbf{Object-object} search allows a user to search locations for spatial configurations of objects. 
-It assumes that the user knows the cardinal bearings of their object configuration, but not where those objects are with respect to the location they belong to.
-Queries are specified pictorially.
-Both the locations and the queries are encoded as objects in $NxN$ matrices, where $N$ is the number of objects associated with a location or query. 
-Using Algorithm~\ref{alg:geoToGrid}, we assign each object in a given location to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
-The matrix, which we refer to as a \textit{concept map} abstracts away the complexity of tracking distance and the position of each object to all other objects, while preserving the relative spatial positions of objects. 
-The intuition of the search is derived from two very simple ideas. First, at any point in time, any point in the location more north than the northern most point or west than the western most point of the query can't be part of a match.
-Second, the first idea is recursive.
-Searching uses the recursive grid search (Algorithm~\ref{alg:gridSearch}) to identify which locations have objects matching the configuration specified in the pictorial query, and returning the relevant set of results. 
-The pictorial query is first converted into a concept map matrix using the process outlined in figure~\ref{figure:ConceptMap}.
-Next, the search terms in the query matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on.
-Finally, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration.
+
+Object-Object search allows a user to retrieve locations by specifying directional constraints between objects and comparing them to the directional relationships of objects in the underlying database. 
+It assumes the user query complies with the globally aligned coordinate system.
+
+%First, any database object that is more north (west) than the northernmost (westernmost) database object matching the northernmost (westermost) query object cannot be part of a match. \nrscomment{this sentence needs to be made more digestible}
+The Object-Object query is specified pictorially, and is converted into a concept map matrix to capture its directional constraints.
+The \textit{Recursive Grid Search} (Algorithm~\ref{alg:gridSearch}) uses the input concept map query to identify which locations have objects matching the directional constraints specified in the query. 
+The query process is depicted in Figure \ref{fig:CM-OO-Query}, but in general terms, the \textit{Recursive Grid Search} traverses the database objects starting from the north.
+Once the northernmost query object is encountered, any database objects previously encountered are irrelevant to the query and can be pruned.
+The same holds for the western direction.
+Pruning occurs recursively in alternating directions until all query objects are found, or the traversal completes without matching all query terms.
+
+%To generate the query input, the pictorial query is first converted into a concept map matrix to capture its directional constraints.
+%Next, the search terms in the query matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on.
+%Finally, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration, 
+
+
+
+% For example, a tree, a pond, and a sign might form a triangle, with each object having a directional constraint to every other object in the query (i.e., tree upper left of pond, pond lower right of sign, and sign lower left of tree).
+% As the number of objects of interest increases, the number of pairwise directional constraints needed to specify the query snowballs.
+
 
 \begin{algorithm}[h!]
     \caption{Object-Object Search}\label{alg:gridSearch}
@@ -177,7 +196,7 @@ Finally, the grid search is employed to recursively prune the search space and q
 \begin{figure}[h]
     \centering
         \includesvg[width=0.5\textwidth]{figures/rot-inv-diagram.svg}
-    \caption{\textbf{Cardinality-Invariant Object-Object search Method. The query configuration is rotated at most 3$Q$ times, (where $Q$ is the number of query terms) to align each term to the North, West, and Northwest reference points. Pictured above are the original query configuration (left) followed by 2 of the 9 possible rotations for these 3 query terms.}}\label{figure:rot-inv} 
+    \caption{\textbf{Cardinality-Invariant Object-Object search Method. The query configuration is rotated at most 3$Q$ times, (where $Q$ is the number of query terms) to align each term to the North, West, and Northwest reference points. Pictured above are the original query configuration (left) followed by two of the nine possible rotations for these three query terms.}}\label{figure:rot-inv} 
 \end{figure}
 
 \begin{algorithm}[h]
@@ -210,10 +229,12 @@ Finally, the grid search is employed to recursively prune the search space and q
 \end{algorithm}
 
 \subsection{Cardinality-Invariant Object-Object Search Method}
-\textbf{Cardinality Invariance} extends object-object search (Algorithm~\ref{alg:gridSearch}) by removing the assumption that the user knows the cardinal bearings of the object pattern they wish to search for. 
-We address the lack of certainty of cardinal direction by rotating the query pattern the minimal number of times needed to cover the distinct configurations with respect to the actual cardinal bearings. 
-Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in Figure~\ref{figure:rot-inv}.
-To do this, we generate the minimum bounding rectangle for the query points, and label three reference points: 'North', 'West', and 'Northwest' on the bounding rectangle relative to the centroid. 
+\textbf{Cardinality Invariance} extends object-object search (Algorithm~\ref{alg:gridSearch}) by removing the assumption that the user query complies with the globally aligned coordinate system.
+%
+We address the lack of certainty in coordinate system alignment by rotating the query pattern the minimal number of times needed to cover the distinct configurations with respect to the actual cardinal directions.
+%
+Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in figure~\ref{figure:rot-inv}.
+To do this, we generate the minimum bounding rectangle for the query points, and label three reference points: `North', `West', and `Northwest' on the bounding rectangle relative to the centroid. 
 For each point in the query, we then compute the angle between each reference point, the centroid, and the given point. 
 Rotating the entire query configuration by each of these angle aligns the given point to each reference direction.
 The unique set of query configurations obtained in this manner represent the minimum set of object-object queries that then need to be run to determine if the pattern specified in the query matches, irrespective of cardinality. 

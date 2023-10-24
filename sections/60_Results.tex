@@ -5,13 +5,13 @@ Our theoretical analysis and experimental results show that Cardinality Invarian
 
 \subsection{Theoretical Complexity}
 
-Our \textbf{locationObjectSearch} implementation searches each quadrant of the candidate location for matching objects that were specified in the query, resulting in a time complexity of $\mathcal{O}(Q + O)$ for $Q$ query points and $O$ objects per location. 
-Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O)$ time complexity in most scenarios.
+Our \textbf{locationObjectSearch} implementation searches each quadrant of the candidate location for matching objects that were specified in the query, resulting in a time complexity of $\mathcal{O}(Q + n)$ for $Q$ query points and $n$ objects per location. 
+Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(n)$ time complexity in most scenarios.
 
-Our \textbf{objectObjectSearch} implementation traverses a matrix of size $O \times O$ from North and West, slicing the matrix smaller and smaller as it traverses. 
-Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + O^2)$ for $Q$ query points and $O$ objects per location. 
-This reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
-Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of 3 reference points is necessary), resulting in time complexity of $\mathcal{O}(Q^2 + Q\times O^2)$ for $Q$ query points and $O$ objects per location, which reduces to $\mathcal{O}(O^2)$ when $Q \ll O$. 
+Our \textbf{objectObjectSearch} implementation traverses a matrix of size $n \times n$ from North and West, slicing the matrix smaller and smaller as it traverses. 
+Since no part of the matrix is looked at more than once, this results in a time complexity of $\mathcal{O}(Q + n^2)$ for $Q$ query points and $n$ objects per location. 
+This reduces to $\mathcal{O}(n^2)$ when $Q \ll n$. 
+Our \textbf{cardinalityInvariantObjectObjectSearch} implementation performs \textbf{objectObjectSearch} at most $3Q$ times in the worst case (when every query alignment to each of three reference points is necessary), resulting in time complexity of $\mathcal{O}(Q^2 + Q\times n^2)$ for $Q$ query points and $n$ objects per location, which reduces to $\mathcal{O}(n^2)$ when $Q \ll n$. 
 
 
 \subsection{Empirical Performance}

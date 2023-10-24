@@ -1,29 +1,24 @@
 \section{COMPASS Data Structures}
 \label{section:data_structures}
-
-To enable spatial search, \emph{COMPASS} abstracts the infinite spatial complexity of the world into one of two concise representations- a location-centric structure or a concept map.
-A \textit{location-centric structure} is a simple dictionary-based representation that describes a location by the objects contained in each of its four cardinal quadrants (Northwest, Northeast, Southwest, Southeast).
-A \textit{concept map} represents a set of objects arranged spatially without explicitly encoding how they relate spatially to a location~\cite{Xu2010}.
-Entries in the matrix either contain a $0$, representing empty space, or an object name, representing the position of that object.
-Critically, concept maps are generated such that the relative order of objects from north to south and west to east is preserved from the original Cartesian representation, making them a condensed representation that captures the relevant spatial information needed to perform pattern matching.
-Location-centric structures and concept maps can be generated from a pictorial query or a set of objects associated with a location. 
-We implement concept maps using $N \times N$ matrices (where $N$ is the number of objects).
-Figures~\ref{figure:ConceptMap-LO} and \ref{figure:ConceptMap} show the abstraction process used to create and search over these two data structures.
+To enable spatial search without relying on costly graph representations, \emph{COMPASS} encodes spatial entities using Object-Location data structures and Object-Object Concept Map data structures. 
+All of our data structures are implemented hierarchically. \textit{Objects} are the atomic elements. They are semantically grouped into \textit{Locations}, which are subsequently grouped into \textit{Regions}, which are our division of the world. For example, the `Washington DC' region might have `park' and `hospital' locations, and the `park' might have `swings' `slide' and `bench' objects, with directional relations defined between them. 
 
 \subsection{Object-Location Data Structure}
-Object-location relations encode cardinal directionality between objects and locations (i.e., whether an object is North, South, East, or West of a location). 
-This type of information enables simple queries, such as when a user knows that a location has a lake on its western side. 
-Each object-location relationship is defined independently of other objects associated with that location, and multiple constraints can be combined to form a more specific query, such as a lake west of the location and a pond south of the location.
-Figure \ref{figure:ConceptMap-LO} shows how we encode a location (\ref{fig:CM-LO-Example}) as a geospatial index based on relative position to the location coordinates (\ref{fig:CM-LO-Setup}), and then how queries are processed (\ref{fig:CM-LO-Query}).
-The search function returns the candidate locations ranked by the number of query terms that match the appropriate quadrant with respect to the location. 
+An \textit{Object-Location Data Structure} is a per-location set-based representation of the directional relations between objects and their assigned locations.
+It subdivides the space around a location into the four cardinal quadrants (NorthWest, NorthEast, SouthWest, SouthEast) centered on the location coordinate.
+%This data structure subdivides the space around a location into segments or buckets, retaining a discrete set of directional relations, determined by the number of buckets.
+%We choose to divide the space into four quadrants based on global cardinal direction with respect to the location- NorthWest, NorthEast, SouthWest, and SouthEast.
+Each object-location relationship is encoded independently of other objects associated with that location.
+Figure \ref{figure:ConceptMap-LO} shows how we encode objects (\ref{fig:CM-LO-Example}) based on their relative position to the location coordinates (\ref{fig:CM-LO-Setup}).
 
-\subsection{Object-Object ConceptMap Data Structure}
-The other type of spatial relationships we support searching are object-object relations, which are typically more complex than object-location relations.
-Object-object relations refer to a configuration of objects that relate to one another spatially.
-For example, a tree, a pond, and a sign might form a triangle, with each object having a directional constraint to every other object in the query (i.e., tree upper left of pond, pond lower right of sign, and sign lower left of tree).
-As the number of objects in the object-object configuration increases, the number of pairwise directional constraints needed to specify the query snowballs. 
-Figure \ref{figure:ConceptMap} shows how we encode a location (\ref{fig:CM-Example}) as a matrix of relative object positions (\ref{fig:CM-OO-Setup}) and then how queries are processed (\ref{fig:CM-OO-Query}).
-The object-object approach to defining spatial configurations of objects is also more flexible than the object-location approach, which requires the user to know where each object lies relative to the location. 
+
+\subsection{Object-Object Concept Map Data Structure}
+
+A \textit{concept map} is an $nxn$ matrix representation that implicitly encodes the $m$ directional relations between $n$ stored objects, similar to the intuition behind the concept map representations of images~\cite{Xu2010}.
+The matrix entries are either $0$, representing empty space, or an object ID, representing the relative position of that object with respect to the $n-1$ other objects in the data structure.
+Using Algorithm~\ref{alg:geoToGrid}, we assign each object to a position $(i,j)$ in the matrix where $i$ is its order of appearance from north to south and $j$ is the same object's order of appearance from west to east.
+This method preserves the relative ordering of objects from north to south and west to east, with respect to the original Cartesian representation.
+Figure \ref{figure:ConceptMap} shows how a set of objects (\ref{fig:CM-Example}) are encoded in a concept map (\ref{fig:CM-OO-Setup}), preserving their directional relations. 
 
 
 \begin{figure*}[t]
