@@ -7,20 +7,20 @@
     Determining where a photo was taken, matching a sketch to the real-world location it describes, and using a written description to geolocate a described event are essential tasks in open-source intelligence~\cite{Higgins2021}.
     When the location data has been stripped from a photo, a sketch map is poorly labeled, or a description is vague, analysts are forced to use other methods that exploit the content, rather than the metadata.
     Techniques like skyline matching~\cite{Stein1995, Baatz2012} and automatic vegetation matching~\cite{Schmidt2022} are helpful but rely on the presence of specific features in the image.
-    How should an analyst proceed when the only features that they have are a low-resolution hypothesis of where the desired location may be and a collection of everyday objects to try to confirm that hypothesis?
+    How should an analyst proceed when the only features that they have are a low-resolution hypothesis of where the desired location may be, and a collection of everyday objects to try to confirm that hypothesis?
 }
 \par{
     The analyst works with imperfect and incomplete information, so conventional query approaches are of limited utility. 
-    From a cognitive perspective, humans reason more effectively about spatial layouts in their environment than they can estimate distances between objects or exact coordinates or addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
-    So, how can we use computational approaches to augment the relative recall and reasoning that humans possess?
+    From a cognitive perspective, humans reason more effectively about spatial layouts in their environment than distances between objects, exact coordinates or the street addresses of places~\cite{Schwering2014, Weisberg2016, Miller2013, Keatley2021}.
+    So, how can we use computational approaches to augment the human preference for reasoning on directional relations?
 }
 
 \par{
      The analyst is facing a \textit{spatial joining} problem. Given two collections of spatial objects (their query and database), they must find the pairs of objects satisfying some specified spatial constraints~\cite{Jacox2007}. 
-    More specifically, it is a \textit{spatial pattern matching} problem - identifying the objects constrained to some pattern in their query exist in their database of geospatial points and relationships.
+    More specifically, it is a \textit{spatial pattern matching} problem - confirming if the objects, constrained to some pattern in their query, exist in their database of geospatial points and relationships.
 }
 \par{
-    We present \emph{COMPASS}, the \textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}, a collection of data structures and algorithms designed to address the scalability issues of geospatial pattern matching by developing a new representation for directional relationships and reframing the search problem to an \textit{any} rather than \textit{all} search problem by arranging geospatial objects hierarchically, grouped as \textit{locations} that are semantically meaningful to humans.
+    We present \emph{COMPASS}, (\textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}), a collection of data structures and algorithms designed to address the scalability issues of geospatial pattern matching. It offers a new representation for directional relationships and reframes the search problem by structuring geospatial objects hierarchically, grouped as \textit{locations} that are semantically meaningful to humans.
     Moreover, we demonstrate how the \emph{COMPASS} framework intuitively supports pictorial queries, further supporting the human-centric view of search.   
 
     We develop a new encoding scheme (concept map) and associated spatial pattern-matching algorithms that handle directional relations as a scalable alternative to graph-based constraint formulations.

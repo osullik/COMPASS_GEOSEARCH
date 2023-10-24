@@ -7,7 +7,7 @@ We present \emph{COMPASS}, a collection of data structures and algorithms that v
 We store collections of geospatial objects in semantically meaningful groups called \textit{locations} and develop the \textit{concept map} data structure to simplify and store directional relations for locations. 
 We use \textit{Recursive Grid Search} as a method to confirm whether the directional relations in a location can satisfy the directional constraints specified in a query. 
 %
-The theoretical worst-case complexity of our approach is no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existence of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(N^{2})$ for our \textit{Cardinality-Invariant} algorithm, which we demonstrated with experiments has perfect recall even when a user aligns their queries incorrectly.
+The theoretical worst-case complexity of our approach is no worse than existing approaches, and by dividing the space into \textit{locations} and only looking for the existence of \textit{any} rather than \textit{all} matches in a location, our expected complexity is $\mathcal{O}(Gn^{2})$ for our \textit{Cardinality-Invariant} algorithm, where $G$ is the number of locations in the database and $n$ is the number of objects. We demonstrated with experiments that our \textit{Cardinality Invariant} algorithm has perfect recall even when a user aligns their queries incorrectly.
 %
 \emph{COMPASS} is a step towards automating the manual pattern matching that still occurs regularly in open-source intelligence investigations and geospatial science.
 %

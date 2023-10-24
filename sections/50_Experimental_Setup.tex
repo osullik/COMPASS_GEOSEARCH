@@ -7,15 +7,15 @@
     }  
     
 \par{
-    We developed a data generator to create a replicable benchmark dataset and make the code available on our Github\footnote{\url{https://github.com/osullik/GESTALT_GEOSEARCH}}. We generate objects and class labels using power-law distributions and use query terms from a disjoint set of labels to the `noise' terms so we can evaluate precision and recall.
+    We developed a data generator to create a replicable benchmark dataset and make the code available on our Github\footnote{\url{https://github.com/osullik/GESTALT_GEOSEARCH}}. We generate objects and class labels using power-law distributions and use query terms from a disjoint set of labels so we can evaluate precision and recall.
     }
    
 \par{
     The generator can distort the queries to simulate real-world user variance and error by introducing the following:
     \begin{enumerate}
         \item \textit{Translation}, shifts the query in $x$ and $y$, to simulate drift.
-        \item \textit{Dilation} expands the query from its centroid to induce noise in the object-object distance.
-        \item \textit{Rotation} spins the query about its centroid to simulate poorly aligned local and global coordinate systems.
+        \item \textit{Dilation}, expands the query from its centroid to induce noise in the object-object distance.
+        \item \textit{Rotation}, spins the query about its centroid to simulate poorly aligned local and global coordinate systems.
     \end{enumerate}
     }
 \par{

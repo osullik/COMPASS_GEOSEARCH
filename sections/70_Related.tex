@@ -19,7 +19,7 @@
 \subsection{Subgraph Matching (SGM)}
 \par{
    
-    Subgraph matching approaches assume the database is encoded as a graph of objects and relations, and queries are encoded as a subgraph of objects and constraints of interest.
+    Subgraph matching (SGM) approaches assume the database is encoded as a graph of objects and relations, and queries are encoded as a subgraph of objects and constraints of interest.
     These methods then seek to identify where the query pattern exists in the database graph. 
     Spatial SGM methods like PQIS~\cite{Folkers2000} and Spacekey$_{MPJ}$~\cite{Fang2019} approach exponential in the number of constraints, ESPM and SpaceKey$_{MSJ}$ are bound by the number of nodes in exponential~\cite{Chen2019} or quartic~\cite{Fang2019} time, and fuzziness adds further complexity~\cite{Fang2019}.
     }
@@ -29,10 +29,10 @@
 
     \par{
     Constraint Satisfaction Problems (CSP) for SPM find an assignment of valid variables (database objects) given the query constraints.
-    In the worst case, where constraints are numerous, specificity is low, and poor ordering, CSP approaches perform poorly.
+    In the worst case, where constraints are numerous, specificity is low, and constraints are poorly ordered, CSP approaches perform poorly.
     
     Most CSP are at least cubic in the number of objects~\cite{Dylla2017}.
-    Some approaches include StarVars, are exponential in the number of objects~\cite{Lee2013}, \textit{Forward Checking} algorithms like MSJ$_{WR}$ and MSJ$_{JWR}$  are exponential in the number of constraints~\cite{Papadias1998}, MSJ$_{MSJ}$  is exponential in query terms~\cite{Papadias1998}, and \textit{Sketchmapia} which combines a QCN representation with a subgraph matching solver and we estimate performs similarly~\cite{Schwering2014, Jan2015}.
+    Some approaches like StarVars, are exponential in the number of objects~\cite{Lee2013}, \textit{Forward Checking} algorithms like MSJ$_{WR}$ and MSJ$_{JWR}$  are exponential in the number of constraints~\cite{Papadias1998}, MSJ$_{MSJ}$  is exponential in query terms~\cite{Papadias1998}, and \textit{Sketchmapia} which combines a QCN representation with a subgraph matching solver we estimate performs similarly~\cite{Schwering2014, Jan2015} to these algorithms.
    
 
 \subsection{Summary}

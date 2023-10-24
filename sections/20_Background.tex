@@ -6,24 +6,23 @@ We review spatial search to highlight the contributions of the \emph{COMPASS} su
 \par{
     Spatial entities can be classed into three main types: \textit{Points}, which consist of an $(x,y)$ coordinate pair in Cartesian space, \textit{Lines}, which represent the shortest path between two points, and \textit{Regions}, which represent the area inside a polyline joining $n$ points. %$(x_{1},y_{1}) ... (x_{n},y_{n})$). %$(x_{1},y_{1})$ and $(x_{2},{y}_{2})$)
     %
-    For the scope of this paper, we consider \textit{Point} entities (which we call  \textit{Objects}) that exist within a given \textit{Region} of interest.
-    Those objects consist of $(x,y)$ coordinates with additional attribute labels, like name (e.g. \textit{tree, table}).
-    %
-    We further define \textit{locations} to represent a semantic collection of objects close to the location's coordinates. 
-    For example, the location \textit{burger\_shop} may have objects \textit{(table, grill,} and \textit{counter)}.
+    %For the scope of this paper, we consider \textit{Point} entities (which we call  \textit{Objects}) to hold additional attribute labels, (like name). Objects exist within a given \textit{location} of interest. 
+    %Locations are semantic collections of objects close to the location's coordinates.
+    %Many locations exist within a \textit{Region} of interest.
+    %For example, the location \textit{burger\_shop} may have objects \textit{(table, grill,} and \textit{counter)}.
     
     %
-    For a more detailed analysis of the motivation and methods for assigning objects to locations, see \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})}~\cite{Osul2023}.
+    
 }
 
 
 \subsection{Spatial Relations Between Entities}
 \par{
-     \textit{Points, Lines} and \textit{Regions} relate to each other through:~\cite{Carniel2020,Bertella2022,Carniel2023}:
+     \textit{Points, Lines} and \textit{Regions} relate to each other through~\cite{Carniel2020,Bertella2022,Carniel2023}:
     \begin{itemize}
-        \item \textit{Topological} relations describe how regions, lines, and points interact (intersect, contain, touch, etc).
-        \item \textit{Metric} relations describe the distances between objects (ten miles, near, far etc.).
-        \item \textit{Directional} relations describe how objects are positioned relatively in space (north, left, behind etc.)~\cite{Carniel2020, Bertella2022, Carniel2023}.
+        \item \textit{Topological} relations that describe how regions, lines, and points interact (intersect, contain, touch, etc),
+        \item \textit{Metric} relations that describe the distances between objects (ten miles, near, far etc.), and
+        \item \textit{Directional} relations that describe how objects are positioned relatively in space (north, left, behind etc.)~\cite{Carniel2020, Bertella2022, Carniel2023}.
     \end{itemize}
 
     \textit{Topological} relations are typically binary (e.g., a road intersects another road, or it does not). 
@@ -53,7 +52,7 @@ We review spatial search to highlight the contributions of the \emph{COMPASS} su
 \par{
     Spatial queries consist of one or more \textit{constraints}---spatial relations between query objects or required \textit{attributes} of objects in the results.
 
-    Attribute constraints are typically \textit{keywords} that describe the objects of interest like `hospital', `restaurant', or `school'.
+    \textit{Attribute} constraints are typically \textit{keywords} that describe the objects of interest like `hospital', `restaurant', or `school'.
     Relation constraints are directional relationships like `school West of Pond'.
     Individually encoding these query constraints becomes cumbersome as the number of query objects grows.
     %

@@ -60,7 +60,7 @@ This section outlines the methods used to accomplish \emph{COMPASS}'s three form
     \textit{Location-Object} search allows a user to retrieve locations by specifying directional constraints for objects relative to the center of the location that `owns' them. 
     It assumes a globally aligned coordinate system and the existence of a \textit{Location-Object} data structure for each location in the region of interest.
     To issue a \textit{Location-Object} query, a user inserts query objects around the `center' of the location on the query canvas, encoding directional constraints relative to the location (NW/NE/SW/SE). 
-    \textit{Location-Object} works effectively as a set intersection operation. It iterates through the candidate locations, searching each location's NW/NE/SW/SE quadrants for object-quadrant relationships that match the directional constraints specified in the query.
+    \textit{Location-Object} is effectively a set intersection operation. It iterates through the candidate locations, searching each location's (NW/NE/SW/SE) quadrants for object-quadrant relationships that match the directional constraints specified in the query.
     Figure \ref{fig:CM-LO-Query} shows how to query the Location-Object data structure, and the process is formalized by Algorithm~\ref{alg:locSearch}.
 }
 \par{
@@ -222,7 +222,7 @@ We address the need for more certainty in coordinate system alignment by rotatin
 %
 Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in Figure~\ref{figure:rot-inv}.
 We generate the minimum bounding rectangle for the query points and label three reference points: `North', `West', and `Northwest' on the bounding rectangle relative to the centroid. 
-For each point in the query, we compute the angle between each reference point, the centroid, and the given point. 
+For each point in the query, we compute the angle between it,  each reference point and the centroid. 
 Rotating the query configuration by each angle aligns the given point to each reference direction.
 The unique set of query configurations obtained in this manner represents the minimum set of object-object queries required to determine if the pattern specified in the query matches, irrespective of cardinality. 
 
