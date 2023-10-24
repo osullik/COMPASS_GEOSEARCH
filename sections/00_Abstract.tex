@@ -9,7 +9,7 @@ We present \emph{COMPASS} as a reframing of the spatial pattern matching problem
 We group geospatial objects into semantic \textit{locations} and replace graph structures with an abstracted matrix \textit{competency map} representation of each location. 
 The abstracted view permits encoding of the directional relationships that are usually too dense for representation using graph-based methods. We search using our \textit{Cardinality Invariant Object-Object Recursive 
 Grid Search} algorithm, which finds matches even when the query is not aligned to the global coordinate system, resulting in perfect recall in our evaluation. 
-Our analysis shows that while the theoretical complexity of that our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
+Our analysis shows that while the theoretical complexity of our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
 %for $Q$ query points and $n$ objects for each of $G$ locations 
 in the worst case, the empirical performance is closer to logarithmic growth on the number of query terms.
 \emph{COMPASS} is a suite of data structures and algorithms that enable pattern-based search using directional relation constraints and offers a viable alternative to the dominant set-intersection, subgraph matching, and constraint satisfaction approaches.
