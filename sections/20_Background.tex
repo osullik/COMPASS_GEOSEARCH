@@ -1,5 +1,6 @@
 \section{Spatial Search}
 \label{section:background}
+\nrscomment{signpost}
 
 % \subsubsection{Approaches to Spatial Pattern Matching}
 % \par{
@@ -24,14 +25,15 @@
 
 \subsection{Spatial Entities}
 \par{
-    Spatial objects \textit{\{P,L,R\}} are \textit{Points} (an $(x,y)$ coordinate in cartesian space), \textit{Lines} (the shortest path between $(x_{1},y_{1})$ and $(x_{2},{y}_{2})$) or \textit{Regions} (the area inside a polyline joining points $(x_{1},y_{1}) ... (x_{n},y_{n})$).
-}
-\par{
-    In \emph{COMPASS}, we constrain ourselves to the \textit{Point} objects. That is, an $(x,y)$ coordinate with additional attribute labels including an object class name (e.g. \textit{tree, table}).
+    Spatial entities can be classed into three main types: \textit{Points}, which consist of an $(x,y)$ coordinate pair in Cartesian space, \textit{Lines}, which represent the shortest path between two points, and \textit{Regions}, which represent the area inside a polyline joining $n$ points. %$(x_{1},y_{1}) ... (x_{n},y_{n})$). %$(x_{1},y_{1})$ and $(x_{2},{y}_{2})$)
     %
-    \textit{Objects} and \textit{Locations} are physical entities in the world, where objects are `things' and locations are semantic collections of objects. For example, the location \textit{burger\_shop} may have objects \textit{(table, counter, grill,} and \textit{cash\_register)}.
+    For the scope of this paper, we consider \textit{Point} entities (which we call  \textit{Objects}) that exist within a given \textit{Region} of interest.
+    Those objects consist of $(x,y)$ coordinates with additional attribute labels, like name (e.g. \textit{tree, table}).
     %
-    We allow multiple objects of the same class or type and assume that objects have been assigned to their associated locations before search time.
+    We further define \textit{locations} to represent a semantic collection of objects that reside in close proximity to the location's coordinates. 
+    For example, the location \textit{burger\_shop} may have objects \textit{(table, counter, grill,} and \textit{cash\_register)}.
+    %
+    %We allow multiple objects of the same class or type and assume that objects have been assigned to their associated locations before search time.
     %
     For a more detailed analysis of the motivation and methods for assigning objects to locations, see \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})}~\cite{Osul2023}.
 }
@@ -39,72 +41,74 @@
 
 \subsection{Spatial Relations Between Entities}
 \par{
-     \textit{Points, Lines} and \textit{Regions} can be related~\cite{Carniel2020,Bertella2022,Carniel2023}:
+     \textit{Points, Lines} and \textit{Regions} can be related to each other in the following ways~\cite{Carniel2020,Bertella2022,Carniel2023}:
     \begin{itemize}
         \item \textit{Topological} relations describe how regions, lines and points interact (intersect, contain, touch, etc).
         \item \textit{Metric} relations describe the distances between objects (ten miles, near, far etc.).
         \item \textit{Directional} relations describe how objects are positioned relatively in space (north, left, behind etc.)~\cite{Carniel2020,Bertella2022,Carniel2023}.
     \end{itemize}
 
-    \textit{Topological} relations are typically discrete - a road intersects another road, or it does not. 
-    \textit{Metric} relations can be easily binned from continuous to discrete values - a train station is near or far from your house; they are mathematically trivial to infer.
-    \textit{Directional} relations are more difficult to represent efficiently, but are highly descriptive of the world, and are easily parsed by humans. 
-    Our focus is directional relations between spatial objects. 
+    \textit{Topological} relations are typically binary (e.g., a road intersects another road, or it does not). 
+    \textit{Metric} relations can be easily binned from continuous to discrete values (e.g., a train station is near or far from your house).
+    \textit{Directional} relations are typically complex (e.g. a sign, statue, and fountain arranged in a triangle), making them highly descriptive of the world, at the cost of being difficult to represent.
+    %
+    Our focus is directional relations between points. 
     %These can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next to}.
 }
 
 \subsection{Encoding Directional Relations}
 \par{
     %\nrscomment{Everything here is about directional. Are the encoding schema the same unregardless of relation type? can we generalize and remove mention of directional here?}
-
-    Encoding relations requires abstraction and simplification. 
-    A simplifying assumption is that both the query and the database are aligned to a global coordinate system (cardinal directions).
-    A query in global coordinate space where \textit{north} = \textit{up} seeking all objects \textit{left} of object $X$ can easily just return all objects in the \textit{west} of $X$ in the database.
-    Without the coordinate system assumption, the matching problem becomes significantly more difficult as there is no guarantee that the query \textit{left} and the database \textit{west} are both referring to the same direction.
-    The problem becomes \textit{cardinality invariant}. 
-    Regardless of the cardinality invariance problem, there are two dominant approaches to encoding directional relations, space segmentation and link encoding~\cite{Dellapenna2012,Dellapenna2017}.
-
-    \subsubsection{Space segmentation} 
-    Space segmentation divides the shared space around geospatial objects.
-    The segmentation can occur around a specific point in shared space (e.g. the centroid of all objects), creating a shared list of `objects that are north' or `objects to the left'. 
-    Segmentation can also be relative to each individual object (north, west, south-east etc). 
-    Each object then maintains lists of which segment every other object in the shared space lays in.
-    
-    \subsubsection{Link Encoding} 
-    Defining relationship constraints as explicit links is costly. 
-    Link encoding creates a \textit{Graph} or \textit{Qualitative Constraint Network}.
-    Every node in that graph is an object in the shared space, and every edge is a relation to every other node defining pairwise relationships between objects. 
-    While prior work discussed in section~\ref{section:related} focuses on building \textit{Metric} or \textit{Topological} relationships, we focus here on \textit{Directional} relationships.
-    Directional relationships are challenging for link encoding as they require a fully connected graph or multigraph to capture the relative directions of all objects.
+    There are two dominant approaches to encoding directional relations, \textit{space segmentation} and \textit{link encoding}~\cite{Dellapenna2012,Dellapenna2017}.
+%
+    \textit{Space segmentation} divides the space around one or many reference point(s), creating a shared list of `objects that are <direction>' of that point. 
+    To generalize space segmentation to capture relations between encoded objects, each encoded object must act as a reference point, storing the direction of all other objects with respect to it.
+    %maintain a list of which segment every other object in the shared space lays in with respect to it.
+    %Segmentation can also be relative to each individual object (north, west, south-east etc). 
+    %Each object then maintains lists of which segment every other object in the shared space lays in.
+    %such as the centroid of all objects. 
+    \textit{Link encoding} creates a \textit{Graph} or \textit{Qualitative Constraint Network} to explicitly encode pairwise directional relations as links.
+    This requires a fully connected graph or multigraph to capture all the relations between the encoded objects.
+    %Every node in that graph is an object in the shared space, and every edge is a relation to every other node defining pairwise relationships between objects. 
+    %While prior work discussed in section~\ref{section:related} focuses on building \textit{Metric} or \textit{Topological} relationships, we focus here on \textit{Directional} relationships.
+    %Directional relationships are challenging for link encoding as they require a fully connected graph or multigraph to capture the relative directions of all objects.
         %Explicit link encoding creates a graph that at a minimum is fully connected, and commonly will be a multigraph when a more granular encoding scheme is used.
+    These encoding schemes typically assume knowledge of a global coordinate system (e.g, cardinal directions), but some avoid this (we term these \textit{Cardinality Invariant}).
+    %A query in global coordinate space where \textit{north} = \textit{up} seeking all objects \textit{left} of object $X$ can easily just return all objects in the \textit{west} of $X$ in the database.
+    %Without the coordinate system assumption, the matching problem becomes significantly more difficult as there is no guarantee that the query \textit{left} and the database \textit{west} are both referring to the same direction.
+    %The problem becomes \textit{cardinality invariant}. 
+    %Regardless of the cardinality invariance problem, 
 }
-
 
 
 \subsection{Spatial Query Specification}
 \par{
-    We define a \textit{constraint} as a spatial \textit{relation} between two query objects or a required \textit{attribute} of objects in the result set.
-    A spatial query allows users to specify constraints on the spatial objects of interest and the relations of interest between them.
-    \textit{Attribute} constraints are typically \textit{keywords} that describe the objects of interest like `hospital', `restaurant', `school', etc..
-    \textit{Relationship} constraints are things like `school West of Pond'.
-    Encoding constraints becomes cumbersome as the number of objects of interest grows, as each pairwise relation must be explicitly defined in the query.
-    
-    A more natural approach allows the user to implicitly encode directional constraints pictorially.
-    A \textit{pictorial query} is a canvas of points representing objects laid out in a spatial configuration of interest to the user. \emph{COMPASS} focuses on directional relations, which are well suited to pictorial specification.
-    See \emph{GESTLAT} for more~\cite{Osul2023}
+    Spatial queries consist of one or more \textit{constraints}, which can be spatial relations between two query objects or required \textit{attributes} of objects in the result set.
+    %A spatial query allows users to specify constraints on the spatial objects of interest and the relations of interest between them.
+    Attribute constraints are typically \textit{keywords} that describe the objects of interest like `hospital', `restaurant', `school', etc..
+    Relation constraints are directional relationships like `school West of Pond'.
+    Encoding these query constraints individually becomes cumbersome as the number of query objects grows.
+    %
+    A more natural approach to encoding directional query constraints is to do so implicitly, with a picture or sketch map~\cite{Osul2023}.
+    A \textit{pictorial query} accomplishes this using a canvas of points that represent query objects configured in a pattern of interest, which implicitly captures the pairwise directional constraints between the objects. 
+    %\emph{COMPASS} focuses on directional relations, which are well suited to pictorial specification.
+    %See \emph{GESTLAT} for more~\cite{Osul2023}
 }
 
 
 \subsection{Spatial Search Task}
 \par{
-    The \textit{spatial search} task finds matching entities in a database that meet the constraints specified by a spatial query.
+    \textit{Spatial search} is the task of retrieving entities from a database that meet the constraints specified by a spatial query.
+    More specifically, spatial pattern matching is a type of \textit{spatial search} that is typically defined as a graph matching problem, where vertices have keyword labels and edges have distance intervals and signs (\textit{exclusion in, exclusion out, mutual exclusion} and \textit{mutual inclusion})~\cite{Fang2019}.
+    To address the scalability barrier of spatial pattern matching for directional constraints, we re-frame the problem as a question of satisfiability, per location (akin to per graph of objects).
+    In other words, instead of retrieving every set of objects meeting the spatial search constraints, we seek to determine \emph{if} a given set of objects associated with a location meet the constraints of the query.
     %Methods for accomplishing the spatial search task vary based on the schema used to encode and store the spatial entities and their relations.
+    
+    %We look for alternatives to the graph-centric definition, seeking representations that are not inherently graph-based, search methods that are not graph-dependent. 
+    %Instead, we more broadly define \textit{spatial pattern matching} as the task of determining when a collection of query objects and constraints exists in an underlying database of objects and relations.
+    %\textit{Spatial Pattern Matching} (SPM) is a type of \textit{spatial search } that is defined as a graph matching problem requiring that each vertex has a keyword label, each edge has a distance interval and each edge has a sign (\textit{exclusion in, exclusion out, mutual exclusion} and \textit{mutual inclusion})~\cite{Fang2019}.
 
-    \textit{Spatial Pattern Matching} (SPM) is a type of \textit{spatial search } that is defined as a graph matching problem requiring that each vertex has a keyword label, each edge has a distance interval and each edge has a sign (\textit{exclusion in, exclusion out, mutual exclusion} and \textit{mutual inclusion})~\cite{Fang2019}.
-    We look for alternatives to the graph-centric definition, seeking representations that are not inherently graph-based, search methods that are not graph-dependent. 
-    Instead, we more broadly define \textit{spatial pattern matching} as the task of determining when a collection of query objects and constraints exists in an underlying database of objects and relations.
-
-    Most SPM methods formulate the problem as a \textit{set-intersection} problem, a \textit{qualitative spatial reasoning} (QSR)/\textit{constraint satisfaction problem} (CSP), or a \textit{subgraph-matching} (SGM) problem, all of which scale poorly with large numbers of relations in the database and constraints in the query. 
+    %Most SPM methods formulate the problem as a \textit{set-intersection} problem, a \textit{qualitative spatial reasoning} (QSR)/\textit{constraint satisfaction problem} (CSP), or a \textit{subgraph-matching} (SGM) problem, all of which scale poorly with large numbers of relations in the database and constraints in the query. 
 }
 
 

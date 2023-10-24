@@ -2,12 +2,11 @@
 
 \label{section:introduction}
 
-\subsection{Motivation}
-\subsubsection{Context}
+
 \par{
     Determining the location a photo was taken, matching a sketch to the real-world location it describes and even using a written description to geolocate the described event are important tasks in open-source intelligence~\cite{Higgins2021, Williams2023}.
     When the location data has been stripped from a photo, a sketch map is poorly labeled or a description is vague, analysts are forced to use other, manually-intensive methods based on what can be deduced from the objects in the description.
-    Techniques like skyline matching~\cite{Stein1995, Baatz2012}, automatic vegetation matching~\cite{Schmidt2022} and reading street signs are helpful, but rely on the presence of specific features in the image.
+    Techniques like skyline matching~\cite{Stein1995, Baatz2012} and automatic vegetation matching~\cite{Schmidt2022} are helpful, but rely on the presence of specific features in the image.
     How should an analyst proceed when the only features that they have are a low-resolution hypothesis of where the desired location may be and a collection of everyday objects to try to confirm that hypothesis?
 }
 \par{
@@ -39,27 +38,25 @@
 
 \par{
     We present \emph{COMPASS}, the \textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}, a collection of data structures and algorithms designed to address the scalability issues of geospatial pattern matching by developing a new representation for directional relationships and reframing the search problem to an \textit{any} rather than \textit{all} search problem by arranging geospatial objects hierarchically, grouped as \textit{locations} that are semantically meaningful to humans.
-    More, we demonstrate how the \emph{COMPASS} framework intuitively supports pictorial queries, further supporting the human-centric view of search.
-    }
-    
+    More, we demonstrate how the \emph{COMPASS} framework intuitively supports pictorial queries, further supporting the human-centric view of search.   
 %\emph{COMPASS} abstracts away the \textit{metric} and \textit{topological} dimensions of the real world, generating a \textit{concept map}, an arrangement of \textit{keyword-labelled} geospatial objects that preserves their directional constraints.
 %We show that the \textit{concept map} representation 
 %By encoding these spatial relationships in a manner that can be compared with visual queries issued by the user, we enable a form of spatial search that (to our knowledge) does not presently exist in any GIS tools.
+    We develop a new encoding scheme (termed a concept map) and associated spatial pattern matching algorithms that handle directional relations as a scalable alternative to graph-based constraint formulations.
+    We also provide a data generation framework that produces a location and object database and valid pictorial queries to support testing and evaluation.
     
-\par{
-    Specifically, we provide the following contributions:
-    \begin{enumerate}
-        \item The \textit{concept map} abstraction of directional and keyword constraints as an alternative to graph-based constraint formulations.
-        \item The Location-Object, Object-Object and Cardinality-Invariant-Object-Object spatial pattern matching algorithms. 
-        \item A data generation framework that produces a location and object database and valid pictorial queries to support testing and evaluation.
+    %\begin{enumerate}
+       % \item The \textit{concept map} abstraction of directional and keyword constraints as an alternative to graph-based constraint formulations.
+        %\item The Location-Object, Object-Object and Cardinality-Invariant-Object-Object spatial pattern matching algorithms. 
+       % \item A data generation framework that produces a location and object database and valid pictorial queries to support testing and evaluation.
         
         %\item A reframing of the pictorial querying problem to include early stopping at the first set of objects that indicate a location matched the spatial configuration of objects queried
         %\item A method for mapping objects associated with each location to one of two proposed spatial data structures that facilitate pictorially querying spatial relations like "A bus stop, pond, and telephone pole configured in a triangle."
         %\item A series of algorithms to perform three forms of spatial search based on pictorial query input
         %\item A substantial data generation framework that produces a location and object database and pictorial queries against it to enable comparisons of spatial search methods
-    \end{enumerate}
+    %\end{enumerate}
 
-    We begin by providing relevant background on spatial search in section \ref{section:background}. Sections \ref{section:data_structures} and \ref{section:methods} outline our proposed solution. We evaluate each algorithm's effectiveness and efficency on the datasets we generate in sections \ref{section:experimental_setup} and \ref{section:results} and briefly summarize relevant related work in Section \ref{section:related} before concluding.
+    We begin by describing relevant background on spatial search in section \ref{section:background}. Sections \ref{section:data_structures} and \ref{section:methods} outline our proposed solution. We evaluate each algorithm's theoretical complexity and efficiency on the datasets we generate in sections \ref{section:experimental_setup} and \ref{section:results} and briefly summarize relevant related work in section \ref{section:related} before concluding.
     %The paper proceeds in Section \ref{section:related} with a discussion of current and historical approaches to pictorial-based spatial search and spatial point data matching. 
     %Next, Section \ref{section:prelim} introduces our approach and the three forms of spatial search \emph{COMPASS} enables.
     %We describe the process used to generate the data, as well as the queries and algorithms that contributed to performing the search in Section \ref{section:methods}. 

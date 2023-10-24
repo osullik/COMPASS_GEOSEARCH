@@ -3,21 +3,27 @@
 
 
 \par{
-    Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.
-    The spatial distribution of locations, and the objects associated with them are not uniformly distributed, and generating synthetic data requires an approach that is able to reflect the power law distributions observed in location and object clusters.  
-    To this end, we developed a data generator to support the evaluation of our algorithms. 
-    The data generator uses an implementations of the Recursive Matrix (RMAT) graph generation algorithm \cite{Chakrabarti2004} to produce the adjacency matrix of a scale-free graph with tunable size and density (setting the distribution parameters to reflect those standardized in graph500).
-    We use the edges of that adjacency matrix to represent the 'coordinates' of the points associated with a location. 
-    Labeling the points with their 'names' (object classes) involves generating samples across an inverse Pareto distribution, separating those samples into \textit{n} bins and then walking through that sample, assigning each bin encountered in turn to an unlabeled point.
-    To ensure we can control the query evaluation, we insert queries from a disjoint set of labels into the location object matrices once the initial labeling has been completed. 
-    To reflect real-world variance, those input queries undergo the following transformations that reflect the differences between how objects might exist in the real world vs. how a user might sketch or place them in a pictorial query.
-    These transformations include 
+    We design our experiments to use data that mimics real-world distributions of object placement and object class frequency while maintaining sufficient control to evaluate the precision and recall of our algorithms. 
+    
+    %Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.
+    %The spatial distribution of locations, and the objects associated with them are not uniformly distributed, and generating synthetic data requires an approach that is able to reflect the power law distributions observed in location and object clusters.
+    }  
+    \par{We developed a data generator to create a replicable benchmark dataset and make the code available on our Github\footnote{\url{https://github.com/osullik/GESTALT}}. 
+    %It uses the Recursive Matrix (RMAT) graph generation algorithm \cite{Chakrabarti2004} to produce the adjacency matrix of a scale-free graph with tunable size and density (setting the distribution parameters to reflect those standardized in graph500).
+    %We use the edges of that adjacency matrix to represent the 'coordinates' of the points associated with a location. 
+    %Labeling the points with their 'names' (object classes) involves generating samples across an inverse Pareto distribution, separating those samples into \textit{n} bins and then walking through that sample, assigning each bin encountered in turn to an unlabeled point.
+    We generate objects and class labels using power-law distributions, and use query terms from a disjoint set of labels to the `noise' terms so we can evaluate precision and recall.
+    %To ensure we can control the query evaluation, we insert queries from a disjoint set of labels into the location object matrices once the initial labeling has been completed. 
+    %To reflect real-world variance, those input queries undergo transformations that reflect the differences between how objects might exist in the real world versus how a user might sketch or place them in a pictorial query including: 
+    The generator can distort the queries to simulate real-world user variance and error by introducing:
     \begin{enumerate}
-        \item \textit{Translation}, where the query is shifted vertically and/or horizontally, to represent incorrect placement of the object pattern with respect to the location it should be associated with
-        \item \textit{Dilation}, where the query is expanded from its centroid by a random amount to represent inaccurate recollection of object-object distance by the user
-        \item \textit{Rotation}, where the query is rotated about its centroid to represent lack of knowledge about cardinal bearings by the user
+        \item \textit{Translation}, where the query is shifted vertically and/or horizontally, to represent incorrect placement of the object pattern with respect to the location.
+        \item \textit{Dilation}, where the query is expanded from its centroid by a random amount to represent inaccurate recollection of object-object distance by the user.
+        \item \textit{Rotation}, where the query is rotated about its centroid to simulate poorly aligned local and global coordinate systems.
     \end{enumerate}
 
-
-    The data generator framework allows for flexible experimentation to test how spatial queries perform in terms of precision, recall, and query response time, while controlling the number of locations generated, the number of queries constructed, number and distribution of objects in each query and associated with each location, and the type and degree of transformation applied to the queries to simulate real world conditions where users have imperfect information.
+    We generate two benchmark suites. \textit{Normal} has no distortions applied and \textit{Distorted} has all four distortions applied. 
+    Both datasets grow in proportionally in powers of two between $2^2$ and $2^9$ in both the number of database objects and number of query objects for a total of 35 experiments within the suite (i.e. for a database of $2^2$ there is only one query of $2^2$, but for a database of $2^4$ there are queries of $2^2$ $2^3$ and $2^4$).
+    
+    %The data generator framework allows for flexible experimentation to test how spatial queries perform in terms of precision, recall, and query response time, while controlling the number of locations generated, the number of queries constructed, number and distribution of objects in each query and associated with each location, and the type and degree of transformation applied to the queries to simulate real world conditions where users have imperfect information.
 }
