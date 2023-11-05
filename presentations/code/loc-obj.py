@@ -1,7 +1,10 @@
 from manim import *
 
-class ArrangeTextObjects(Scene):
+class ArrangeTextObjects(MovingCameraScene):
     def construct(self):
+        #self.camera.background_color = WHITE
+        self.camera.frame.save_state()
+
         # Define the text labels, colors, and coordinates
         labels = ["X", "A", "B", "B", "B", "C", "C", "D", "D"]
         colors = [WHITE, RED, BLUE, BLUE, BLUE, GREEN, GREEN, YELLOW, YELLOW]
@@ -25,18 +28,22 @@ class ArrangeTextObjects(Scene):
         # Add the Text objects to the scene
         self.play(*[Write(text) for text in text_objects])
 
-        self.wait(2)
+        self.wait(1)
 
         # Create Dashed Lines from X
-        right_line = DashedVMobject(Line((0,0,0), (10,0,0)), num_dashes=20)
-        left_line = DashedVMobject(Line((-1,0,0), (-10,0,0)), num_dashes=20)
-        up_line = DashedVMobject(Line((-0.5,0.5,0), (-0.5,10,0)), num_dashes=20)
-        down_line = DashedVMobject(Line((-0.5,-0.5,0), (-0.5,-10,0)), num_dashes=20)
+        right_line = DashedVMobject(Line((0,0,0), (5,0,0)), num_dashes=20)
+        left_line = DashedVMobject(Line((-1,0,0), (-5,0,0)), num_dashes=20)
+        up_line = DashedVMobject(Line((-0.5,0.5,0), (-0.5,5,0)), num_dashes=20)
+        down_line = DashedVMobject(Line((-0.5,-0.5,0), (-0.5,-5,0)), num_dashes=20)
+
+        gridGroup = (text_objects[0], right_line, left_line, up_line, down_line)
 
         #vertical_line.shift(coordinates[0][0])
         #horizontal_line.shift(coordinates[0][1])
 
         self.play(Create(up_line), Create(down_line), Create(left_line), Create(right_line))
+
+    
 
 
 
@@ -66,12 +73,15 @@ class ArrangeTextObjects(Scene):
         NW_tgt = [(5,3,0)]
         NE_tgt = [(5,2.5,0),(5.5,2.5,0),(6,2.5,0)]
         SW_tgt = [(5,2,0),(5.5,2,0)]
-        SE_tgt = [(5,1.5,0),(5.5,1.5,0)]
+        SE_tgt = [(5,1.5,0),(5.5,1.5,0)]  
 
-        self.add(*[quad for quad in quad_objects])        
+        #Animate creation of the lists
 
-        #for o_txt, o_tgt in zip (origin,O_tgt):
-        #    self.play(o_txt.animate.move_to(o_tgt))
+        loc_name = Text("LOC X", color=WHITE, font='Courier New').move_to((4.75,3.5,0))
+        self.add(loc_name)
+        self.add(*[quad for quad in quad_objects])      
+
+        #Animate the move to the lists
         for nw_txt, nw_tgt in zip (NW,NW_tgt):
             self.play(nw_txt.animate.move_to(nw_tgt))
         for ne_txt, ne_tgt in zip (NE,NE_tgt):
@@ -81,11 +91,130 @@ class ArrangeTextObjects(Scene):
         for se_txt, se_tgt in zip (SE,SE_tgt):
             self.play(se_txt.animate.move_to(se_tgt))
 
-        # self.play(*[text.animate.move_to(O_tgt) for text in origin],
-        #           *[text.animate.move_to(NW_tgt) for text in NW],
-        #           *[text.animate.move_to(NE_tgt) for text in NE],
-        #           *[text.animate.move_to(SW_tgt) for text in SW],
-        #           *[text.animate.move_to(SE_tgt) for text in SE]
-        #           )
+        self.wait(1)
 
-        self.wait(2)
+        #Combine the lists into a box and add a border
+        list_group = Group(  loc_name,
+                            quad_objects[0],
+                            quad_objects[1],
+                            quad_objects[2],
+                            quad_objects[3], 
+                            NW[0], 
+                            NE[0],NE[1], NE[2], 
+                            SW[0], SW[1], 
+                            SE[0], SE[1])
+
+        box_border = SurroundingRectangle(list_group, corner_radius=0.25, color=WHITE)
+
+        box_group = Group(list_group,box_border)
+
+        #Zoom out while drawing that border and moving the box
+        self.play(box_border.animate, box_group.animate.move_to((8,6,0)),  self.camera.frame.animate.scale(2.0).move_to((8,0,0)))
+
+
+
+        #Place a Q at the centre of the new query
+
+        query_q = Text("Q", color=WHITE, font="Courier New").move_to((16,0,0))
+        q_right_line = DashedVMobject(Line((16.5,0,0), (21.5,0,0),color=WHITE), num_dashes=20)
+        q_left_line = DashedVMobject(Line((15.5,0,0), (10.5,0,0),color=WHITE), num_dashes=20)
+        q_up_line = DashedVMobject(Line((16,0.5,0), (16,5,0),color=WHITE), num_dashes=20)
+        q_down_line = DashedVMobject(Line((16,-0.5,0), (16,-5,0),color=WHITE), num_dashes=20)
+
+        self.play(query_q.animate)
+        self.play(Create(q_up_line), Create(q_down_line), Create(q_left_line), Create(q_right_line))
+        
+        q_gridGroup = (query_q, q_right_line, q_left_line, q_up_line, q_down_line)
+
+
+        #Add query terms
+
+        q_E = Text("E", color=PURPLE, font="Courier New").move_to((13,2.5,0))
+        q_D1 = Text("D", color=YELLOW, font="Courier New").move_to((18,2.5,0))
+        q_C = Text("C", color=GREEN, font="Courier New").move_to((13,-2.5,0))
+        q_D2 = Text("D", color=YELLOW, font="Courier New").move_to((14,-2.5,0))
+        q_B = Text("B", color=BLUE, font="Courier New").move_to((18,-2.5,0))
+
+        query_objects = [q_E, q_D1, q_C, q_D2, q_B]
+
+        self.play(*[Write(query) for query in query_objects])
+
+
+        #Move to Query Box:
+
+        query_name = Text("QUERY Q", color=WHITE, font='Courier New').move_to((8,-5,0))
+        self.add(query_name)
+
+        q_quad_labels = ["NW:", "NE:", "SW:", "SE:"]
+        q_quad_coords = [(7,-5.5,0), (7,-6,0), (7,-6.5,0), (7,-7,0)]
+        q_quad_objects = []
+
+        for lbl, crd in zip(q_quad_labels,q_quad_coords):
+            text = Text(lbl,color=WHITE, font='Courier New').move_to(crd)
+            q_quad_objects.append(text)
+
+        self.add(*[q_quad for q_quad in q_quad_objects])      
+
+        q_list_group = Group(query_name, 
+                             q_quad_objects[0],
+                             q_quad_objects[1],
+                             q_quad_objects[2],
+                             q_quad_objects[3])
+
+        q_box_border = SurroundingRectangle(q_list_group, corner_radius=0.25, color=WHITE)
+        
+        self.play(q_box_border.animate)
+                  
+        
+
+        q_tgts = [(8,-5.5,0),(8,-6,0),(8,-6.5,0),(8.5,-6.5,0),(7.95,-7,0)]  
+
+        for txt, tgt in zip (query_objects,q_tgts):
+            self.play(txt.animate.move_to(tgt))
+
+        q_box_group = Group(q_list_group,q_box_border, q_E, q_D1, q_C, q_D2, q_B)
+        
+
+
+        #Remove the grids and zoom in
+        self.remove(gridGroup, q_gridGroup)
+        self.play(self.camera.frame.animate.scale(0.5).move_to((8,0,0)),
+                  box_group.animate.move_to(((4,2,0))),
+                  q_box_group.animate.move_to(((4,-2,0))), right_line.animate.move_to((-10,0,0)), q_left_line.animate.move_to((20,0,0)))
+        
+
+        #Search:
+
+        q_rect = SurroundingRectangle(q_E, color=RED)
+        a_rect= SurroundingRectangle(text_objects[2])
+
+        counting_text = Text("Match Count:", color=WHITE, font="Courier New").move_to((9,0,0))
+        counter=0
+        count = Integer(counter, color=WHITE).move_to((12,0,0))
+
+        self.play(q_rect.animate, a_rect.animate, Write(counting_text), count.animate)
+        #Search NW
+        self.play(q_rect.animate.move_to(q_D1), a_rect.animate.move_to(text_objects[3]))
+        #Search NE
+        self.play(a_rect.animate.move_to(text_objects[6]))
+        counter+=1
+        self.play(a_rect.animate.move_to(text_objects[8]), Transform(count, Integer(counter,color=WHITE).move_to((12,0,0))))
+        #Search SW
+        counter+=1
+        self.play(q_rect.animate.move_to(q_C), a_rect.animate.move_to(text_objects[5]),Transform(count, Integer(counter,color=WHITE).move_to((12,0,0))))
+        self.play(a_rect.animate.move_to(text_objects[7]))
+        self.play(q_rect.animate.move_to(q_D2),a_rect.animate.move_to(text_objects[5]))
+        counter+=1
+        self.play(a_rect.animate.move_to(text_objects[7]),Transform(count, Integer(counter,color=WHITE).move_to((12,0,0))))
+        #Search SE
+        self.play(q_rect.animate.move_to(q_B),a_rect.animate.move_to(text_objects[1]) )
+        counter+=1
+        self.play(a_rect.animate.move_to(text_objects[4]),Transform(count, Integer(counter,color=WHITE).move_to((12,0,0))))
+
+        return_txt = Text("Return: (Location_X, {count})".format(count=counter)).move_to((10, -2, 0))
+
+        return_box = SurroundingRectangle(return_txt, corner_radius=0.25)
+
+        self.play(Write(return_txt))
+        self.play(Create(return_box))
+
