@@ -197,6 +197,7 @@ class ObjectObjectSearch(MovingCameraScene):
         tup_list = []
         tgt_list = []
 
+    
         #D to 5,0
         tup_1 = (NS_objects[0], WE_objects[5]) 
         tgt_1 = (((s_x+5,s_y,0)))
@@ -232,7 +233,10 @@ class ObjectObjectSearch(MovingCameraScene):
         tup_list =[tup_1, tup_2, tup_3, tup_4, tup_5, tup_6, tup_7, tup_8]
         tgt_list =[tgt_1, tgt_2, tgt_3, tgt_4, tgt_5, tgt_6, tgt_7, tgt_8]
 
+        buildBox = SurroundingRectangle(NS_objects[0])
+
         for tup,tgt in zip(tup_list, tgt_list):
+            self.play(buildBox.animate.move_to(tup[0]),run_time=0.1)
             self.play(tup[0].animate.move_to(tgt), tup[1].animate.move_to(tgt),
                       north_lbl.animate)
 
