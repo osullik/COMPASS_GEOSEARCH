@@ -30,10 +30,10 @@ class LocationObjectSearch(MovingCameraScene):
                         (-3, 3, 0), #B -NW  
                         (3, 2, 0),  #B -NE
                         (2, -2, 0), #B -SE
-                        (-2, -2, 0),#C -SW
+                        (-2, -2.5, 0),#C -SW
                         (1, 1, 0),  #C -NE
                         (-1, -1, 0),#D -SW
-                        (2, 3, 0)]  #D -NE
+                        (2.5, 3.5, 0)]  #D -NE
 
         # Create a list to store Text objects
         text_objects = []
