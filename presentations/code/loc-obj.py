@@ -164,7 +164,6 @@ class LocationObjectSearch(MovingCameraScene):
 
 
         #Move to Query Box:
-
         query_name = Text("QUERY Q", color=WHITE, font='Courier New', stroke_width=3).move_to((8,-5,0))
         self.add(query_name)
 
@@ -247,4 +246,5 @@ class LocationObjectSearch(MovingCameraScene):
 
         self.play(Write(return_txt))
         self.play(Create(return_box))
+
 
