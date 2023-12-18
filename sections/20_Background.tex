@@ -1,19 +1,10 @@
 \section{Spatial Search}
 \label{section:background}
-%Spatial entities interact with each other, and those interactions are an opportunity to specify highly descriptive queries.
-%We review spatial search to highlight the contributions of the \emph{COMPASS} suite in sections \ref{section:data_structures} and \ref{section:methods}.
 Before introducing the data structures and algorithms we use to accomplish spatial search, we define the spatial entities and relations discussed throughout the paper and briefly describe how spatial search queries are specified as input to the spatial search task.
 \subsection{Spatial Entities}
 \par{
-    Spatial entities can be classed into three main types: \textit{Points}, which consist of an $(x,y)$ coordinate pair in Cartesian space, \textit{Lines}, which represent the shortest path between two points, and \textit{Regions}, which represent the area inside a polyline joining several points. %$(x_{1},y_{1}) ... (x_{n},y_{n})$). %$(x_{1},y_{1})$ and $(x_{2},{y}_{2})$)
-    %
-    %For the scope of this paper, we consider \textit{Point} entities (which we call  \textit{Objects}) to hold additional attribute labels, (like name). Objects exist within a given \textit{location} of interest. 
-    %Locations are semantic collections of objects close to the location's coordinates.
-    %Many locations exist within a \textit{Region} of interest.
-    %For example, the location \textit{burger\_shop} may have objects \textit{(table, grill,} and \textit{counter)}.
-    
-    %
-    
+    Spatial entities can be classed into three main types: \textit{Points}, which consist of an $(x,y)$ coordinate pair in Cartesian space, \textit{Lines}, which represent the shortest path between two points, and \textit{Regions}, which represent the area inside a polyline joining several points.                         
+        
 }
 
 
@@ -23,27 +14,22 @@ Before introducing the data structures and algorithms we use to accomplish spati
     \begin{itemize}
         \item \textit{Topological relations} that describe how regions, lines, and points interact (intersect, contain, touch, etc),
         \item \textit{Metric relations} that describe the distances between objects (ten miles, near, far etc.), and
-        \item \textit{Directional relations} that describe how objects are positioned relatively in space (north, left, behind etc.). %~\cite{Carniel2020, Bertella2022, Carniel2023}.
-    \end{itemize}
+        \item \textit{Directional relations} that describe how objects are positioned relatively in space (north, left, behind etc.).     \end{itemize}
 
     \textit{Topological} relations are typically binary (e.g., a road intersects another road, or it does not). 
     \textit{Metric} relations can be quickly binned from continuous to discrete values (e.g., a train station is near or far from a house).
     \textit{Directional} relations are typically complex (e.g., a sign, statue, and fountain are arranged in a triangle), making them highly descriptive of the world, at the cost of being challenging to represent.
-    %
-    The focus of this paper is directional relations between points. 
+        The focus of this paper is directional relations between points. 
 
 }
 
 \subsection{Encoding Directional Relations}
 \par{
     There are two dominant approaches to encoding directional relations, \textit{space segmentation} and \textit{link encoding}~\cite{Dellapenna2012, Dellapenna2017}.
-%
     \textit{Space segmentation} divides the space around one or many reference point(s), creating a shared list of `objects that are <direction>' of that point. 
     Generalizing space segmentation to capture relations between encoded objects requires each encoded object to act as a reference point, storing the direction of all other objects with respect to it.
- %
-    \textit{Link encoding} creates a \textit{Graph} or \textit{Qualitative Constraint Network} (QCN) to explicitly encode pairwise directional relations between objects as links.
+     \textit{Link encoding} creates a \textit{Graph} or \textit{Qualitative Constraint Network} (QCN) to explicitly encode pairwise directional relations between objects as links.
     Encoding directional relations requires a fully connected graph or multigraph to capture all the relevant relations.
-%
     Most encoding schemes assume a global coordinate system (e.g., cardinal directions); those that do not are \textit{Cardinality Invariant}.
 
 }
@@ -53,12 +39,10 @@ Before introducing the data structures and algorithms we use to accomplish spati
 \par{
     Spatial queries consist of one or more \textit{constraints}.
     Constraints are either \textit{attributes} required of objects in the result set, or spatial relations required between objects in the result set.
-%
     \textit{Attribute constraints} are typically \textit{keywords} that describe the objects of interest like `hospital', `restaurant', or `school'.
     \textit{Relation constraints} are directional relationships like `school West of Pond'.
     Individually encoding these query constraints becomes cumbersome as the number of query objects grows.
-    %
-    A more natural approach to encoding directional query constraints is to do so implicitly, with a picture or sketch map~\cite{Osul2023}.
+        A more natural approach to encoding directional query constraints is to do so implicitly, with a picture or sketch map~\cite{Osul2023}.
     A \textit{pictorial query} accomplishes this using a canvas of points representing query objects configured in a pattern of interest, which implicitly captures the pairwise directional constraints between the objects. 
     
 }
@@ -75,64 +59,6 @@ Before introducing the data structures and algorithms we use to accomplish spati
 
 
 
-%Leveraging the data structures and algorithms that comprise \emph{COMPASS}, we apply one of three spatial search techniques to return a set of locations from the database associated with the object pattern of interest, as specified by the pictorial query. 
-%This search paradigm assumes that a user has knowledge of several objects and their spatial configuration and wishes to retrieve a list of all locations that contain that same query configuration within a given \textit{region} or area under search.
-
-
-
-
-%\vspace{-200pt}
-
-%In these circumstances, we can instead search for the relative position of objects to each other and ignore their absolute position within the location.
-
-
-%Object-object relations lend themselves particularly well to pictorial query specification~\cite{Soffer1997}.
-%This method of specifying the spatial positioning of objects aligns nicely with how humans think about and describe landmarks in the world- by drawing a map. 
-
-
-%\par{
-%COMPASS employs aggressive pruning strategies to reduce the complexity of multi-object spatial pattern matching to tractable levels. 
-%The concept maps abstract away distance and absolute position, reducing the search complexity and also supporting the human-centric view of the world, where distance estimation is not required. 
-%Finally, we build early-stopping into our search, meaning that as soon as a location is known to be a match, we return it and cease checking the remainder of that location.
-%}
-%A user who remembers three objects in a particular configuration is likely to be just as satisfied with the return of a location with boolean confidence as they are with a count of the number of times that configuration occurs, significantly reducing the number of possible configurations that must be explored to satisfy a query.
-%Overall, COMPASS focuses on a search experience that supports the way a human interacts with and remembers the world, and made efforts to improve the tractability of that approach at each step, yielding a collection of data structures and algorithms that improve the human search experience.
-%First is the implicit pruning of the search space by limiting the search area to regions.
-%Next, while searching we employ the set-membership checks to exclude locations that cannot possibly satisfy the query, because they lack the objects required to fulfil it.
-%An additional benefit of removing distance features is that it removes a map-centric criteria that people are typically very bad at estimating. 
-%Another complexity reduction comes from focusing on maximizing recall by returning locations with any match. 
-%The recall is checked by the logical step that as a person becomes more certain about a location they add more objects to the query, pruning the set of possible results dramatically with even just four or five query terms.
-
-
-%\par{
-%\emph{COMPASS} supports two forms of spatial relations: object-location relations and object-object relations.
-%Both cases involve an offline encoding phase that enables an online search phase. 
-%We discuss the details of the encoding phase in this section and leave the search details to section \ref{section:search}.
-%}
-
-%suite of data structures and algorithms address the scalability for complex spatial pattern matching through representation, abstraction and pruning.
-%In this section we introduce the terminology and intuition for our approaches, and briefly examine the enabling data structures. 
-%We describe the algorithms in detail in section \ref{section:Methods} and provide a theoretical and empirical complexity analysis in section~\ref{section:results}.
-%
-%Our human-centric approach begins with our hierarchcal representation of space, which reflects how people tend to understand and remember the world. 
-%Beginning from the largest elements, we divide the world into \textit{\textbf{regions}}, which could be a suburb, state or larger area depending on the use-case. 
-%A region is the largest collection that we search over, and all of our algorithms assume the user has narrowed down to a region prior to searching with COMPASS.
-%Rather than being defined explicilty by area, a region is a collection of \textit{\textbf{locations}}. 
-%A location can be thought of as a place of some public significance or interest. 
-%Locations contain \textit{\textbf{objects}} which are the things physically located in and around a location.
-%At their core within COMPASS, objects consist of a \textit{\textbf{name}} which associates it with an object class and its \textit{\textbf{coordinates}}.
-
-%Further detail on the data collection, assignment of objects to locations, and user interface are described in our introduction of the \textit{Geospatially Enhanced Search with Terrain Augmented Location Targeting (\textbf{GESTALT})} system \cite{osullivan2023}.
-
-
-%In the event of ties, we apply the convention that the object that is more northern then western is dominant, and then we use lexicographic order.
-
-
-
-%\subsection{Cardinality Invariant Object-Object relations}
-%Cardinality Invariant Object-Object relations refer to a variant of object-object spatial relations such that 
-%\nrscomment{describe here}
-%\nrscomment{diagram here}
 
 
 
@@ -143,118 +69,48 @@ Before introducing the data structures and algorithms we use to accomplish spati
 
 
 
-%To encode a location, we begin by setting the centroid of the location provided by OSM during Data Acquisition to be the root of a quartering of the search space into NorthWest, NorthEast, SouthWest and SouthEast quadrants. 
-%Each object's coordinates are compared to the location centroid and it is assigned to the appropriate quadrant. 
-%Where a point lies on the border we adopt the convention that it belongs to the southern and western quadrants. 
-%To query the location-object index, a user imagines themselves standing at the centre of the location and enters the query terms into the quadrant they believe it belongs in. 
-%That query map is then compared to each candidate location. An object in the query is in the same quadrant as an object in a candidate location, the number of correct terms increments.
-%The result is a matrix in which each row and column has only a single object. 
-%Where ties are experienced in the real world (due to a lack of GPS precision, or very close position) they are broken lexicographically in the object-object concept map instantiation.
-%To generate the object-object matrix concept map, we sort all objects from north to south in one list, and all objects west to east in another. Their position in the matrix is then determined by their position in the matrix. For example in figure ref{{fig:CM-OO-Setup}} object \textbf{"A"} is in the 8th position from the North, and the 8th Position from the west, so in the matrix it is assigned to index [0,0].
-%To then query this sparse matrix, approached it as you might approach looking for something on a map - by eliminating confusing or redundant information until we are left with a very simple question to answer. 
-%We would probably just zoom in a little closer on our mapping software to see if we can see the arrangement of objects we are looking for - and so our approach mimics the 'zooming-in' approach.
-%Our implemenation aggressively prunes the search space using recursive grid search \osullikomment{Cite}. In Figure \ref{CM-OO-Query} the query has a "C" object as the most northern object. 
-%So, we can prune the entire search space north of the north most C, because no matches in that region can satisfy the query. 
-%Next, recurse and we prune on the matrix from the west, knowing that no terms west of the west-most D can possibly satisfy the query. 
-%The pruning continues from the north, then the south until there is only a single search term left. 
-%If that term exists anywhere in the unpruned area, the query matches. 
-%Note that this approach returns any collection of objects that match the pattern specified in the query, regardless of other objects being present or how many times the sub-pattern occurs in the query space. 
-
-
-%The process of creating and querying a concept map is shown in Figure \ref{figure:ConceptMap}.
 
 
 
-% This all belongs in search
-%\subsubsection{Query Input}
-%- algorithm for parsing from grid, etc.
-%\subsubsection{Solution}
-%- recursive algorithm for finding any match
-%- complexity analysis
-%
-%\subsubsection{Experimental Results?}
-%- on ground truth queries? report number of locations pruned? timings?
-
-%Concept mapping has been partially implemented in Python leveraging the \textit{Scipy} library\footnote{\href{https://pypi.org/project/scipy/}{SciPy PyPI Repo}}. Two different approaches have been trialed. 
-%The first is simple dynamic arithmetic on the coordinates stored in a Pandas data frame. If one set of coordinates is above, below, left or right of another, it is north, south, east or west, respectively. 
-%While these calculations are in constant time for straightforward comparisons of known objects (e.g. "is the pond west of the bridge"), the time complexity rapidly increases as soon as aggregations are employed. 
-%Queries of "Give me everything west of the duck pond" would execute in $O(N)$ time as each element has to be examined. Worst-case queries would run in $O(N\sup{2})$ time, where every object is checked for its position relative to every other object. 
-
-%The second (better) approach (only partially implemented) instantiates the objects within a location into a KD-Tree. 
-%Assuming that the object centroid is the root, we can quickly complete queries like "Give me everything west of the duck pond" by leveraging the structure of the subtrees to return the requested set. 
-%Similarly, getting the relative positions of two objects searches for a common ancestor. It uses the path between the children and their ancestor node to infer their spatial relation to each other.
-
-%A third approach, designed to leverage the \textit{Neo4J Python Library}\footnote{\href{https://pypi.org/project/neo4j/}{Neo4J PyPI Repo}} to connect to a \textit{Neo4J Graph Database}\footnote{\href{https://neo4j.com/}{Neo4J Website}} but not implemented frames concept mapping as a graph traversal problem. 
-%In this formulation, each object is a node on a graph. Weighted, labeled edges exist between each node within a given proximity threshold to the node. 
-%The edge labels describe the neighboring node's cardinal direction and the distance weights. 
-%After constructing the object graph, queries for 'give me everything west of the duck pond' would freely explore nodes connected by west, north and south edges. 
-%It can only traverse along an east edge so long as the total cost of traveling east would be less than the cumulative value of the 'west' travel up to this point. 
-
-%%Overall, concept mapping aims to enable geographic search over objects by explicitly representing their geospatial relationships to each other. 
-%The author implemented a very basic approach using coordinate arithmetic was quickly determined to be infeasible for the extensive data sets that \textit{GESTALT} anticipates processing. 
-%KD-Trees for the objects in each location have been implemented, as have the KD-Trees for the locations themselves. 
-%This conceptual KD-Tree of KD-Trees approach performs a natural aggregation function which, provided that regions are created consistently, will allow for relative spatial queries at different levels of granularity. 
-%Empirical evaluation of the performance of the arithmetic, KD-Tree and Graph-based approaches is yet to be completed. 
 
 
-%%%%%%%%%%%%%%%NSCH clean up, incorporate, and delete the text below this point
-%The first is \textit{Static Cardinal Relations} which encodes whether an object is North, South, East or West of a location. Static Cardinal Relations support simple queries where the user knows that a location has a lake on its western side. 
-%The second is \textit{Dynamic Cardinal Relations} which determines whether an object is North, South, East or West of another object within a location. These queries support cases where a searcher might remember standing at a lake northeast of a location and that there was a swingset to the immediate west of them but still in the northeast of the location overall. 
 
 
-%Concept mapping needs to be unsupervised and support aggregation. Tracking every object's relative location to every other object quickly becomes intractable, so mechanisms to aggregate depending on the level of granularity need to be applied. 
-%Accordingly, the underlying data structure must support aggregation and relative position querying. 
 
 
-% \subsubsection{Approaches to Spatial Pattern Matching}
-% \par{
-%     Classical approaches to spatial search like \textit{Spatial Keyword Queries} (SKQ) and \textit{Multi-Spatial-Join} (MSJ) have been applied to the spatial pattern matching problem. 
-%     SKQ is only able to search on the \textit{metric} and \textit{keyword} constraints, and so do not offer the discriminating power we require.
-%     MSJ have been shown to work for spatial pattern matching, and typically implement a solving technique from those listed in section \osullikomment{add reference to section here}. 
-% }
 
-% \par{
-%     Spatial pattern matching problems are commonly approached in three ways, \textit{set intersection} (SI), \textit{subgraph matching} (SGM), and \textit{qualitative spatial reasoning} (QSR). 
-%     QSR is a special case of \textit{Constraint Satisfaction Problem} (CSP) and we will refer to them as CSP hereon. 
-%     }
-% \par{   
-%     SI for spatial pattern matching intersects a \textit{query set} with one or more \textit{world sets}, and returns those \textit{world sets} which contain the query set. 
-%     SI typically does not allow for explicit encoding of \textit{topological} \textit{metric} or \textit{directional} constraints, and so are not well suited for the pattern matching problem.
-%     SGM for spatial pattern matching seeks to match a \textit{query graph} against one or more \textit{world graphs}, assuming that the query graph is a subgraph of the world graph. 
-%     SGM approaches scale poorly with the size of query terms and the density of edges in the graph, and so are of limited utility in for the densely connected directional constraint relationships.
-%     CSP for spatial pattern matching seek to find an assignment of variables (objects) that are valid given the constraints (relationships).
-%     CSP approaches scale poorly as the number of constraints and the size of the query term increase, and so struggle in large, densely constrained environments like directional relations. 
-% }
 
-%
-    %We allow multiple objects of the same class or type and assume that objects have been assigned to their associated locations before search time.
 
-        %maintain a list of which segment every other object in the shared space lays in with respect to it.
-    %Segmentation can also be relative to each individual object (north, west, south-east etc). 
-    %Each object then maintains lists of which segment every other object in the shared space lays in.
-    %such as the centroid of all objects.
 
-        %These can be cardinal relationships like \textit{North, South, East, West}, relative directions like \textit{Left, Right, Up, Down} or even more general descriptions like \textit{in-front, behind} or \textit{next to}.
 
-    %Every node in that graph is an object in the shared space, and every edge is a relation to every other node defining pairwise relationships between objects. 
-    %While prior work discussed in section~\ref{section:related} focuses on building \textit{Metric} or \textit{Topological} relationships, we focus here on \textit{Directional} relationships.
-    %Directional relationships are challenging for link encoding as they require a fully connected graph or multigraph to capture the relative directions of all objects.
-        %Explicit link encoding creates a graph that at a minimum is fully connected, and commonly will be a multigraph when a more granular encoding scheme is used.
 
-            %A query in global coordinate space where \textit{north} = \textit{up} seeking all objects \textit{left} of object $X$ can easily just return all objects in the \textit{west} of $X$ in the database.
-    %Without the coordinate system assumption, the matching problem becomes significantly more difficult as there is no guarantee that the query \textit{left} and the database \textit{west} are both referring to the same direction.
-    %The problem becomes \textit{cardinality invariant}. 
-    %Regardless of the cardinality invariance problem, 
 
-    %A spatial query allows users to specify constraints on the spatial objects of interest and the relations of interest between them.
-    %\emph{COMPASS} focuses on directional relations, which are well suited to pictorial specification.
-    %See \emph{GESTLAT} for more~\cite{Osul2023}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
-    %Methods for accomplishing the spatial search task vary based on the schema used to encode and store the spatial entities and their relations.
+                    
+        
+                    
+                        
+            
     
-    %We look for alternatives to the graph-centric definition, seeking representations that are not inherently graph-based, search methods that are not graph-dependent. 
-    %Instead, we more broadly define \textit{spatial pattern matching} as the task of determining when a collection of query objects and constraints exists in an underlying database of objects and relations.
-    %\textit{Spatial Pattern Matching} (SPM) is a type of \textit{spatial search } that is defined as a graph matching problem requiring that each vertex has a keyword label, each edge has a distance interval and each edge has a sign (\textit{exclusion in, exclusion out, mutual exclusion} and \textit{mutual inclusion})~\cite{Fang2019}.
-
+        
+            
     %Most SPM methods formulate the problem as a \textit{set-intersection} problem, a \textit{qualitative spatial reasoning} (QSR)/\textit{constraint satisfaction problem} (CSP), or a \textit{subgraph-matching} (SGM) problem, all of which scale poorly with large numbers of relations in the database and constraints in the query. 

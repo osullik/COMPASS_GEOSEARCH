@@ -72,8 +72,7 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
 
         
 
-            %   Approach                                & Class       & obj & K & M & T & D & F & N & C & O \\
-            \hline
+                        \hline
             \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Algorithm}}}& 
             \multicolumn{3}{|c|}{\multirow{2}{*}{\textbf{Implementation}}} &
             \multicolumn{4}{|c|}{\multirow{2}{*}{\textbf{Relationship Constraints}}} &
@@ -93,8 +92,7 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
              & \rot{Card. Inv.}
              &  \\
             \hline
-            %   Approach                                        &Encoding         & Class       & obj            & K & M    & T  & D & F & N & C & O  \\
-            SKECa+~\cite{Guo2015}                               & N/A & SKQ         & \textbf{P}     & X & X    &    &   &   & X & N/A & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
+                        SKECa+~\cite{Guo2015}                               & N/A & SKQ         & \textbf{P}     & X & X    &    &   &   & X & N/A & $\mathcal{O}(rn^{\mathcal{Q}})$ \\
             PQL~\cite{DiLoreto1996}                             & Set & SI          & \textit{P,L,R} & X & X & X & X & X & X &   & Unclear \\
             McheckSsl~\cite{Soffer1996,Soffer1997,Soffer1998a}  & Set & SI          & \textit{P}     & X & X &   &   &   & X &   & $\mathcal{O}(n'^{2}+2^{n'})$ \\
             ~GESTALT$_{SI-Basic}$~\cite{Osul2023}~              & Set & SI          & \textit{P}     & X &   &   &   &   &   & N/A & $\mathcal{O}(G n)$ \\
@@ -104,13 +102,8 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
             Spacekey$_{MPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(m\zeta ^2+\xi)$ \\
             Spacekey$_{SPJ}$~\cite{Fang2018,Fang2019}           & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & ~$\mathcal{O}(n^4+mn^2+\xi)$~ \\
             ESPM~\cite{Chen2019}                                & Link & ~SKQ \& SGM & \textit{P}     & X & X &   &   & X & X &   & $\mathcal{O}(n'^n)$ \\
-            MSJ$_{MSJ}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\ %& Exponential in $\mathcal{Q}$~ \\
-            MSJ$_{WR}$~\cite{Papadias1998}                      & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            MSJ$_{JWR}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\ %& Exponential in $\mathcal{C}$ \\
-            STARVARS~\cite{Lee2013}                             &Segment & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
-            SketchMapia~\cite{Schwering2014,Jan2015}            & Link   & SGM   & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\         %~Likely $> \mathcal{O}(C)^3$~ \\
-            OSS~\cite{Liu2003}                                  &Segment & Other & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\ %& Linear in $\mathcal{O}$ \\
-            SRQL~\cite{Dellapenna2012,Dellapenna2017}           &Segment & Other & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
+            MSJ$_{MSJ}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^\mathcal{Q})^{\star}$ \\             MSJ$_{WR}$~\cite{Papadias1998}                      & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\             MSJ$_{JWR}$~\cite{Papadias1998}                     & Link & CSP         & \textit{P,L,R} &   & X & X & X & X &   &   & $\mathcal{O}(n^m)^{\star}$ \\             STARVARS~\cite{Lee2013}                             &Segment & CSP         & \textit{P}     &   &   &   & X &   &   & X & $\mathcal{O}(m^n)$ \\
+            SketchMapia~\cite{Schwering2014,Jan2015}            & Link   & SGM   & \textit{P,L,R} & X &   & X & X & X &   & X & Unclear \\                     OSS~\cite{Liu2003}                                  &Segment & Other & \textit{P,R}   &   & X & X & X &   &   & X & $\mathcal{O}(n)^{\star}$ \\             SRQL~\cite{Dellapenna2012,Dellapenna2017}           &Segment & Other & \textit{R}     & X &   & X & X &   & X &   & Unclear \\
             COMPASS$_{LO}$ [ours]                               & Set    &  SI  & \textit{P}     & X &   &   & X &   & X &   & $\mathcal{O}(G(\mathcal{Q} + n))$ \\    
             COMPASS$_{OO}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   &   & $\mathcal{O}(G(\mathcal{Q} + n^2))$ \\  
             COMPASS$_{CI}$ [ours]                               & CM     &  RGS  & \textit{P}     & X &   &   & X &   &   & X & ~$\mathcal{O}(G(\mathcal{Q}^2 + \mathcal{Q} n^2))$~ \\
@@ -136,4 +129,3 @@ All experimental results were obtained using a 2023 Apple MacBook Pro with CPU A
 
 
 
-%Since the number of query points is typically much smaller than the number of objects per location, we expect to see $\mathcal{O}(O^2)$ time complexity in most scenarios.

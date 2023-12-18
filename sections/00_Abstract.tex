@@ -1,12 +1,4 @@
-% Introduction
-% Research significance
-% Methodology
-% Results
-% Conclusion
 
-%The abstracted view permits encoding of the directional relationships that are usually too dense for searching using graph-based methods. 
-%search using our \textit{Cardinality Invariant Object-Object Recursive Grid Search} 
-%we re-frame the spatial pattern matching problem by defining semantic groups of geospatial objects as \textit{locations}.
 
 The \textit{Spatial Pattern Matching} paradigm offers a promising direction for searching with incomplete or imperfect information, but it is badly constrained by dependence on graph-based representations and computationally intensive search algorithms like subgraph matching and constraint satisfaction. 
 To address these limitations, we present \emph{COMPASS}, a suite of data structures and algorithms that enable pattern-based search by encoding the directional relationships between objects in abstracted matrix representations rather than graph structures.
@@ -15,33 +7,12 @@ Our search methods find matches even when the query pattern is not aligned to th
 Computationally, our search methods scale with the number of query objects times the number of database objects squared in the worst case, which is significantly better than previous methods.
 Our empirical measurements show that the performance is typically even better, approaching logarithmic in the number of query terms.
 
-%Our analysis shows that while the theoretical complexity of our algorithm is $\mathcal{O}(GQ^2 + Q\times n^2)$ 
-%for $Q$ query points and $n$ objects for each of $G$ locations 
-
-%Effective spatial search typically requires users to know the exact coordinates or name of the location they seek.
-%When only partial or imperfect information is available, distance-based nearest-neighbor searching can be used.
-%However, distance-based approaches require users to estimate the distance between objects in the environment, a task that humans perform poorly.
-%The more natural spatial search alternative is pictorial querying, where a sketch map enables users to place objects in a configuration where their relative positions define the query constraints.
-%Most approaches to pictorial query searching are intractable for any realistic number of query and database terms.
-%We present \emph{COMPASS}, a collection of data structures and algorithms that address geospatial search as a human-centric rather than a map-centric task. 
-%The \emph{COMPASS} suite addresses scalability issues that previously rendered pictorial-based searching infeasible. 
-%Of our three search methods, our Cardinality-Invariant Object-Object search achieves perfect recall in testing, an improvement of 0.9 on non-invariant approaches with a worst-case complexity of $\mathcal{O}(Q^2 + Q\times n^2)$.
-
-%Humans spend a lot of time searching for things. 
-%With the advent of tools like google maps and open street maps, people can search through geospatial data at a whim. 
-%These tools focus on providing exact matches to queries or a list of candidate locations based on the user's query. 
-%Frequently, searchers only have access to partial information. 
-%Whether it has been a long time since visiting a location, they have a vague recommendation from a friend or are an investigator trying to identify a location to solve a crime- a common problem is how to find a location of interest based on partial information. 
-%This project designs \textit{the \textbf{G}eospatially \textbf{E}nhanced \textbf{S}earch with \textbf{T}errain \textbf{A}ugmented \textbf{L}ocation \textbf{T}argeting (\textbf{GESTALT})}, and implements a proof-of-concept of the proposed architecture. 
-%Based on a new best-case dataset developed for this project, \textit{The Swan Valley Wineries dataset}, demonstrates the functionality and utility of \textit{GESTALT} while identifying substantial opportunities for future work. 
 
 
-%Geographic information systems (GIS) provide users with a means to efficiently search over spatial data given certain key pieces of information, like the coordinates or exact name of a location of interest. 
 
 
-%However, current GIS capabilities do not enable users to easily search for locations about which they have imperfect or incomplete information. 
-%\nrscomment{Motivation of pictorial querying}
 
-%\nrscomment{Issues of tractability}
 
-%\nrscomment{How we reframe the problem and solve it tractably}
+
+
+%

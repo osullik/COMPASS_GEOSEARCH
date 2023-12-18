@@ -1,7 +1,5 @@
-% This must be in the first 5 lines to tell arXiv to use pdfLaTeX, which is strongly recommended.
 \pdfoutput=1
 
-%\documentclass[sigconf,authordraft]{acmart}
 \documentclass[sigconf]{style/acmart}
 
 
@@ -58,32 +56,16 @@
 
 \begin{document}
 
-% % % % % % % % % % % % % % % % % % % %
-% User-defined packages, commands etc %
-% % % % % % % % % % % % % % % % % % % %
 
-%\renewcommand{\shortauthors}{O'Sullivan}
 
 \graphicspath{ {figures/}{auto_commit_fig/}{auto_fig/} }
 
-% Macro to include a latex file in the ./Sections/ directory
 \newcommand{\latexfile}[1]{\input{sections/#1}}
 
-\newcommand{\pinaforecomment}[4]{\colorbox{#1}{\textcolor{#4}{\parbox{.8\linewidth}{#2: #3}}}}
-\newcommand{\osullikomment}[1]{\pinaforecomment{green}{Kent}{#1}{black}}
-\newcommand{\nrscomment}[1]{\pinaforecomment{violet}{Nicole}{#1}{white}}
+\newcommand\blankpage{    \null
+    \thispagestyle{empty}    \addtocounter{page}{-1}    \newpage}
 
-\newcommand\blankpage{%
-    \null
-    \thispagestyle{empty}%
-    \addtocounter{page}{-1}%
-    \newpage}
-
-\NewDocumentCommand{\rot}{O{45} O{4.25em} m}{\makebox[#2][c]{\rotatebox{#1}{#3}}}%
-
-% % % % % % % % % % % % % % % % % % % %
-% Document preliminaries              %
-% % % % % % % % % % % % % % % % % % % %
+\NewDocumentCommand{\rot}{O{45} O{4.25em} m}{\makebox[#2][c]{\rotatebox{#1}{#3}}}
 
 
 \title{COMPASS: Cardinal Orientation Manipulation and Pattern-Aware Spatial Search\\}
@@ -91,37 +73,22 @@
 \author{Kent O'Sullivan}
 \authornote{Both authors contributed equally to this research.}
 \email{osullik@umd.edu}
-\affiliation{%
-  \institution{University of Maryland}
-  %\streetaddress{P.O. Box 1212}
-  %\city{Dublin}
-  %\state{Ohio}
-  \country{USA}
-  %\postcode{43017-6221}
-}
+\affiliation{  \institution{University of Maryland}
+        \country{USA}
+  }
 
 \author{Nicole R. Schneider}
 \authornotemark[1]
 \email{nsch@umd.edu}
-\affiliation{%
-  \institution{University of Maryland}
-  %\streetaddress{P.O. Box 1212}
-  %\city{Dublin}
-  %\state{Ohio}
-  \country{USA}
-  %\postcode{43017-6221}
-}
+\affiliation{  \institution{University of Maryland}
+        \country{USA}
+  }
 
 \author{Hanan Samet}
 \email{hjs@cs.umd.edu}
-\affiliation{%
-  \institution{University of Maryland}
-  %\streetaddress{P.O. Box 1212}
-  %\city{Dublin}
-  %\state{Ohio}
-  \country{USA}
-  %\postcode{43017-6221}
-}
+\affiliation{  \institution{University of Maryland}
+        \country{USA}
+  }
 
 
 
@@ -132,9 +99,6 @@
 \maketitle
 
 
-% % % % % % % % % % % % % % % % % % % %
-% Document Content                    %
-% % % % % % % % % % % % % % % % % % % %
 \latexfile{10_Introduction.tex}
 \latexfile{20_Background.tex}
 \latexfile{30_Data_Structures.tex}
@@ -152,10 +116,7 @@ This work was sponsored in part by the \grantsponsor{1}{NSF}{} under Grants \gra
 \bibliographystyle{style/ACM-Reference-Format}
 \bibliography{compass} \label{bibliography}
 
-%\blankpage
-%\blankpage
 
-%\latexfile{99_Appendices.tex}
 
 
 \end{document}

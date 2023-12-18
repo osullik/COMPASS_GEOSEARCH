@@ -4,10 +4,8 @@
 
 \par{
     We design our experiments to balance the power-law distribution of real-world object placement with the cleanliness required for robust experimental evaluation. 
-%
     We provide a data generator that produces a replicable benchmark dataset.
     We generate objects using a power-law distribution and generate query terms from a disjoint set of labels from those objects, enabling precision and recall measurements.
-%
     When generating queries, the data generator simulates real-world user variance and error by introducing the following distortions:
     \begin{enumerate}
         \item \textit{Translation}, which shifts the query objects in $x$ and $y$, to simulate lack of user knowledge about where in the region objects lie.
@@ -18,17 +16,4 @@
 \par{
     We generate two benchmark datasets, one with the aforementioned distortions (\textit{Distorted}) and one without (\textit{Normal}). 
     In both datasets, we vary the number of objects in the database and in the query, which allows for empirical measurements of search performance across different spatial search methods.
-    %Both datasets grow in proportionally between $2^2$ and $2^9$ in both the number of database objects and number of query objects for a total of 35 experiments within the suite (i.e., for a database of $2^2$ there is only one query of $2^2$, but for a database of $2^4$ there are queries of $2^2$ $2^3$ and $2^4$).
-}
-
- %Meaningful experimentation to support our theoretical complexity analysis requires data that is controlled enough to allow for evaluating precision and recall, but closely mimics the randomness of real-world spatial data.
-    %The spatial distribution of locations, and the objects associated with them are not uniformly distributed, and generating synthetic data requires an approach that is able to reflect the power law distributions observed in location and object clusters.
-
-    %It uses the Recursive Matrix (RMAT) graph generation algorithm \cite{Chakrabarti2004} to produce the adjacency matrix of a scale-free graph with tunable size and density (setting the distribution parameters to reflect those standardized in graph500).
-    %We use the edges of that adjacency matrix to represent the 'coordinates' of the points associated with a location. 
-    %Labeling the points with their 'names' (object classes) involves generating samples across an inverse Pareto distribution, separating those samples into \textit{n} bins and then walking through that sample, assigning each bin encountered in turn to an unlabeled point.
-
-     %To ensure we can control the query evaluation, we insert queries from a disjoint set of labels into the location object matrices once the initial labeling has been completed. 
-    %To reflect real-world variance, those input queries undergo transformations that reflect the differences between how objects might exist in the real world versus how a user might sketch or place them in a pictorial query including: 
-
-     %The data generator framework allows for flexible experimentation to test how spatial queries perform in terms of precision, recall, and query response time, while controlling the number of locations generated, the number of queries constructed, number and distribution of objects in each query and associated with each location, and the type and degree of transformation applied to the queries to simulate real world conditions where users have imperfect information.
+    }

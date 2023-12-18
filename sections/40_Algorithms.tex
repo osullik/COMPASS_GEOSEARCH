@@ -1,7 +1,6 @@
 \section{COMPASS Search Algorithms}
 \label{section:methods}
 Our choice of data structures allows us to employ search methods that would otherwise be unsuitable for graph structures. 
-%We show how the abstraction to encode only relative position information makes the problem more tractable. 
 This section outlines the methods used to accomplish \emph{COMPASS}'s three forms of spatial search.
 
 \begin{algorithm}[h!]
@@ -12,16 +11,14 @@ This section outlines the methods used to accomplish \emph{COMPASS}'s three form
         \State{\textit{\textbf{Q.Loc} Midpoint of query canvas, representing position of Location sought}}
         \State{\textit{\textbf{D.Loc} Location to which Objects in D are assigned}}
         \State{- - - - -}
-        \Procedure{objectLocationSearch}{$Q$, $D$, $Q.Loc$, $D.Loc$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$D.Dict \leftarrow$ makeLocationCentricStructure($D$,$D.Loc$)}
+        \Procedure{objectLocationSearch}{$Q$, $D$, $Q.Loc$, $D.Loc$}             \State{$D.Dict \leftarrow$ makeLocationCentricStructure($D$,$D.Loc$)}
             \State{$Q.Dict \leftarrow$ makeLocationCentricStructure($Q$,$Q.Loc$)}
             \State{$matches \leftarrow$ 0}
             \For{Each $quadrant$ in [$NW$, $NE$, $SW$, $SE$]}
                 \For{Each point $P$ in $Q.Dict[quadrant]$}
                     \If{$D.Dict[quadrant]$ contains $P$}
                         \State{$matches \leftarrow matches$ + 1} 
-                        \State{Pop $P$ from $D.Dict[quadrant]$} %\Comment So multiples of same objects in query are counted
-                    \EndIf
+                        \State{Pop $P$ from $D.Dict[quadrant]$}                     \EndIf
                 \EndFor
             \EndFor
             \State{\textbf{return} $matches$} \Comment Used to rank against other candidate locs
@@ -32,20 +29,15 @@ This section outlines the methods used to accomplish \emph{COMPASS}'s three form
         \State{- - - - -}
         \Procedure{MakeLocationCentricStructure}{$D$, $D.Loc$}
             \State{$Dict \leftarrow $\{ $NW$: [ ], $NE$:[ ], $SW$: [ ], $SE$: [ ] \}}
-            \For{$Obj$ in $D$}%\Comment{R is a row describing a single object}
-                \If{$Obj.y$ < $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
-                    %\If{}
-                        \State{Add $Obj.Name$ to $Dict.SW$}
+            \For{$Obj$ in $D$}                \If{$Obj.y$ < $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
+                                            \State{Add $Obj.Name$ to $Dict.SW$}
                 \ElsIf{$Obj.y$ < $D.Loc.y$ and $Obj.x$ >= $D.Loc.x$}
                         \State{Add $Obj.Name$ to $Dict.SE$}
-                    %\EndIf
-                \ElsIf{$Obj.y$ >= $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
-                    %\If{$R.x$ <= $Loc.x$} 
-                        \State{Add $Obj.Name$ to $Dict.NW$}
+                                    \ElsIf{$Obj.y$ >= $D.Loc.y$ and $Obj.x$ < $D.Loc.x$}
+                                            \State{Add $Obj.Name$ to $Dict.NW$}
                 \Else
                         \State{Add $Obj.Name$ to $Dict.NE$}
-                    %\EndIf
-                \EndIf 
+                                    \EndIf 
             \EndFor
             \State{\textbf{return} $Dict$}
         \EndProcedure
@@ -61,7 +53,6 @@ This section outlines the methods used to accomplish \emph{COMPASS}'s three form
     \textit{Location-Object} search is effectively a set intersection operation. 
     It proceeds by iterating through the candidate locations, searching each location's (NW/NE/SW/SE) quadrants for object-quadrant relationships that match the directional constraints specified in the query.
     Figure \ref{fig:CM-LO-Query} shows how to query the Location-Object data structure, and the process is formalized by Algorithm~\ref{alg:locSearch}.
-%
     The search function returns candidate locations ranked by the number of query terms that match the appropriate quadrant for the location and can return fuzzy partial matches.  
     
 
@@ -74,21 +65,16 @@ This section outlines the methods used to accomplish \emph{COMPASS}'s three form
         \State{- - - - -}
         \Procedure{createConceptMap}{$D$}
             \State{xList, yList $\leftarrow$ []} 
-            %\State{LatList = []} \Comment{A list}
-            \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
-            %\State{Sort rows from North to South}
-            \For{$Obj$ in $D$} \Comment{Where $D$ sorted (desc) on y coord}     
-                \State{Add $Obj$ to $yList$} %\Comment{$R.ID$ is the obj unique ID}
-            \EndFor
-            %\State{Sort rows from West to East}         
-            \For{$Obj$ in $D$}  \Comment{Where $D$ sorted (desc) on x coord}  
+                        \State{$M$ $\leftarrow$ [[][]]} \Comment{A matrix of 0s}
+                        \For{$Obj$ in $D$} \Comment{Where $D$ sorted (desc) on y coord}     
+                \State{Add $Obj$ to $yList$}             \EndFor
+                        \For{$Obj$ in $D$}  \Comment{Where $D$ sorted (desc) on x coord}  
                 \State{Add $Obj$ to $xList$}
             \EndFor          
             \For{$Obj$ in $xlist$}          
                 \State{$i \leftarrow$ index of $Obj$ in $xList$}
                 \State{$j \leftarrow$ index of $Obj$ in $yList$}               
-                \State{$M$[$i$][$j$] $\leftarrow$ $Obj.Name$} %\Comment{Name of object with $ID$}
-            \EndFor        
+                \State{$M$[$i$][$j$] $\leftarrow$ $Obj.Name$}             \EndFor        
             \State{\textbf{return} $xList$, $yList$}
         \EndProcedure
 
@@ -150,8 +136,7 @@ Pruning occurs recursively in alternating directions until all query objects are
         \State{\textit{\textbf{Q.L} A NW to SE ordered list of query objects}}
         \State{\textit{\textbf{Dir} The alternating cardinal direction to prune from, 'N' (default) or 'W'}}
         \State{- - - - -}
-        \Procedure{recursiveConceptMapSearch}{$D.M$,$Q.L$,$Dir$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \If{$Q.L$ has only 1 item}\Comment{Base Case}
+        \Procedure{recursiveConceptMapSearch}{$D.M$,$Q.L$,$Dir$}             \If{$Q.L$ has only 1 item}\Comment{Base Case}
                 \If{pop($Q.L$) in $D.M$}
                     \State{\textbf{return} $True$}              
                 \Else
@@ -189,8 +174,7 @@ Pruning occurs recursively in alternating directions until all query objects are
         \State{\textit{\textbf{Q} A query of Objects with names and coordinates}}
         \State{\textit{\textbf{D} A database of Objects with names and coordinates}}
         \State{- - - - -}
-        \Procedure{cardinalityInvariantObjectObjectSearch}{$Q$, $D$} %\Comment{$M$ a matrix of a Loc's objects, $L$ an ordered list of objects to search for, $D$ is the pruning direction}
-            \State{$B \leftarrow$ Bounding box of points in $Q$}
+        \Procedure{cardinalityInvariantObjectObjectSearch}{$Q$, $D$}             \State{$B \leftarrow$ Bounding box of points in $Q$}
             \State{$C\leftarrow$ centroid of points in $Q$} 
             \State{$N\leftarrow$ North Center point of $B$} 
             \State{$W\leftarrow$ West Center point of $B$} 
@@ -215,34 +199,21 @@ Pruning occurs recursively in alternating directions until all query objects are
 
 \subsection{Cardinality-Invariant Object-Object Search}
 \textit{Cardinality Invariance} extends \textit{Object-Object} search (Algorithm~\ref{alg:gridSearch}) by removing the assumption of compliance with a globally aligned coordinate system.
-%
 We address the coordinate system alignment issue by rotating the query pattern the minimal number of times needed to cover the distinct configurations relative to the actual cardinal directions.
-%
 Algortihm~\ref{alg:cardInvSearch} describes the process of rotating the points of the query term around their centroid, and a visual depiction is in figure~\ref{figure:rot-inv}.
 We generate the minimum bounding rectangle for the query points and impose three reference points: `North', `West', and `Northwest' on the bounding rectangle relative to the centroid. 
 For each point in the query, we compute the angle between it, the query centroid, and each reference point. 
 Rotating the query configuration by each angle aligns the given point to each reference direction.
 The unique set of query configurations obtained in this manner represents the minimum set of object-object queries required to determine if the pattern specified in the query matches, irrespective of cardinality. 
 
-%Object-Object search allows a user to retrieve locations by specifying directional constraints between objects and comparing them to the directional relationships of objects in the underlying database. 
 
-%Multiple constraints can be combined to form a more specific query, such as a lake northwest of the location and a pond southeast of the location.
-    %Partial matches are returned, ranked by how many of the query's directional constraints are satisfied.
-    }
+        }
 
  
-%A true positive match occurs when the number of discovered objects in a location matches the number of query objects.
-%For example, if the user queries for two objects in the southwest and one in the northeast, true positive matches will be all locations that feature those three objects in that configuration. 
-
-
-%First, any database object that is more north (west) than the northernmost (westernmost) database object matching the northernmost (westermost) query object cannot be part of a match. \nrscomment{this sentence needs to be made more digestible}
-
-
-%To generate the query input, the pictorial query is first converted into a concept map matrix to capture its directional constraints.
-%Next, the search terms in the query matrix are ordered into a queue with the northernmost enqueued first, followed by the westernmost, then the second northernmost, and so on.
-%Finally, the grid search is employed to recursively prune the search space and quickly eliminate candidate locations that do not match the query configuration, 
 
 
 
-% For example, a tree, a pond, and a sign might form a triangle, with each object having a directional constraint to every other object in the query (i.e., tree upper left of pond, pond lower right of sign, and sign lower left of tree).
-% As the number of objects of interest increases, the number of pairwise directional constraints needed to specify the query snowballs.
+
+
+
+

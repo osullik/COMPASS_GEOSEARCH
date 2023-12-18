@@ -10,7 +10,6 @@ Current methods for searching spatial data require encoding schemes that collaps
 Under this paradigm, natural spatial pattern queries like "Where is there a pond, a statue, and a bridge arranged in a triangle?" are impossible to answer.
 Previous work in spatial pattern matching, which handles exactly this type of multi-entity directional query, requires encoding the data in densely connected graphs or multigraphs, or segmenting space with respect to every object individually~\cite{Folkers2000, Fang2019,Chen2019,Fang2019}.
 Because of their underlying encoding schemes, these approaches are intractable for any reasonable number of objects and query constraints.
-%Because of the (typically cubic) complexity barrier to directional spatial search, most spatial search methods simply ignore directional relations.
 This gap between the natural spatial expressiveness of directional queries and the intractibility of resolving them for nontrivially-sized collections of spatial data is the reason modern search engines do not support them.
 
 We present \textit{\textbf{C}ardinal \textbf{O}rientation \textbf{M}anipulation and \textbf{P}attern-\textbf{A}ware \textbf{S}patial \textbf{S}earch}, (\emph{COMPASS})\footnote{\url{https://github.com/osullik/COMPASS_GEOSEARCH}}, a suite of data structures and algorithms that begin to address the scalability limitations of directional spatial pattern matching.
