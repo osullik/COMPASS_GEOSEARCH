@@ -150,13 +150,13 @@ The [scripts](https://github.com/osullik/COMPASS_GEOSEARCH/tree/main/scripts) di
 
 If you use this work, please cite it as: 
 
-  @inproceedings{Osullivan2023,
-  title={COMPASS: Cardinal Orientation Manipulation and Pattern-Aware Spatial Search},
-  author={O'Sullivan, Kent and Schneider, Nicole R and Samet, Hanan},
-  booktitle={Proceedings of the 2nd ACM SIGSPATIAL International Workshop on Searching and Mining Large Collections of Geospatial Data},
-  pages={1--8},
-  year={2023}
-}
+    @inproceedings{Osullivan2023,
+    title={COMPASS: Cardinal Orientation Manipulation and Pattern-Aware Spatial Search},
+    author={O'Sullivan, Kent and Schneider, Nicole R and Samet, Hanan},
+    booktitle={Proceedings of the 2nd ACM SIGSPATIAL International Workshop on Searching and Mining Large Collections of Geospatial Data},
+    pages={1--8},
+    year={2023}
+    }
 
 ## Contact
 
