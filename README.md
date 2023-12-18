@@ -75,6 +75,77 @@ Compile the videos
 
     mainm -pql cardinality_invariant.py CardinalityInvariant
 
+## Recompiling the paper from tex:
+
+### Setting up compilation environment for MacOS: 
+
+1. Download [Homebrew](brew.sh): 
+
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+2. Install TexLive: 
+
+        brew install texlive
+
+3. Install Inkscape
+
+        brew install --cask inkscape
+
+4. (If it isn't on your machine by default) GNU Make
+
+        brew install make
+
+### Setting up compilation environment For Windows: 
+
+1. Run Powershell as administrator: 
+
+2. Install [Chocolatey](https://chocolatey.org/): 
+
+        Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+3. Install GNU Make: 
+
+        choco install Make
+
+4. Install Perl (for LatexMk)
+
+        choco install strawberryperl
+
+5. Install Ruby (for Editing Scripts)
+
+        choco install ruby
+
+6. Install TexLive Utilites: 
+
+        choco install texlive
+
+7. Install MiKTeX: 
+
+        choco install miktex
+
+8. Install LatexMK with MikTex Package Manager (through GUI)
+
+9. Install InkScape
+
+        choco install inkscape
+
+
+### Key commands for Making the file: 
+
+To compile the PDF, simply run the following from the root of the project directory:
+
+    make compass.pdf
+
+You'll notice a lot of random intermediary files get made. To get rid of them and leave your PDF use:
+
+    make publish
+
+Sometimes everything goes wrong and we need to start again, when that happens use: 
+
+    make clean
+
+The [scripts](https://github.com/osullik/COMPASS_GEOSEARCH/tree/main/scripts) directory contains a collection of scripts taken from [Jordan Boyd-Graber](https://github.com/Pinafore/publications/tree/master/scripts) that are useful for editing and checking. Github tends to mess with the permissions on these, so you'll likely need to CHMOD them back to be executable again. The *make main.pdf* command uses some of these scripts, so it is a good idea to do that occasionally. 
+
 ## Citing the work
 
 If you use this work, please cite it as: 
